@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
+
+	<ImageView
+		android:id="@+id/img_header_background"
+		android:layout_width="match_parent"
+		android:layout_height="290dp"
+		android:scaleType="centerCrop"
+		android:background="@color/colorPrimaryDefault"/>
+
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="290dp"
+		android:background="@color/dim_filter"/>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="290dp"
+		android:gravity="center_horizontal"
+		android:orientation="vertical">
+
+		<de.hdodenhof.circleimageview.CircleImageView
+			android:id="@+id/img_user"
+			android:layout_width="60dp"
+			android:layout_height="60dp"
+			android:transitionName="picture"
+			android:layout_marginTop="40dp"
+			android:src="@drawable/background_login"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="5dp"
+			android:textColor="#fff"
+			android:text="KlubRadio Membership:"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="5dp"
+			android:textSize="24sp"
+			android:textColor="#fff"
+			android:text="Platinum"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="10dp"
+			android:textColor="#fff"
+			android:text="Radio Member:"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="5dp"
+			android:textSize="24sp"
+			android:textColor="#fff"
+			android:text="Klite FM Bandung"/>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="15dp"
+			android:gravity="center_horizontal"
+			android:orientation="horizontal">
+
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginRight="20dp"
+				android:gravity="center_horizontal"
+				android:orientation="vertical">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textColor="#fff"
+					android:text="27/12/2015"/>
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="5dp"
+					android:textColor="#fff"
+					android:text="Registered"/>
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="20dp"
+				android:gravity="center_horizontal"
+				android:orientation="vertical">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textColor="#fff"
+					android:text="27/12/2020"/>
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="5dp"
+					android:textColor="#fff"
+					android:text="Expired"/>
+
+			</LinearLayout>
+
+		</LinearLayout>
+
+	</LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content">
+
+	<ImageView
+		android:id="@+id/img_cover"
+		android:layout_width="match_parent"
+		android:layout_height="210dp"
+		android:src="@drawable/background_login"
+		android:scaleType="centerCrop"/>
+
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="210dp"
+		android:background="@color/dim_filter"/>
+
+	<de.hdodenhof.circleimageview.CircleImageView
+		android:id="@+id/img_radio_logo"
+		android:layout_width="80dp"
+		android:layout_height="80dp"
+		android:layout_centerHorizontal="true"
+		android:layout_marginTop="40dp"
+		android:src="@drawable/background_login"/>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/img_radio_logo"
+		android:layout_marginTop="5dp"
+		android:gravity="center_horizontal"
+		android:orientation="vertical">
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Bandung's Inspiring Sound"
+			android:textColor="#fff"
+			android:textSize="16sp"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="10dp"
+			android:text="1000"
+			android:textSize="20sp"
+			android:textColor="#fff"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="5dp"
+			android:text="Likes"
+			android:textColor="#fff"/>
+
+	</LinearLayout>
+
+</RelativeLayout>

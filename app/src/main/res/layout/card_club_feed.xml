@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+	android:id="@+id/card_feed"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_margin="10dp"
+	app:cardElevation="2dp"
+	app:cardCornerRadius="2dp"
+	android:clipToPadding="false"
+	android:foreground="?android:attr/selectableItemBackground"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="#fff"
+		android:orientation="vertical">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="50dp"
+			android:layout_margin="10dp"
+			android:orientation="horizontal">
+
+			<de.hdodenhof.circleimageview.CircleImageView
+				android:id="@+id/img_user"
+				android:layout_width="0dp"
+				android:layout_weight="1"
+				android:transitionName="picture"
+				android:layout_height="match_parent"
+				android:scaleType="centerCrop"
+				android:src="@drawable/background_login"/>
+
+			<RelativeLayout
+				android:layout_width="0dp"
+				android:layout_weight="4"
+				android:layout_height="match_parent"
+				android:layout_marginLeft="10dp"
+				android:gravity="center_vertical"
+				android:orientation="vertical">
+
+				<TextView
+					android:id="@+id/txt_header_name"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Imam Darto created new Playlist blablablabla"/>
+
+
+				<TextView
+					android:id="@+id/txt_header_info"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_below="@id/txt_header_name"
+					android:textSize="10sp"
+					android:text="2 Hours ago | Playlist"/>
+
+
+			</RelativeLayout>
+
+		</LinearLayout>
+
+		<ImageView
+			android:id="@+id/img_post"
+			android:layout_width="match_parent"
+			android:layout_height="200dp"
+			android:scaleType="centerCrop"
+			android:src="@drawable/background_login"/>
+
+		<TextView
+			android:id="@+id/txt_post_title"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="10dp"
+			android:layout_marginLeft="15dp"
+			android:layout_marginRight="15dp"
+			android:text="Funky Sunshine"
+			android:textSize="16sp"
+			android:textStyle="bold"/>
+
+		<TextView
+			android:id="@+id/txt_post_content"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="15dp"
+			android:layout_marginRight="15dp"
+			android:layout_marginTop="5dp"
+			android:text="Fullfill your day with this playlist"/>
+
+		<TextView
+			android:id="@+id/txt_post_info"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="2dp"
+			android:layout_marginLeft="15dp"
+			android:layout_marginRight="15dp"
+			android:textSize="12sp"
+			android:text="40 tracks"/>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="10dp"
+			android:layout_marginLeft="15dp"
+			android:layout_marginRight="15dp"
+			android:layout_marginBottom="15dp"
+			android:orientation="horizontal">
+
+			<ImageButton
+				android:id="@+id/btn_like"
+				android:layout_width="30dp"
+				android:layout_height="30dp"
+				android:scaleType="centerInside"
+				android:src="@drawable/ic_favorite_black_36dp"
+				android:background="#0000"/>
+
+			<ImageButton
+				android:id="@+id/btn_share"
+				android:layout_width="30dp"
+				android:layout_height="30dp"
+				android:layout_marginLeft="10dp"
+				android:scaleType="centerInside"
+				android:src="@drawable/ic_share_black_36dp"
+				android:background="#0000"/>
+
+			<ImageButton
+				android:id="@+id/btn_comment"
+				android:layout_width="30dp"
+				android:layout_height="30dp"
+				android:layout_marginLeft="10dp"
+				android:scaleType="centerInside"
+				android:src="@drawable/ic_comment_black_36dp"
+				android:background="#0000"/>
+
+			<View
+				android:layout_width="0dp"
+				android:layout_weight="1"
+				android:layout_height="match_parent"/>
+
+			<TextView
+				android:id="@+id/txt_likes_info"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="bottom"
+				android:textSize="12sp"
+				android:text="8237 likes | 20 comments"/>
+
+		</LinearLayout>
+
+	</LinearLayout>
+
+</android.support.v7.widget.CardView>

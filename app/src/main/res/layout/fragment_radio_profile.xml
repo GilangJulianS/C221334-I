@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+	android:layout_height="match_parent"
+	android:layout_width="match_parent"
+	app:layout_behavior="@string/appbar_scrolling_view_behavior"
+	android:clipToPadding="false"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<LinearLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:paddingBottom="15dp"
+		android:background="#F2F2F2"
+		android:clipToPadding="false"
+		android:orientation="vertical">
+
+		<android.support.v7.widget.CardView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="15dp"
+			app:cardElevation="2dp"
+			app:cardCornerRadius="2dp"
+			android:clipToPadding="false"
+			android:foreground="?android:attr/selectableItemBackground">
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="#fff"
+				android:orientation="horizontal">
+
+				<ImageView
+					android:layout_width="0dp"
+					android:layout_weight="2"
+					android:layout_height="110dp"
+					android:src="@drawable/radio_icon"/>
+
+				<LinearLayout
+					android:layout_width="0dp"
+					android:layout_weight="3"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center_vertical"
+					android:orientation="vertical">
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="0dp"
+						android:layout_weight="1"
+						android:textSize="16sp"
+						android:textStyle="bold"
+						android:text="K-Lite FM Bandung"/>
+
+					<LinearLayout
+						android:layout_width="wrap_content"
+						android:layout_height="0dp"
+						android:layout_weight="1"
+						android:gravity="center_vertical"
+						android:orientation="horizontal">
+
+						<ImageView
+							android:layout_width="25dp"
+							android:layout_height="25dp"/>
+
+						<TextView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:layout_marginLeft="10dp"
+							android:text="107.1 FM"/>
+
+					</LinearLayout>
+
+					<LinearLayout
+						android:layout_width="wrap_content"
+						android:layout_height="0dp"
+						android:layout_weight="1"
+						android:gravity="center_vertical"
+						android:orientation="horizontal">
+
+						<ImageView
+							android:layout_width="25dp"
+							android:layout_height="25dp"/>
+
+						<TextView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:layout_marginLeft="10dp"
+							android:text="Bandung"/>
+
+					</LinearLayout>
+
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+		</android.support.v7.widget.CardView>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="15dp"
+			android:layout_marginTop="5dp"
+			android:textSize="18sp"
+			android:textStyle="bold"
+			android:text="About"/>
+
+		<android.support.v7.widget.CardView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="15dp"
+			android:layout_marginRight="15dp"
+			android:layout_marginTop="5dp"
+			app:cardElevation="2dp"
+			app:cardCornerRadius="2dp"
+			android:clipToPadding="false"
+			android:foreground="?android:attr/selectableItemBackground">
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="#fff"
+				android:orientation="horizontal">
+
+				<ImageView
+					android:layout_width="0dp"
+					android:layout_weight="2"
+					android:layout_height="110dp"
+					android:src="@drawable/radio_icon"/>
+
+				<TextView
+					android:layout_width="0dp"
+					android:layout_weight="3"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center_vertical"
+					android:text="Bandung's inspiring Sound - K-Lite FM, Bandung, a broadtcast radio stationed in Bandung Indonesia, Providing young..."/>
+
+			</LinearLayout>
+
+		</android.support.v7.widget.CardView>
+
+		<RelativeLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="20dp"
+			android:layout_marginLeft="15dp"
+			android:layout_marginRight="15dp">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignParentLeft="true"
+				android:textSize="18sp"
+				android:textStyle="bold"
+				android:layout_centerVertical="true"
+				android:text="Featured Program"/>
+
+			<Button
+				android:id="@+id/btn_more_program"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignParentRight="true"
+				android:layout_centerVertical="true"
+				style="@style/AppTheme.Button"
+				android:text="More"
+				android:textColor="#fff"/>
+
+		</RelativeLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="10dp"
+			android:layout_marginRight="10dp"
+			android:orientation="horizontal">
+
+			<include layout="@layout/card_program"
+				android:layout_width="0dp"
+				android:layout_weight="1"
+				android:layout_height="wrap_content"
+				android:layout_margin="5dp"/>
+
+			<include layout="@layout/card_program"
+				 android:layout_width="0dp"
+				 android:layout_weight="1"
+				 android:layout_height="wrap_content"
+				 android:layout_margin="5dp"/>
+
+		</LinearLayout>
+
+		<RelativeLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="15dp"
+			android:layout_marginLeft="15dp"
+			android:layout_marginRight="15dp">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignParentLeft="true"
+				android:textSize="18sp"
+				android:textStyle="bold"
+				android:layout_centerVertical="true"
+				android:text="Featured DJs"/>
+
+			<Button
+				android:id="@+id/btn_more_announcer"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignParentRight="true"
+				android:layout_centerVertical="true"
+				style="@style/AppTheme.Button"
+				android:text="More"
+				android:textColor="#fff"/>
+
+		</RelativeLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="10dp"
+			android:layout_marginRight="10dp"
+			android:orientation="horizontal">
+
+			<include
+				layout="@layout/card_announcer"
+				android:layout_width="0dp"
+				android:layout_weight="1"
+				android:layout_height="wrap_content"
+				android:layout_margin="5dp"/>
+
+			<include
+				layout="@layout/card_announcer"
+				android:layout_width="0dp"
+				android:layout_weight="1"
+				android:layout_height="wrap_content"
+				android:layout_margin="5dp"/>
+
+			<include
+				layout="@layout/card_announcer"
+				android:layout_width="0dp"
+				android:layout_weight="1"
+				android:layout_height="wrap_content"
+				android:layout_margin="5dp"/>
+
+		</LinearLayout>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true"
+			android:layout_marginTop="20dp"
+			android:layout_marginLeft="15dp"
+			android:layout_marginRight="15dp"
+			android:textSize="18sp"
+			android:textStyle="bold"
+			android:layout_centerVertical="true"
+			android:text="Contacts"/>
+
+		<android.support.v7.widget.CardView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="15dp"
+			android:layout_marginRight="15dp"
+			android:layout_marginTop="5dp"
+			app:cardElevation="2dp"
+			app:cardCornerRadius="2dp"
+			android:clipToPadding="false"
+			android:foreground="?android:attr/selectableItemBackground">
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:padding="10dp"
+				android:background="#fff"
+				android:orientation="vertical">
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:gravity="center_vertical">
+
+					<ImageView
+						android:layout_width="25dp"
+						android:layout_height="25dp"
+						android:src="@drawable/ic_home_black_24dp"/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginLeft="10dp"
+						android:textSize="12sp"
+						android:textStyle="bold"
+						android:text="Jl. Sumur Bandung No.12\nDago - Bandung"/>
+
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:layout_marginTop="10dp"
+					android:gravity="center_vertical">
+
+					<ImageView
+						android:layout_width="25dp"
+						android:layout_height="25dp"
+						android:src="@drawable/ic_phone_black_24dp"/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginLeft="10dp"
+						android:textSize="12sp"
+						android:textStyle="bold"
+						android:text="+6222 21 231231"/>
+
+
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="10dp"
+					android:orientation="horizontal"
+					android:gravity="center_vertical">
+
+					<ImageView
+						android:layout_width="25dp"
+						android:layout_height="25dp"
+						android:src="@drawable/ic_email_black_24dp"/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginLeft="10dp"
+						android:textSize="12sp"
+						android:textStyle="bold"
+						android:text="kllitefm@gmail.com"/>
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+		</android.support.v7.widget.CardView>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true"
+			android:layout_marginLeft="15dp"
+			android:layout_marginRight="15dp"
+			android:layout_marginTop="20dp"
+			android:textSize="18sp"
+			android:textStyle="bold"
+			android:layout_centerVertical="true"
+			android:text="Link"/>
+
+		<android.support.v7.widget.CardView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="15dp"
+			android:layout_marginRight="15dp"
+			android:layout_marginTop="5dp"
+			app:cardElevation="2dp"
+			app:cardCornerRadius="2dp"
+			android:clipToPadding="false"
+			android:foreground="?android:attr/selectableItemBackground">
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:padding="10dp"
+				android:background="#fff"
+				android:orientation="vertical">
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:gravity="center_vertical">
+
+					<ImageView
+						android:layout_width="25dp"
+						android:layout_height="25dp"
+						android:src="@drawable/ic_public_black_24dp"/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginLeft="10dp"
+						android:textSize="12sp"
+						android:textStyle="bold"
+						android:text="www.kllitefm.com"/>
+
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:layout_marginTop="10dp"
+					android:gravity="center_vertical">
+
+					<ImageView
+						android:layout_width="25dp"
+						android:layout_height="25dp"/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginLeft="10dp"
+						android:textSize="12sp"
+						android:textStyle="bold"
+						android:text="RADIO K-LITE 107.1 FM BANDUNG"/>
+
+
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="10dp"
+					android:orientation="horizontal"
+					android:gravity="center_vertical">
+
+					<ImageView
+						android:layout_width="25dp"
+						android:layout_height="25dp"/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginLeft="10dp"
+						android:textSize="12sp"
+						android:textStyle="bold"
+						android:text="\@107klitefm"/>
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+		</android.support.v7.widget.CardView>
+
+	</LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	app:layout_behavior="@string/appbar_scrolling_view_behavior"
+	android:clipToPadding="false"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<LinearLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:paddingLeft="@dimen/activity_horizontal_margin"
+		android:paddingRight="@dimen/activity_horizontal_margin"
+		android:paddingTop="@dimen/activity_vertical_margin"
+		android:paddingBottom="@dimen/activity_vertical_margin"
+		android:background="#fff"
+		android:orientation="vertical">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:gravity="center_vertical"
+			android:orientation="horizontal">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textSize="16sp"
+				android:textStyle="bold"
+				android:text="Easy Busy"/>
+
+			<View
+				android:layout_width="0dp"
+				android:layout_height="match_parent"
+				android:layout_weight="1"/>
+
+			<ImageButton
+				android:layout_width="30dp"
+				android:layout_height="30dp"
+				android:src="@drawable/ic_share_black_24dp"
+				android:background="#0000"/>
+
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:gravity="center_vertical"
+			android:orientation="horizontal">
+
+			<ImageView
+				android:layout_width="30dp"
+				android:layout_height="30dp"
+				android:src="@drawable/ic_person_black_24dp"/>
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Hasanah Noor"/>
+
+			<View
+				android:layout_width="0dp"
+				android:layout_height="match_parent"
+				android:layout_weight="1"/>
+
+			<ImageView
+				android:layout_width="30dp"
+				android:layout_height="30dp"
+				android:src="@drawable/ic_alarm_black_24dp"/>
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Sen - Jum, 9:00 - 12:00"/>
+
+
+		</LinearLayout>
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="15dp"
+			android:text="Description"
+			android:textStyle="bold"/>
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="Tips-tips manajemen yang dikemas secara apik dengan kalimat santun yang memotivasi diselingi dengan lagu-lagu yang easy listening"/>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="100dp"
+			android:orientation="vertical"
+			android:gravity="center_horizontal">
+
+			<de.hdodenhof.circleimageview.CircleImageView
+				android:layout_width="50dp"
+				android:layout_height="50dp"
+				android:src="@drawable/background_login"/>
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Rate this show"/>
+
+			<RatingBar
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:numStars="5"
+				android:rating="3"/>
+
+		</LinearLayout>
+
+		<View
+			android:layout_width="match_parent"
+			android:layout_height="2dp"
+			android:layout_marginTop="15dp"
+			android:background="#AAA"/>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="10dp"
+			android:orientation="horizontal">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="4.0"
+				android:textSize="60sp"/>
+
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:layout_marginLeft="5dp"
+				android:layout_marginRight="5dp"
+				android:orientation="vertical">
+
+				<View
+					android:layout_width="match_parent"
+					android:layout_height="0dp"
+					android:layout_weight="1"/>
+
+				<RatingBar
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:numStars="5"
+					android:rating="2.4"
+					style="?android:attr/ratingBarStyleSmall"/>
+
+				<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:gravity="center_vertical"
+					android:orientation="horizontal">
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="159,857"/>
+
+					<ImageView
+						android:layout_width="20dp"
+						android:layout_height="20dp"/>
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+			<View
+				android:layout_width="0dp"
+				android:layout_height="match_parent"
+				android:layout_weight="1"
+				android:elevation="2dp"
+				android:background="#FFF"/>
+
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="10dp"
+			android:gravity="center_vertical"
+			android:orientation="horizontal">
+
+			<de.hdodenhof.circleimageview.CircleImageView
+				android:layout_width="50dp"
+				android:layout_height="50dp"
+				android:src="@drawable/background_login"/>
+
+			<LinearLayout
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:padding="5dp"
+				android:layout_marginLeft="5dp"
+				android:orientation="vertical">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Subi"/>
+
+				<RatingBar
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="5dp"
+					android:numStars="5"
+					android:rating="4"
+					style="?android:attr/ratingBarStyleSmall"/>
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Mantap pisan lah!"/>
+
+			</LinearLayout>
+
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="10dp"
+			android:gravity="center_vertical"
+			android:orientation="horizontal">
+
+			<de.hdodenhof.circleimageview.CircleImageView
+				android:layout_width="50dp"
+				android:layout_height="50dp"
+				android:src="@drawable/background_login"/>
+
+			<LinearLayout
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:padding="5dp"
+				android:layout_marginLeft="5dp"
+				android:orientation="vertical">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Subi"/>
+
+				<RatingBar
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="5dp"
+					android:numStars="5"
+					android:rating="4"
+					style="?android:attr/ratingBarStyleSmall"/>
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Mantap pisan lah!"/>
+
+			</LinearLayout>
+
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="10dp"
+			android:gravity="center_vertical"
+			android:orientation="horizontal">
+
+			<de.hdodenhof.circleimageview.CircleImageView
+				android:layout_width="50dp"
+				android:layout_height="50dp"
+				android:src="@drawable/background_login"/>
+
+			<LinearLayout
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:padding="5dp"
+				android:layout_marginLeft="5dp"
+				android:orientation="vertical">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Subi"/>
+
+				<RatingBar
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="5dp"
+					android:numStars="5"
+					android:rating="4"
+					style="?android:attr/ratingBarStyleSmall"/>
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Mantap pisan lah!"/>
+
+			</LinearLayout>
+
+		</LinearLayout>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal"
+			android:layout_marginTop="40dp"
+			android:text="ALL COMMENTS"
+			android:textStyle="bold"
+			android:textColor="#99B7FF"/>
+		
+		<View
+			android:layout_width="match_parent"
+			android:layout_height="2dp"
+			android:background="#AAA"/>
+
+	</LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>
