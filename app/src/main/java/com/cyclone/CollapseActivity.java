@@ -1,4 +1,6 @@
 package com.cyclone;
+// ####################### EDITED DISINI BUAT TES #######################
+// ####################### EDITED DISINI BUAT TES #######################
 
 import android.content.Context;
 import android.content.Intent;
