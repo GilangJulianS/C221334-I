@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.NotificationCompat;
@@ -20,7 +21,7 @@ import com.cyclone.fragment.PlayerFragment;
 
 import java.io.IOException;
 
-import io.vov.vitamio.MediaPlayer;
+//import io.vov.vitamio.MediaPlayer;
 
 //import com.cyclone.utils.Utils;
 
@@ -38,6 +39,8 @@ public class ServiceStreamMusic extends Service implements MediaPlayer.OnBufferi
     public static final int BRODCAST_FIRST_PLAY = 0;
     public static final int BRODCAST_BUFFER_UPDATE = 1;
     public static final int BRODCAST_PAUSE = 2;
+
+    public static int FINISH_PLAYING = 0;
 
     TelephonyManager telephonyManager;
     PhoneStateListener phoneStateListener;
@@ -70,7 +73,7 @@ public class ServiceStreamMusic extends Service implements MediaPlayer.OnBufferi
         Log.d("create", "service created");
 
         bufferIntent = new Intent(BROADCAST_BUFFER);
-        mediaPlayer = new MediaPlayer(this);
+        mediaPlayer = new MediaPlayer();
 
         //mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
@@ -151,7 +154,7 @@ public class ServiceStreamMusic extends Service implements MediaPlayer.OnBufferi
         if (mediaPlayer.isPlaying()) {
            // handler.removeCallbacks(sendToUi);
             mediaPlayer.stop();
-            mediaPlayer.seekTo(pos);
+          //  mediaPlayer.seekTo(pos);
             mediaPlayer.start();
 
 
@@ -167,8 +170,8 @@ public class ServiceStreamMusic extends Service implements MediaPlayer.OnBufferi
         PendingIntent intent = PendingIntent.getActivity(this, 0, new Intent(this, CollapseActivity.class), 0);
         builder = new NotificationCompat.Builder(this);
         builder.setSmallIcon(android.R.drawable.ic_media_play);
-        builder.setContentTitle("Stream Radio");
-        builder.setContentText("K-Lite Radio");
+        builder.setContentTitle("Stream Music");
+        builder.setContentText("Prambos Radio");
         builder.setContentIntent(intent);
         builder.setOngoing(true);
         notificationManager.notify(NOTIFICATION_ID, builder.build());
@@ -179,7 +182,6 @@ public class ServiceStreamMusic extends Service implements MediaPlayer.OnBufferi
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(NOTIFICATION_ID);
         builder.setOngoing(false);
-        sendPlayerPlayingBrodcast("0");
     }
 
     @Override
@@ -214,13 +216,15 @@ public class ServiceStreamMusic extends Service implements MediaPlayer.OnBufferi
     private void pauseMedia() {
         if (mediaPlayer.isPlaying())
             mediaPlayer.pause();
-        sendPlayerPlayingBrodcast("0");
     }
 
     private void playMedia() {
         if (!mediaPlayer.isPlaying()) {
+           // mediaPlayer.setUseCache(true);
+           // mediaPlayer.setAdaptiveStream(true);
+            //mediaPlayer.setDeinterlace(true);
             mediaPlayer.start();
-            //MainActivity.UIisPlaying();
+            FINISH_PLAYING = 0;
         }
     }
 
@@ -234,7 +238,6 @@ public class ServiceStreamMusic extends Service implements MediaPlayer.OnBufferi
         catch (Exception e){
 
         }
-        sendPlayerPlayingBrodcast("0");
 
 
     }
@@ -268,6 +271,7 @@ public class ServiceStreamMusic extends Service implements MediaPlayer.OnBufferi
 
             bufferIntent.setAction(PlayerFragment.mBroadcastStringAction);
             bufferIntent.putExtra("modeSendBuffer", BRODCAST_FIRST_PLAY);
+            bufferIntent.putExtra("finishPlaying", FINISH_PLAYING);
             bufferIntent.putExtra("buffering", "0");
             bufferIntent.putExtra("durasi", "" + mediaPlayer.getDuration());
             bufferIntent.putExtra("curPosisi", "" + mediaPlayer.getCurrentPosition());
@@ -276,12 +280,6 @@ public class ServiceStreamMusic extends Service implements MediaPlayer.OnBufferi
 
             System.out.println("Send Brodcast ttt" + mediaPlayer.getCurrentPosition() + "/" + mediaPlayer.getDuration() + "  |" + statBuffer);
         }
-    }
-
-    private void sendPlayerPlayingBrodcast(String status){
-        /*bufferIntent.setAction(MusicPlayerFragment.mBroadcastStringAction2);
-        bufferIntent.putExtra("playing", status);
-        sendBroadcast(bufferIntent);*/
     }
 
     @Override
@@ -299,8 +297,9 @@ public class ServiceStreamMusic extends Service implements MediaPlayer.OnBufferi
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        stopMedia();
-        stopSelf();
+        FINISH_PLAYING = 1;
+        //stopMedia();
+       // stopSelf();
 
     }
 
@@ -338,7 +337,7 @@ public class ServiceStreamMusic extends Service implements MediaPlayer.OnBufferi
     @Override
     public void onSeekComplete(MediaPlayer mp) {
 
-
-
     }
+
+
 }

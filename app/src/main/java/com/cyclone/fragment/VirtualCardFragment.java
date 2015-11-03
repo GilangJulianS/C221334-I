@@ -51,7 +51,7 @@ public class VirtualCardFragment extends Fragment {
 
 	public void setupBackground(View header){
 		ImageView imgHeader = (ImageView) header.findViewById(R.id.img_header_background);
-		Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.background_login);
+		Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.aaa_cj);
 		bitmap = Tools.blur(bitmap, 0.5f, 10);
 		int width = bitmap.getWidth();
 		int height = bitmap.getHeight();

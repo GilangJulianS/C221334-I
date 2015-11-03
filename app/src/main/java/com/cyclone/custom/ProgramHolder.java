@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -26,6 +25,8 @@ public class ProgramHolder extends UniversalHolder{
 	public RatingBar ratingBar;
 	public ViewGroup card;
 
+
+
 	public ProgramHolder(View v){
 		super(v);
 		imgCover = (ImageView) v.findViewById(R.id.img_cover);
@@ -42,8 +43,10 @@ public class ProgramHolder extends UniversalHolder{
 
 	public void bind(Program program, final Activity activity){
 		Program p = program;
-		final ImageView imageView = imgCover;
-		imgCover.setImageResource(R.drawable.background_login);
+
+		imgCover.setImageResource(Integer.valueOf(p.imgUrl));
+		//final ImageView imageView = imgCover;
+
 		txtTitle.setText(p.title);
 		txtSchedule.setText(p.schedule);
 		ratingBar.setRating(p.rating);
@@ -54,7 +57,7 @@ public class ProgramHolder extends UniversalHolder{
 			i.putExtra("layout", CollapseActivity.LAYOUT_PROGRAM_PAGE);
 			if(Build.VERSION.SDK_INT >= 16) {
 				ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation
-						(activity, imageView, "program");
+						(activity, imgCover, "program");
 				activity.startActivity(i, options.toBundle());
 			}else{
 				activity.startActivity(i);

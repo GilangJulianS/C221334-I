@@ -14,7 +14,6 @@ import android.view.animation.DecelerateInterpolator;
 import com.cyclone.R;
 import com.cyclone.custom.UniversalAdapter;
 import com.cyclone.model.Person;
-import com.cyclone.model.Program;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,22 +82,18 @@ public class PersonListFragment extends Fragment {
 
 	public List<Person> parse(String json){
 		List<Person> persons = new ArrayList<>();
-		persons.add(new Person("", "Imam Darto", "@imamdarto"));
-		persons.add(new Person("", "Dimas Danang", "@dimasdanang"));
-		persons.add(new Person("", "Budi Susanto", "@busus"));
-		persons.add(new Person("", "Ahmad Ikhsan", "@madis"));
-		persons.add(new Person("", "Imam Darto", "@imamdarto"));
-		persons.add(new Person("", "Dimas Danang", "@dimasdanang"));
-		persons.add(new Person("", "Budi Susanto", "@busus"));
-		persons.add(new Person("", "Ahmad Ikhsan", "@madis"));
-		persons.add(new Person("", "Imam Darto", "@imamdarto"));
-		persons.add(new Person("", "Dimas Danang", "@dimasdanang"));
-		persons.add(new Person("", "Budi Susanto", "@busus"));
-		persons.add(new Person("", "Ahmad Ikhsan", "@madis"));
-		persons.add(new Person("", "Imam Darto", "@imamdarto"));
-		persons.add(new Person("", "Dimas Danang", "@dimasdanang"));
-		persons.add(new Person("", "Budi Susanto", "@busus"));
-		persons.add(new Person("", "Ahmad Ikhsan", "@madis"));
+		persons.add(new Person(""+R.drawable.aaa_darto, "Imam Darto", "@imamdarto"));
+		persons.add(new Person(""+R.drawable.aaa_dimas_danang, "Dimas Danang", "@dimasdanang"));
+		persons.add(new Person(""+R.drawable.aaa_julio, "Julio", "@julio"));
+		persons.add(new Person(""+R.drawable.aaa_kenny, "Kenny", "@kenny"));
+		persons.add(new Person(""+R.drawable.aaa_cj, "CJ", "@cj"));
+		persons.add(new Person(""+R.drawable.aaa_desta, "Desta", "@desta"));
+		persons.add(new Person(""+R.drawable.kimmi_s, "Kimmi Smiles", "@kimmi"));
+		persons.add(new Person(""+R.drawable.aaa_gina, "Gina", "@gina"));
+		persons.add(new Person(""+R.drawable.aaa_nadia, "Nadya", "@nadya"));
+		persons.add(new Person(""+R.drawable.aaa_eda, "Eda", "@eda"));
+		persons.add(new Person(""+R.drawable.aaa_jeje, "Jeje", "@jeje"));
+		persons.add(new Person(""+R.drawable.aaa_eda, "Eda", "@eda"));
 		return persons;
 	}
 }

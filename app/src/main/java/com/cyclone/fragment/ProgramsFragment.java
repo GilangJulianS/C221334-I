@@ -71,26 +71,14 @@ public class ProgramsFragment extends Fragment {
 
 	public List<Program> parse(String json){
 		List<Program> datas = new ArrayList<>();
-		datas.add(new Program("http://imgurl.com", "Inspiring Life", "Sen - Jum, 04.00 - 05" +
-				".00", 4));
-		datas.add(new Program("http://imgurl.com", "Inspiring Morning", "Sen - Jum, 04.00 - 05" +
-				".00", 4));
-		datas.add(new Program("http://imgurl.com", "Easy Busy", "Sen - Jum, 04.00 - 05" +
-				".00", 4));
-		datas.add(new Program("http://imgurl.com", "Hit The Beat", "Sen - Jum, 04.00 - 05" +
-				".00", 4));
-		datas.add(new Program("http://imgurl.com", "Inspiring Night", "Sen - Jum, 04.00 - 05" +
-				".00", 4));
-		datas.add(new Program("http://imgurl.com", "Afternoon Cafe", "Sen - Jum, 04.00 - 05" +
-				".00", 4));
-		datas.add(new Program("http://imgurl.com", "Soft Sensation", "Sen - Jum, 04.00 - 05" +
-				".00", 4));
-		datas.add(new Program("http://imgurl.com", "Headline News", "Sen - Jum, 04.00 - 05" +
-				".00", 4));
-		datas.add(new Program("http://imgurl.com", "Life Sports", "Sen - Jum, 04.00 - 05" +
-				".00", 4));
-		datas.add(new Program("http://imgurl.com", "Wild Life", "Sen - Jum, 04.00 - 05" +
-				".00", 4));
+		datas.add(new Program(""+R.drawable.aa_desta_gina, "Desta and Gina", "Sen-Jum, 6:00 – 10:00", 4));
+		datas.add(new Program(""+R.drawable.aa_dj_show, "DJ Show", "Sen – Jum, 10:00 – 16:00\n" +"Sab, 09:00 – 16:00", 4));
+		datas.add(new Program(""+R.drawable.aa_the_dandless, "The Dandees ", "SSen – Jum, 16:00 – 20:00", 4));
+		datas.add(new Program(""+R.drawable.aa_light_night_hot, "Late Night Hot 20", "Sen – Jum, 20:00 – 22:00", 4));
+		datas.add(new Program(""+R.drawable.aa_jeli, "Jeli", "Sen – Jum, 22:00 – 24:00", 4));
+		datas.add(new Program(""+R.drawable.aa_40_gallery, "Top 40 Show", "Sab, 16:00 – 20:00\n" +"Min, 06:00 – 10:00", 4));
+		datas.add(new Program(""+R.drawable.aa_asia_pop_40, "Asia Pop 40", "Sab, 06:00 – 09:00\n" +"Min, 17:00 – 20:00", 4));
+		datas.add(new Program(""+R.drawable.aa_twix_mis, "Twix Mix", "Jum – Sab, 00:00 – 02:00", 4));
 		return datas;
 	}
 

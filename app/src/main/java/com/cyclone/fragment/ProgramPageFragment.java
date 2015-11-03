@@ -2,12 +2,12 @@ package com.cyclone.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.cyclone.R;
 
@@ -15,17 +15,24 @@ import com.cyclone.R;
 /**
  * Created by gilang on 11/10/2015.
  */
+
 public class ProgramPageFragment extends Fragment {
+
+
+	ImageView img;
+
 
 	public ProgramPageFragment(){}
 
 	public static ProgramPageFragment newInstance(){
 		ProgramPageFragment fragment = new ProgramPageFragment();
+
 		return fragment;
 	}
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
 		View v = inflater.inflate(R.layout.fragment_program_page, parent, false);
+
 		return v;
 	}
 

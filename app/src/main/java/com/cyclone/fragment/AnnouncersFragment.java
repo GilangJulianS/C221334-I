@@ -14,7 +14,6 @@ import android.view.animation.DecelerateInterpolator;
 import com.cyclone.R;
 import com.cyclone.custom.UniversalAdapter;
 import com.cyclone.model.Announcer;
-import com.cyclone.model.Program;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,20 +88,17 @@ public class AnnouncersFragment extends Fragment {
 
 
 //		--------------- dummy ------------
-		announcers.add(new Announcer("http://imgurl.com", "Adiel"));
-		announcers.add(new Announcer("http://imgurl.com", "Arien"));
-		announcers.add(new Announcer("http://imgurl.com", "Arie W"));
-		announcers.add(new Announcer("http://imgurl.com", "Chandra"));
-		announcers.add(new Announcer("http://imgurl.com", "Erdina"));
-		announcers.add(new Announcer("http://imgurl.com", "Hasanah"));
-		announcers.add(new Announcer("http://imgurl.com", "Indira"));
-		announcers.add(new Announcer("http://imgurl.com", "Indra"));
-		announcers.add(new Announcer("http://imgurl.com", "Ivan"));
-		announcers.add(new Announcer("http://imgurl.com", "Kujang"));
-		announcers.add(new Announcer("http://imgurl.com", "Rini"));
-		announcers.add(new Announcer("http://imgurl.com", "Reno"));
-		announcers.add(new Announcer("http://imgurl.com", "Sam"));
-		announcers.add(new Announcer("http://imgurl.com", "Tira"));
+		announcers.add(new Announcer(""+R.drawable.aaa_cj, "CJ"));
+		announcers.add(new Announcer(""+R.drawable.aaa_dimas_danang, "Danang"));
+		announcers.add(new Announcer(""+R.drawable.aaa_darto, "Darto"));
+		announcers.add(new Announcer(""+R.drawable.aaa_desta, "Desta"));
+		announcers.add(new Announcer(""+R.drawable.aaa_gina, "Gina"));
+		announcers.add(new Announcer(""+R.drawable.aaa_eda, "Eda"));
+		announcers.add(new Announcer(""+R.drawable.aaa_jeje, "Jeje"));
+		announcers.add(new Announcer(""+R.drawable.aaa_julio, "Julio"));
+		announcers.add(new Announcer(""+R.drawable.aaa_kenny, "Kenny"));
+		announcers.add(new Announcer(""+R.drawable.aaa_mario, "Mario"));
+		announcers.add(new Announcer(""+R.drawable.aaa_nadia, "Nadia"));
 
 		return announcers;
 	}

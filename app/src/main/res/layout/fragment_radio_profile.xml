@@ -181,7 +181,7 @@
 				android:layout_height="wrap_content"
 				android:layout_margin="5dp"/>
 
-			<include layout="@layout/card_program"
+			<include layout="@layout/card_program2"
 				 android:layout_width="0dp"
 				 android:layout_weight="1"
 				 android:layout_height="wrap_content"
@@ -232,14 +232,14 @@
 				android:layout_margin="5dp"/>
 
 			<include
-				layout="@layout/card_announcer"
+				layout="@layout/card_announcer2"
 				android:layout_width="0dp"
 				android:layout_weight="1"
 				android:layout_height="wrap_content"
 				android:layout_margin="5dp"/>
 
 			<include
-				layout="@layout/card_announcer"
+				layout="@layout/card_announcer3"
 				android:layout_width="0dp"
 				android:layout_weight="1"
 				android:layout_height="wrap_content"

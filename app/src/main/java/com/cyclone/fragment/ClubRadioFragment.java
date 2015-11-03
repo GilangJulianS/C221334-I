@@ -1,6 +1,5 @@
 package com.cyclone.fragment;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -12,10 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 
-import com.cyclone.CollapseActivity;
 import com.cyclone.R;
 import com.cyclone.custom.UniversalAdapter;
-import com.cyclone.model.Playlist;
 import com.cyclone.model.Post;
 
 import java.util.ArrayList;
@@ -82,24 +79,24 @@ public class ClubRadioFragment extends Fragment {
 
 	public List<Object> parse(String json){
 		List<Object> datas = new ArrayList<>();
-		datas.add(new Post("", "<b>Imam Darto</b> created new <b>Mix</b>", "1 Hour ago", "Mix",
-				"", "Funky Sunshine", "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST));
-		datas.add(new Post("", "<b>Desta</b> liked a Playlist", "2 Hour ago", "Playlist",
-				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST));
-		datas.add(new Post("", "<b>Desta</b> created new <b>Playlist</b>", "4 Hour ago",
-				"Playlist", "", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post
+		datas.add(new Post(""+R.drawable.aaa_darto, "<b>Imam Darto</b> created new <b>Mix</b>", "1 Hour ago", "Mix",
+				""+R.drawable.kimmi_s, "Funky Sunshine", "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST));
+		datas.add(new Post(""+R.drawable.aaa_desta, "<b>Desta</b> liked a Playlist", "2 Hour ago", "Playlist",
+				""+R.drawable.aaa_kenny, "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST));
+		datas.add(new Post(""+R.drawable.aaa_dimas_danang, "<b>Danang</b> created new <b>Playlist</b>", "4 Hour ago",
+				"Playlist", ""+R.drawable.aaa_cj, "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post
 				.TYPE_POST));
-		datas.add(new Post("", "<b>Desta</b> shared a <b>Playlist</b>", "4 Hour ago", "Playlist",
-				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST));
-		datas.add(new Post("", "<b>Imam Darto</b> created new <b>Mix</b>", "1 Hour ago", "Mix",
-				"", "Funky Sunshine", "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST));
-		datas.add(new Post("", "<b>Desta</b> liked a Playlist", "2 Hour ago", "Playlist",
-				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST));
-		datas.add(new Post("", "<b>Desta</b> created new <b>Playlist</b>", "4 Hour ago",
-				"Playlist", "", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post
+		datas.add(new Post(""+R.drawable.aaa_julio,"<b>Julio</b> shared a <b>Playlist</b>", "4 Hour ago", "Playlist",
+				""+R.drawable.aaa_cj, "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST));
+		datas.add(new Post(""+R.drawable.aaa_julio, "<b>Julio</b> created new <b>Mix</b>", "1 Hour ago", "Mix",
+				""+R.drawable.aa_40_gallery, "Funky Sunshine", "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST));
+		datas.add(new Post(""+R.drawable.aaa_jeje, "<b>Jeje</b> liked a Playlist", "2 Hour ago", "Playlist",
+				""+R.drawable.aaa_nadia, "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST));
+		datas.add(new Post(""+R.drawable.aaa_cj, "<b>CJ</b> created new <b>Playlist</b>", "4 Hour ago",
+				"Playlist", ""+R.drawable.aaa_gina, "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post
 				.TYPE_POST));
-		datas.add(new Post("", "<b>Desta</b> shared a <b>Playlist</b>", "4 Hour ago", "Playlist",
-				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST));
+		datas.add(new Post(""+R.drawable.kimmi_s, "<b>Kimmi</b> shared a <b>Playlist</b>", "4 Hour ago", "Playlist",
+				""+R.drawable.aaa_kenny, "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST));
 		return datas;
 	}
 

@@ -1,15 +1,11 @@
 package com.cyclone.custom;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -45,7 +41,7 @@ public class PersonHolder extends UniversalHolder{
 	}
 
 	public void bind(final Person person, final Activity activity){
-		imgUser.setImageResource(R.drawable.background_login);
+		imgUser.setImageResource(Integer.parseInt(person.imgUrl));
 		txtName.setText(person.name);
 		txtUsername.setText(person.username);
 		final ImageView imageView = imgUser;

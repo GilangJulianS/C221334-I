@@ -110,12 +110,18 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
 		swipeLayout.setEnabled(false);
 
 
+
 		bindView(v);
 
 		serviceIntent = new Intent(getContext(), ServiceStreamMusic.class);
 
 		mIntentFilter = new IntentFilter();
 		mIntentFilter.addAction(mBroadcastStringAction);
+
+		try {
+			getActivity().registerReceiver(broadcastBufferReceiver, mIntentFilter);
+		}
+		catch (Exception e){}
 
 
 
@@ -249,7 +255,10 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
 			public void onClick(View v) {
 				if (state == STATE_STOP) {
 					state = STATE_PLAYING;
-					getActivity().registerReceiver(broadcastBufferReceiver, mIntentFilter);
+					try {
+						getActivity().registerReceiver(broadcastBufferReceiver, mIntentFilter);
+					}
+					catch (Exception e){}
 					btnPlay.setImageResource(R.drawable.ic_pause_white_48dp);
 					startStreaming(v.getContext(), persistentDatas.get(counter % persistentDatas.size()).mp3);
 				} else {
@@ -698,12 +707,21 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
 		public void onReceive(Context context, Intent bufferIntent) {
 
 			int modeBuffer = bufferIntent.getIntExtra("modeSendBuffer",-1);
+			int finishPlaying = bufferIntent.getIntExtra("finishPlaying",-1);
 			if(modeBuffer == ServiceStreamMusic.BRODCAST_FIRST_PLAY){
 				progressPlayer(bufferIntent);
 				System.out.println("recived Brodcast "+bufferIntent.getStringExtra("curPosisi")+"/"+bufferIntent.getStringExtra("durasi")+"  |"+bufferIntent.getStringExtra("buferProgres"));
 			}
 			else{
 				Log.d("Brodcast", "tidak masuk");
+			}
+
+			if(finishPlaying == 1){
+				next();
+				System.out.println("Finished");
+			}
+			else{
+				System.out.println("Playing");
 			}
 		}
 	};
@@ -746,6 +764,30 @@ public class PlayerFragment extends Fragment implements GestureDetector.OnGestur
 			//UIisNotPlaying();
 		} catch (Exception e) {
 
+		}
+
+	}
+
+	private void next(){
+
+		counter++;
+
+		if(counter > persistentDatas.size()-1){
+			counter = 0;
+		}
+
+		new ImageLoadTask(persistentDatas.get(counter % persistentDatas.size()).cover, imgCover).execute();
+
+		if(Build.VERSION.SDK_INT >= 21) {
+			showImage(imgCover);
+		}
+		txtTitle.setText(persistentDatas.get(counter % persistentDatas.size()).title);
+		txtArtist.setText(persistentDatas.get(counter % persistentDatas.size()).artist);
+		txtTotalTime.setText(persistentDatas.get(counter % persistentDatas.size()).duration);
+
+		if (state == STATE_PLAYING) {
+			stopStreaming(getContext());
+			startStreaming(getContext(), persistentDatas.get(counter % persistentDatas.size()).mp3);
 		}
 
 	}

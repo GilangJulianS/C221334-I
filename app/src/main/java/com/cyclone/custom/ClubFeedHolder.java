@@ -3,11 +3,8 @@ package com.cyclone.custom;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.View;
 import android.widget.ImageButton;
@@ -64,12 +61,24 @@ public class ClubFeedHolder extends UniversalHolder{
 
 	public void bind(Post post, final Activity activity){
 		Post p = post;
-		imgUser.setImageResource(R.drawable.background_login);
+		try{
+			imgUser.setImageResource(Integer.valueOf(p.imgUrl));
+		}
+		catch (Exception e){
+			imgUser.setImageResource(R.drawable.background_login);
+		}
+
 		if(Build.VERSION.SDK_INT >= 21)
 			imgUser.setTransitionName("profile" + transitionId);
 		txtHeaderName.setText(Html.fromHtml(p.headerName));
 		txtHeaderInfo.setText(p.timestamp + " | " + p.playlistType);
-		imgPost.setImageResource(R.drawable.background_login);
+		try{
+			imgPost.setImageResource(Integer.valueOf(p.postImgUrl));
+		}
+		catch (Exception e){
+			imgPost.setImageResource(R.drawable.background_login);
+		}
+
 		txtPostTitle.setText(p.postTitle);
 		txtPostContent.setText(p.postContent);
 		txtPostInfo.setText(p.postInfo);
