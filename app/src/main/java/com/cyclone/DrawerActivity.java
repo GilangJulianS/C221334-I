@@ -59,7 +59,7 @@ public class DrawerActivity extends AppCompatActivity
 		CollapsingToolbarLayout toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id
 				.collapsing_toolbar_layout);
 		toolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
-		toolbarLayout.setTitle("K-Lite FM Bandung");
+		toolbarLayout.setTitle("Prambors FM");
 
 
 		Intent caller = getIntent();

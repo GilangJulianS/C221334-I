@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimaryDefault">#3F51B5</color>
+    <color name="colorPrimaryDefault">#ffeb3b</color>
     <color name="colorPrimary">#E74C3C</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimaryDark">#fdd835</color>
     <color name="colorAccent">#FFCB2E</color>
     <color name="colorAccentDark">#ED7D31</color>
     <color name="dim_filter">#99000000</color>

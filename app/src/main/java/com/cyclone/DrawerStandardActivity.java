@@ -3,11 +3,9 @@ package com.cyclone;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.FragmentManager;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,7 +18,6 @@ import android.view.View;
 import com.cyclone.fragment.ClubRadioFragment;
 import com.cyclone.fragment.NotificationFragment;
 import com.cyclone.fragment.PlayerFragment;
-import com.cyclone.fragment.RadioProfileFragment;
 import com.cyclone.fragment.SettingsFragment;
 
 public class DrawerStandardActivity extends AppCompatActivity
@@ -133,7 +130,7 @@ public class DrawerStandardActivity extends AppCompatActivity
 				break;
 			case R.id.nav_klub:
 				intent = new Intent(this, DrawerStandardActivity.class);
-				intent.putExtra("title", "Klub Radio");
+				intent.putExtra("title", "Imam Darto");
 				intent.putExtra("layout", DrawerStandardActivity.LAYOUT_CLUB);
 				startActivity(intent);
 				break;
@@ -159,6 +156,12 @@ public class DrawerStandardActivity extends AppCompatActivity
 				intent = new Intent(this, DrawerStandardActivity.class);
 				intent.putExtra("title", "Settings");
 				intent.putExtra("layout", DrawerStandardActivity.LAYOUT_SETTINGS);
+				startActivity(intent);
+				break;
+			case R.id.nav_player:
+				intent = new Intent(this, CollapseActivity.class);
+				intent.putExtra("title", "Player");
+				intent.putExtra("layout", CollapseActivity.LAYOUT_PLAYER);
 				startActivity(intent);
 				break;
 		}

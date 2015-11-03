@@ -40,7 +40,7 @@ public class ServiceStreamMusic extends Service implements MediaPlayer.OnBufferi
     public static final int BRODCAST_BUFFER_UPDATE = 1;
     public static final int BRODCAST_PAUSE = 2;
 
-    public static int FINISH_PLAYING = 0;
+    public int FINISH_PLAYING = 0;
 
     TelephonyManager telephonyManager;
     PhoneStateListener phoneStateListener;
@@ -298,8 +298,8 @@ public class ServiceStreamMusic extends Service implements MediaPlayer.OnBufferi
     @Override
     public void onCompletion(MediaPlayer mp) {
         FINISH_PLAYING = 1;
-        //stopMedia();
-       // stopSelf();
+        stopMedia();
+        stopSelf();
 
     }
 
