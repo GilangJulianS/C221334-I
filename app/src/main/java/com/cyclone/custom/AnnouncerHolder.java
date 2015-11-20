@@ -1,6 +1,7 @@
 package com.cyclone.custom;
 
 import android.app.Activity;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,7 +29,7 @@ public class AnnouncerHolder extends UniversalHolder{
 	}
 
 	public void bind(Announcer announcer){
-		image.setImageResource(Integer.valueOf(announcer.imgUrl));
+		image.setImageResource(R.drawable.background_login);
 		txtName.setText(announcer.name);
 	}
 

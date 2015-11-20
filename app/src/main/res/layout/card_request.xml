@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:padding="15dp"
+	android:gravity="center_vertical"
+	android:background="#fff"
+	android:orientation="horizontal">
+
+	<RelativeLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+
+		<de.hdodenhof.circleimageview.CircleImageView
+			android:id="@+id/img_user"
+			android:layout_width="60dp"
+			android:layout_height="60dp"
+			android:src="@drawable/background_login"/>
+
+		<ImageView
+			android:id="@+id/img_socmed"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignRight="@id/img_user"
+			android:layout_alignBottom="@id/img_user"
+			android:src="@drawable/ic_language_black_24dp"/>
+
+	</RelativeLayout>
+
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		android:layout_marginLeft="15dp"
+		android:layout_marginRight="15dp"
+		android:orientation="vertical">
+
+		<TextView
+			android:id="@+id/txt_username"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textSize="16sp"
+			android:textStyle="bold"
+			android:text="Imam Darto"/>
+
+		<TextView
+			android:id="@+id/txt_content"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Request lagunya daft punk dong yang apa aja deh tq"/>
+
+	</LinearLayout>
+
+	<TextView
+		android:id="@+id/txt_time"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="top"
+		android:text="18:21"/>
+
+</LinearLayout>

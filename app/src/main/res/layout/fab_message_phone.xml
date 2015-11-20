@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.getbase.floatingactionbutton.FloatingActionsMenu
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<com.getbase.floatingactionbutton.FloatingActionButton
+		android:id="@+id/fab_message"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:src="@drawable/ic_message_white_24dp"/>
+
+	<com.getbase.floatingactionbutton.FloatingActionButton
+		android:id="@+id/fab_phone"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:src="@drawable/ic_phone_white_24dp"/>
+
+</com.getbase.floatingactionbutton.FloatingActionsMenu>

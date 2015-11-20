@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.cyclone.DrawerActivity;
 import com.cyclone.R;
-import com.cyclone.StandardActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,9 +59,9 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
 		holder.card.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(context, StandardActivity.class);
+				Intent i = new Intent(context, DrawerActivity.class);
 				i.putExtra("title", "Account Settings");
-				i.putExtra("layout", StandardActivity.LAYOUT_ACCOUNT_SETTINGS);
+				i.putExtra("layout", DrawerActivity.LAYOUT_ACCOUNT_SETTINGS);
 				activity.startActivity(i);
 			}
 		});

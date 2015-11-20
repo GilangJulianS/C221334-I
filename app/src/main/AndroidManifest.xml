@@ -3,17 +3,12 @@
     package="com.cyclone" >
 
     <application
+        android:name=".player.VLCApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
-        <activity
-            android:name="io.vov.vitamio.activity.InitActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:launchMode="singleTop"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".DrawerActivity"
             android:label="@string/app_name"
@@ -49,16 +44,50 @@
         </activity>
         <activity android:name=".EmptyActivity" >
         </activity>
-        <service
-            android:name=".services.ServiceStreamMusic"
-            android:enabled="true" />
+
+        <activity android:name=".player.CompatErrorActivity" />
+        <activity android:name=".player.CompatErrorActivity" />
+        <activity android:name=".player.PreferencesActivity" />
+
+        <activity
+            android:name=".player.NativeCrashActivity"
+            android:process=":NativeCrashActivity"
+            android:stateNotNeeded="true" />
+
+        <service android:name=".player.audio.AudioService" />
+
+        <receiver android:name=".player.PhoneStateReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
+       <!-- <receiver
+            android:name=".player.widget.VLCAppWidgetProvider"
+            android:exported="false"
+            android:label="VLC mini player" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/vlcwidget" />
+        </receiver>-->
+        <receiver android:name=".player.RemoteControlClientReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+                <action android:name="org.videolan.vlc.remote.PlayPause" />
+            </intent-filter>
+        </receiver>
     </application>
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
 </manifest>

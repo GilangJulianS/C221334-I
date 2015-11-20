@@ -9,11 +9,13 @@
 	tools:context="com.cyclone.StandardActivity">
 
 	<android.support.design.widget.CoordinatorLayout
+		android:id="@+id/coordinator_layout"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:layout_weight="1">
 
 		<android.support.design.widget.AppBarLayout
+			android:id="@+id/appbar_layout"
 			android:layout_height="wrap_content"
 			android:layout_width="match_parent"
 			android:fitsSystemWindows="true"
@@ -24,8 +26,17 @@
 				android:layout_width="match_parent"
 				android:layout_height="?attr/actionBarSize"
 				android:background="?attr/colorPrimary"
-				app:layout_scrollFlags="scroll|enterAlways"
 				app:popupTheme="@style/AppTheme.PopupOverlay"/>
+
+			<LinearLayout
+				android:id="@+id/header"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				app:layout_scrollFlags="scroll"
+				android:orientation="vertical">
+
+
+			</LinearLayout>
 
 		</android.support.design.widget.AppBarLayout>
 
@@ -38,6 +49,16 @@
 			<!--android:layout_gravity="bottom|end"-->
 			<!--android:layout_margin="@dimen/fab_margin"-->
 			<!--android:src="@android:drawable/ic_dialog_email"/>-->
+
+		<LinearLayout
+			android:id="@+id/container_fab"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_margin="@dimen/fab_margin"
+			android:layout_gravity="bottom|end"
+			android:orientation="vertical">
+
+		</LinearLayout>
 
 	</android.support.design.widget.CoordinatorLayout>
 

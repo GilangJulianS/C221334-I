@@ -4,13 +4,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.cyclone.CollapseActivity;
+import com.cyclone.DrawerActivity;
 import com.cyclone.R;
 import com.cyclone.model.Program;
 
@@ -24,8 +25,6 @@ public class ProgramHolder extends UniversalHolder{
 	public TextView txtSchedule;
 	public RatingBar ratingBar;
 	public ViewGroup card;
-
-
 
 	public ProgramHolder(View v){
 		super(v);
@@ -43,21 +42,19 @@ public class ProgramHolder extends UniversalHolder{
 
 	public void bind(Program program, final Activity activity){
 		Program p = program;
-
-		imgCover.setImageResource(Integer.valueOf(p.imgUrl));
-		//final ImageView imageView = imgCover;
-
+		final ImageView imageView = imgCover;
+		imgCover.setImageResource(R.drawable.background_login);
 		txtTitle.setText(p.title);
 		txtSchedule.setText(p.schedule);
 		ratingBar.setRating(p.rating);
 		card.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-			Intent i = new Intent(activity, CollapseActivity.class);
-			i.putExtra("layout", CollapseActivity.LAYOUT_PROGRAM_PAGE);
+			Intent i = new Intent(activity, DrawerActivity.class);
+			i.putExtra("layout", DrawerActivity.LAYOUT_PROGRAM_PAGE);
 			if(Build.VERSION.SDK_INT >= 16) {
 				ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation
-						(activity, imgCover, "program");
+						(activity, imageView, "program");
 				activity.startActivity(i, options.toBundle());
 			}else{
 				activity.startActivity(i);

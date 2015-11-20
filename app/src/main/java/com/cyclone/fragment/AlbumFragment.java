@@ -4,17 +4,22 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 
+import com.cyclone.DrawerActivity;
 import com.cyclone.R;
+import com.cyclone.custom.SnapGestureListener;
 import com.cyclone.custom.UniversalAdapter;
 import com.cyclone.model.Album;
 import com.cyclone.model.Section;
@@ -31,10 +36,12 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 public class AlbumFragment extends Fragment {
 
 	private RecyclerView recyclerView;
-	private RecyclerView.LayoutManager layoutManager;
+	private LinearLayoutManager layoutManager;
 	private UniversalAdapter adapter;
+	private DrawerActivity activity;
 	private List<Object> objects;
 	private SwipeRefreshLayout swipeLayout;
+	private GestureDetectorCompat gd;
 
 	public AlbumFragment(){}
 
@@ -68,15 +75,27 @@ public class AlbumFragment extends Fragment {
 
 		animate(objects.get(0));
 
+		if(activity != null){
+			gd = new GestureDetectorCompat(activity, new SnapGestureListener(activity));
+			recyclerView.setOnTouchListener(new View.OnTouchListener() {
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					System.out.println("touch recycler");
+					if(layoutManager.findFirstCompletelyVisibleItemPosition() == 0)
+						return gd.onTouchEvent(event);
+					return false;
+				}
+			});
+		}
+
 		return v;
 	}
 
 	@Override
 	public void onAttach(Context context){
 		super.onAttach(context);
-		AppCompatActivity activity;
-		if(context instanceof AppCompatActivity) {
-			activity = (AppCompatActivity)context;
+		if(context instanceof DrawerActivity) {
+			activity = (DrawerActivity)context;
 			ViewGroup parallaxHeader = (ViewGroup) activity.findViewById(R.id
 					.parallax_header);
 			LayoutInflater inflater = activity.getLayoutInflater();

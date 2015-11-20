@@ -1,7 +1,6 @@
 package com.cyclone.custom;
 
 import android.app.Activity;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
@@ -34,4 +33,5 @@ public class PlaylistHolder extends UniversalHolder{
 		txtArtist.setText(playlist.artist);
 		txtDuration.setText(playlist.duration);
 	}
+
 }

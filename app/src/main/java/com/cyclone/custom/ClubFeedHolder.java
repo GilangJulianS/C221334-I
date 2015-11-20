@@ -3,15 +3,18 @@ package com.cyclone.custom;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.cyclone.CollapseActivity;
+import com.cyclone.DrawerActivity;
 import com.cyclone.R;
 import com.cyclone.fragment.PersonProfileFragment;
 import com.cyclone.model.Post;
@@ -61,24 +64,12 @@ public class ClubFeedHolder extends UniversalHolder{
 
 	public void bind(Post post, final Activity activity){
 		Post p = post;
-		try{
-			imgUser.setImageResource(Integer.valueOf(p.imgUrl));
-		}
-		catch (Exception e){
-			imgUser.setImageResource(R.drawable.background_login);
-		}
-
+		imgUser.setImageResource(R.drawable.background_login);
 		if(Build.VERSION.SDK_INT >= 21)
 			imgUser.setTransitionName("profile" + transitionId);
 		txtHeaderName.setText(Html.fromHtml(p.headerName));
 		txtHeaderInfo.setText(p.timestamp + " | " + p.playlistType);
-		try{
-			imgPost.setImageResource(Integer.valueOf(p.postImgUrl));
-		}
-		catch (Exception e){
-			imgPost.setImageResource(R.drawable.background_login);
-		}
-
+		imgPost.setImageResource(R.drawable.background_login);
 		txtPostTitle.setText(p.postTitle);
 		txtPostContent.setText(p.postContent);
 		txtPostInfo.setText(p.postInfo);
@@ -110,8 +101,8 @@ public class ClubFeedHolder extends UniversalHolder{
 			View.OnClickListener listener = new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-				Intent i = new Intent(activity, CollapseActivity.class);
-				i.putExtra("layout", CollapseActivity.LAYOUT_PERSON_PROFILE);
+				Intent i = new Intent(activity, DrawerActivity.class);
+				i.putExtra("layout", DrawerActivity.LAYOUT_PERSON_PROFILE);
 				i.putExtra("mode", PersonProfileFragment.MODE_OTHERS_PROFILE);
 				i.putExtra("transition", "profile" + transitionId);
 				if(Build.VERSION.SDK_INT >= 16) {

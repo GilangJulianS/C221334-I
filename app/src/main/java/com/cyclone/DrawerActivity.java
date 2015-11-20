@@ -1,97 +1,513 @@
 package com.cyclone;
-// ####################### EDITED DISINI BUAT TES #######################
-// ####################### EDITED DISINI BUAT TES #######################
-// ####################### EDITED DISINI BUAT TES #######################
+
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
+import com.cyclone.fragment.AccountSettingFragment;
+import com.cyclone.fragment.AlbumFragment;
+import com.cyclone.fragment.AnnouncersFragment;
+import com.cyclone.fragment.ArtistFragment;
+import com.cyclone.fragment.ClubRadioFragment;
+import com.cyclone.fragment.LiveStreamFragment;
+import com.cyclone.fragment.NotificationFragment;
+import com.cyclone.fragment.PersonListFragment;
+import com.cyclone.fragment.PersonProfileFragment;
 import com.cyclone.fragment.PlayerFragment;
+import com.cyclone.fragment.ProgramPageFragment;
+import com.cyclone.fragment.ProgramsFragment;
 import com.cyclone.fragment.RadioProfileFragment;
+import com.cyclone.fragment.RequestFragment;
+import com.cyclone.fragment.SettingsFragment;
+import com.cyclone.fragment.StreamPlayerFragment;
 import com.cyclone.fragment.VirtualCardFragment;
+import com.cyclone.player.CompatErrorActivity;
+import com.cyclone.player.MediaDatabase;
+import com.cyclone.player.MediaLibrary;
+import com.cyclone.player.PreferencesActivity;
+import com.cyclone.player.VLCApplication;
+import com.cyclone.player.audio.AudioService;
+import com.cyclone.player.audio.AudioServiceController;
+import com.cyclone.player.audio.ServiceQueueJson;
+import com.cyclone.player.util.VLCInstance;
+import com.cyclone.player.util.WeakHandler;
 
-public class DrawerActivity extends AppCompatActivity
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.videolan.libvlc.LibVLC;
+import org.videolan.libvlc.LibVlcException;
+import org.videolan.libvlc.LibVlcUtil;
+import org.videolan.libvlc.Media;
+import org.videolan.libvlc.MediaList;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class DrawerActivity extends MasterActivity
 		implements NavigationView.OnNavigationItemSelectedListener {
+	public final static String TAG = "VLC/DrawerActivity";
 
-	public static final int LAYOUT_HOME = 101;
-	public static final int LAYOUT_VIRTUAL_CARD = 102;
+	protected static final String ACTION_SHOW_PROGRESSBAR = "com.cyclone.ShowProgressBar";
+	protected static final String ACTION_HIDE_PROGRESSBAR = "com.cyclone.HideProgressBar";
+	protected static final String ACTION_SHOW_TEXTINFO = "com.cyclone.ShowTextInfo";
+	public static final String ACTION_SHOW_PLAYER = "com.cyclone.ShowPlayer";
 
-	private View miniPlayer;
+	private static final String PREF_FIRST_RUN = "first_run";
+
+	private static final int ACTIVITY_RESULT_PREFERENCES = 1;
+	private static final int ACTIVITY_SHOW_INFOLAYOUT = 2;
+
+	private Context mContext;
+	private ActionBar mActionBar;
+	private PlayerFragment mAudioPlayer;
+	private AudioServiceController mAudioController;
+
+	private ServiceConnection mAudioServiceConnection;
+
+	private SharedPreferences mSettings;
+
+	private int mVersionNumber = -1;
+	private boolean mFirstRun = false;
+	private boolean mScanNeeded = true;
+
+	private Handler mHandler = new MainActivityHandler(this);
+	private int mFocusedPrior = 0;
+	private int mActionBarIconId = -1;
+
+	private boolean isParentView = false;
+	private boolean isCollapseLayout = false;
+	private ActionBarDrawerToggle toggle;
+	CollapsingToolbarLayout toolbarLayout;
+	private boolean showMiniPlayer = true;
+	private ProgressDialog pDialog;
+
+	private String mFilePath = "http://stream.suararadio.com/bloom-mae.mp3";
+	private String mFilePath2 = "http://stream.suararadio.com/the-ballad-of-distant-love.mp3";
+	private String mFilePath3 = "http://stream.suararadio.com/the-balloonist.mp3";
+	private String mFilePath4 = "http://stream.suararadio.com/the-knife.mp3";
+	private String mFilePath5 = "http://stream.suararadio.com/this-bed.mp3";
+	private String mFilePath6 = "http://stream.suararadio.com/took-my-soul.mp3";
+
+	// try for add
+	private MediaLibrary mMediaLibrary;
+
+	List<Media> mAudioList;
+	public final static int MSG_LOADING = 0;
+
+	LibVLC mlibVLC;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		if (!LibVlcUtil.hasCompatibleCPU(this)) {
+			Log.e(TAG, LibVlcUtil.getErrorMsg());
+			Intent i = new Intent(this, CompatErrorActivity.class);
+			startActivity(i);
+			finish();
+			super.onCreate(savedInstanceState);
+			return;
+		}
+		AudioServiceController.getInstance().bindAudioService(this);
+		mContext = this;
+        /* Get the current version from package */
+		PackageInfo pinfo = null;
+		try {
+			pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+		} catch (PackageManager.NameNotFoundException e) {
+			Log.e(TAG, "package info not found.");
+		}
+		if (pinfo != null)
+			mVersionNumber = pinfo.versionCode;
+
+        /* Get settings */
+		mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+
+        /* Check if it's the first run */
+		mFirstRun = mSettings.getInt(PREF_FIRST_RUN, -1) != mVersionNumber;
+		if (mFirstRun) {
+			SharedPreferences.Editor editor = mSettings.edit();
+			editor.putInt(PREF_FIRST_RUN, mVersionNumber);
+			editor.commit();
+		}
+
+		try {
+			// Start LibVLC
+			mlibVLC = VLCInstance.getLibVlcInstance();
+		} catch (LibVlcException e) {
+			e.printStackTrace();
+			Intent i = new Intent(this, CompatErrorActivity.class);
+			i.putExtra("runtimeError", true);
+			i.putExtra("message", "LibVLC failed to initialize (LibVlcException)");
+			startActivity(i);
+			finish();
+			super.onCreate(savedInstanceState);
+			return;
+		}
+
+        /* Load media items from database and storage */
+		if (mScanNeeded)
+			MediaLibrary.getInstance().loadMediaItems();
+
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_drawer);
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-		setSupportActionBar(toolbar);
 
-//		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//		fab.setOnClickListener(new View.OnClickListener() {
-//			@Override
-//			public void onClick(View view) {
-//				Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//						.setAction("Action", null).show();
-//			}
-//		});
+		/*** Start initializing the UI ***/
 
-		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-				this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-		drawer.setDrawerListener(toggle);
-		toggle.syncState();
+
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		boolean enableBlackTheme = pref.getBoolean("enable_black_theme", false);
+		if (enableBlackTheme) {
+			//setTheme(R.style.Theme_VLC_Black);
+			//We need to manually change statusbar color, otherwise, it remains orange.
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+				getWindow().setStatusBarColor(Color.DKGRAY);
+			}
+		}
+
+		Intent caller = getIntent();
+		if(caller != null && caller.getExtras() != null) {
+			int rootLayout = caller.getExtras().getInt("activity", R.layout.activity_drawer);
+			setContentView(rootLayout);
+			if(rootLayout == R.layout.activity_drawer)
+				isCollapseLayout = true;
+		}
+		else {
+			setContentView(R.layout.activity_drawer);
+			isCollapseLayout = true;
+		}
+
+		setupToolbar();
+		setupMiniPlayer();
+		setupAppbarLayout();
+		setupGestureListener();
 
 		NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 		navigationView.setNavigationItemSelectedListener(this);
 
-		CollapsingToolbarLayout toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id
-				.collapsing_toolbar_layout);
-		toolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
-		toolbarLayout.setTitle("Prambors FM");
-
-
-		Intent caller = getIntent();
+		if(isCollapseLayout) {
+			toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id
+					.collapsing_toolbar_layout);
+			toolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
+			toolbarLayout.setTitle("K-Lite FM Bandung");
+		}
 
 		if(caller != null && caller.getExtras() != null) {
+			isParentView = caller.getExtras().getBoolean("parent", false);
 			String title = caller.getExtras().getString("title", "");
 			int layout = caller.getExtras().getInt("layout", LAYOUT_HOME);
-			if(title != null && !title.equals(""))
-				toolbarLayout.setTitle(title);
+			int mode = caller.getExtras().getInt("mode", -1);
+			String transitionId = caller.getExtras().getString("transition", "profile");
+			FragmentManager manager = getSupportFragmentManager();
+			if(title != null && !title.equals("")) {
+				if(toolbarLayout != null)
+					toolbarLayout.setTitle(title);
+				else
+					getSupportActionBar().setTitle(title);
+			}
 			if(layout == LAYOUT_HOME){
-				FragmentManager manager = getSupportFragmentManager();
 				manager.beginTransaction().replace(R.id.container, RadioProfileFragment.newInstance()).commit();
+				loadMediaQueue();
 			}else if(layout == LAYOUT_VIRTUAL_CARD){
-				FragmentManager manager = getSupportFragmentManager();
 				manager.beginTransaction().replace(R.id.container, VirtualCardFragment.newInstance()).commit();
+			}else if(layout == LAYOUT_CLUB){
+				manager.beginTransaction().replace(R.id.container, ClubRadioFragment.newInstance()).commit();
+			}else if(layout == LAYOUT_NOTIFICATION){
+				manager.beginTransaction().replace(R.id.container, NotificationFragment.newInstance()).commit();
+			}else if(layout == LAYOUT_SETTINGS){
+				manager.beginTransaction().replace(R.id.container, SettingsFragment.newInstance()).commit();
+			}else if(layout == LAYOUT_LIVE){
+				manager.beginTransaction().replace(R.id.container, LiveStreamFragment.newInstance()).commit();
+			}else if (layout == LAYOUT_PROGRAM_PAGE) {
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, ProgramPageFragment
+						.newInstance()).commit();
+			} else if (layout == LAYOUT_PERSON_PROFILE) {
+				PersonProfileFragment fragment = PersonProfileFragment.newInstance(mode, transitionId);
+				callback = fragment;
+				manager.beginTransaction().replace(R.id.container, fragment).commit();
+			} else if (layout == LAYOUT_PLAYER) {
+				callback = null;
+				showMiniPlayer = false;
+				manager.beginTransaction().replace(R.id.container, PlayerFragment.newInstance())
+						.commit();
+
+			} else if (layout == LAYOUT_ALBUM) {
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, AlbumFragment.newInstance())
+						.commit();
+
+			} else if (layout == LAYOUT_ARTIST) {
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, ArtistFragment.newInstance())
+						.commit();
+			} else if (layout == LAYOUT_PROGRAMS){
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, ProgramsFragment.newInstance()).commit();
+			}else if (layout == LAYOUT_ANNOUNCERS){
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, AnnouncersFragment.newInstance()).commit();
+			}else if (layout == LAYOUT_FEED){
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, ClubRadioFragment.newInstance()).commit();
+			}else if (layout == LAYOUT_PEOPLE){
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, PersonListFragment.newInstance()).commit();
+			}else if (layout == LAYOUT_ACCOUNT_SETTINGS){
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, AccountSettingFragment.newInstance()).commit();
+			}else if(layout == LAYOUT_STREAM_PLAYER){
+				callback = null;
+				showMiniPlayer = false;
+				manager.beginTransaction().replace(R.id.container, StreamPlayerFragment
+						.newInstance()).commit();
+			}else if(layout == LAYOUT_REQUEST){
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, RequestFragment.newInstance())
+						.commit();
 			}
 		}else{
+			isParentView = true;
 			FragmentManager manager = getSupportFragmentManager();
 			manager.beginTransaction().replace(R.id.container, RadioProfileFragment.newInstance()).commit();
 		}
+
+		if(isParentView){
+			DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+			toggle = new ActionBarDrawerToggle(
+					this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+			drawer.setDrawerListener(toggle);
+			toggle.syncState();
+		}else{
+			DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+			toggle = new ActionBarDrawerToggle(
+					this, drawer, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+			drawer.setDrawerListener(toggle);
+			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		}
+
+		 /* Set up the audio player */
+		//mAudioPlayer = new PlayerFragment();
+		mAudioController = AudioServiceController.getInstance();
+		mAudioController.bindAudioService(this);
+		mMediaLibrary = MediaLibrary.getInstance();
+
+		/* Prepare the progressBar */
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(ACTION_SHOW_PROGRESSBAR);
+		filter.addAction(ACTION_HIDE_PROGRESSBAR);
+		filter.addAction(ACTION_SHOW_TEXTINFO);
+		filter.addAction(ACTION_SHOW_PLAYER);
+		registerReceiver(messageReceiver, filter);
+
+        /* Reload the latest preferences */
+		reloadPreferences();
+
+
+		/*while (!mAudioController.isIsServiceConnected()){
+			System.out.println(">>>>>>>>???????????????>>>>>>>>>> service : "+mAudioController.isIsServiceConnected());
+		}
+*/
+
+
+		//mAudioController.setArtist(0, "INI ARTIS SUCKSESSSS");
+
+
+
+
+
+
+
+
+		/*location = mFilePath2;
+		time = 0;
+		length = 0;
+		type = -1;
+		picture = BitmapFactory.decodeResource(getResources(), R.drawable.wallpaper);
+		title = "JUDULLLLLL 444444444444";
+		artist = "ARTISSSS44444444444444444";
+		genre = "";
+		album = "ALBUUUM 4444444444444";
+		albumArtist = "ALBUM ARTISSSS 444444444444";
+		width = 0;
+		height = 0;
+		artworkURL = "";
+		audio = 0;
+		spu = 0;
+		trackNumber = 0;
+		m = new Media(location, time, length, type,
+				picture, title, artist, genre, album, albumArtist,
+				width, height, artworkURL, audio, spu, trackNumber);
+
+
+		//mDB.addMedia(m);
+		mediaList.add(m);*/
+
+		//mAudioController.loadMediaList(mediaList);
+
+
+		/*List<String> mediaLocation = new ArrayList<String>();
+		mediaLocation.add(mFilePath);
+		mediaLocation.add(mFilePath2);
+		mediaLocation.add(mFilePath3);
+		mediaLocation.add(mFilePath4);
+		mediaLocation.add(mFilePath5);
+		mediaLocation.add(mFilePath6);
+
+		System.out.println("Check isi location " + mediaLocation.get(0));
+		mAudioController.load(mediaLocation, 0, false);
+		//mAudioController.isPlaying();
+
+
+
+
+
+
+		//VLCInstance.getLibVlcInstance().getMeta(0).replace()
+
+		//mAudioController.load(alMedia, 0);
+		//addMediaToDB(); */
+
+		//loadMediaQueue();
+
+
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		miniPlayer = (View) findViewById(R.id.minimized_player);
 		SharedPreferences pref = getSharedPreferences(getString(R.string.preference_key), Context
 				.MODE_PRIVATE);
-		if(pref.getInt("state", PlayerFragment.STATE_STOP) == PlayerFragment.STATE_STOP){
+		if(!showMiniPlayer && pref.getInt("state", PlayerFragment.STATE_STOP) == PlayerFragment
+				.STATE_STOP){
 			miniPlayer.setVisibility(View.GONE);
-		}else{
+		}else if(showMiniPlayer){
 			miniPlayer.setVisibility(View.VISIBLE);
+		}
+
+		//mAudioController.addAudioPlayer(mAudioPlayer);
+		AudioServiceController.getInstance().bindAudioService(this);
+
+        /* FIXME: this is used to avoid having MainActivity twice in the backstack */
+		if (getIntent().hasExtra(AudioService.START_FROM_NOTIFICATION))
+			getIntent().removeExtra(AudioService.START_FROM_NOTIFICATION);
+
+		if (mMediaLibrary.isWorking())
+			mHandler.sendEmptyMessageDelayed(MSG_LOADING, 300);
+			updateLists();
+		mMediaLibrary.addUpdateHandler(mHandler1);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		mMediaLibrary.removeUpdateHandler(mHandler1);
+	}
+
+	/**
+	 * Handle changes on the list
+	 */
+	private Handler mHandler1 = new AudioBrowserHandler(this);
+	private static class AudioBrowserHandler extends WeakHandler<DrawerActivity> {
+		public AudioBrowserHandler(DrawerActivity owner) {
+			super(owner);
+		}
+
+		@Override
+		public void handleMessage(Message msg) {
+			DrawerActivity fragment = getOwner();
+			if(fragment == null) return;
+
+			switch (msg.what) {
+				case MediaLibrary.MEDIA_ITEMS_UPDATED:
+					fragment.updateLists();
+					break;
+				case MSG_LOADING:
+					/*if (fragment.mArtistsAdapter.isEmpty() && fragment.mAlbumsAdapter.isEmpty() &&
+							fragment.mSongsAdapter.isEmpty() && fragment.mGenresAdapter.isEmpty())
+						fragment.mSwipeRefreshLayout.setRefreshing(true);*/
+			}
+		}
+	};
+	private void updateLists() {
+
+		mAudioList = MediaLibrary.getInstance().getAudioItems();
+		if (mAudioList.isEmpty()){
+
+		} else {
+
+			/*mHandler1.sendEmptyMessageDelayed(MSG_LOADING, 300);
+
+			ExecutorService tpe = Executors.newSingleThreadExecutor();
+			ArrayList<Runnable> tasks = new ArrayList<Runnable>();
+			tasks.add(updateArtists);
+			tasks.add(updateAlbums);
+			tasks.add(updateSongs);
+			tasks.add(updateGenres);
+			//process the visible list first
+			tasks.add(0, tasks.remove(mFlingViewPosition));
+			tasks.add(new Runnable() {
+				@Override
+				public void run() {
+					synchronized (mAdaptersToNotify) {
+						if (!mAdaptersToNotify.isEmpty())
+							display();
+					}
+				}
+			});
+			for (Runnable task : tasks)
+				tpe.submit(task);*/
+		}
+	}
+
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		try {
+			unregisterReceiver(messageReceiver);
+		} catch (IllegalArgumentException e) {}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == ACTIVITY_RESULT_PREFERENCES) {
+			if (resultCode == PreferencesActivity.RESULT_RESCAN)
+				MediaLibrary.getInstance().loadMediaItems(this, true);
+			else if (resultCode == PreferencesActivity.RESULT_RESTART) {
+				Intent intent = getIntent();
+				finish();
+				startActivity(intent);
+			}
 		}
 	}
 
@@ -100,8 +516,10 @@ public class DrawerActivity extends AppCompatActivity
 		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		if (drawer.isDrawerOpen(GravityCompat.START)) {
 			drawer.closeDrawer(GravityCompat.START);
-		} else {
+		} else if(isParentView){
 			super.onBackPressed();
+		}else{
+			supportFinishAfterTransition();
 		}
 	}
 
@@ -118,7 +536,13 @@ public class DrawerActivity extends AppCompatActivity
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-
+		switch (id){
+			case android.R.id.home:
+				if(!isParentView) {
+					onBackPressed();
+					return true;
+				}
+		}
 
 		return super.onOptionsItemSelected(item);
 	}
@@ -128,48 +552,55 @@ public class DrawerActivity extends AppCompatActivity
 	public boolean onNavigationItemSelected(MenuItem item) {
 		// Handle navigation view item clicks here.
 		int id = item.getItemId();
-		Intent intent;
+		Intent intent = new Intent(this, DrawerActivity.class);
+		intent.putExtra("parent", true);
 		switch (id){
 			case R.id.nav_home:
-				intent = new Intent(this, DrawerActivity.class);
-				intent.putExtra("layout", DrawerActivity.LAYOUT_HOME);
+				intent.putExtra("layout", MasterActivity.LAYOUT_HOME);
+				intent.putExtra("activity", R.layout.activity_drawer);
+				startActivity(intent);
+				finish();
+				break;
+			case R.id.nav_live:
+				intent.putExtra("layout", MasterActivity.LAYOUT_LIVE);
+				intent.putExtra("activity", R.layout.activity_drawer_standard);
 				startActivity(intent);
 				finish();
 				break;
 			case R.id.nav_klub:
-				intent = new Intent(this, DrawerStandardActivity.class);
 				intent.putExtra("title", "Imam Darto");
-				intent.putExtra("layout", DrawerStandardActivity.LAYOUT_CLUB);
+				intent.putExtra("layout", MasterActivity.LAYOUT_CLUB);
+				intent.putExtra("activity", R.layout.activity_drawer_standard);
 				startActivity(intent);
 				break;
 			case R.id.nav_profile:
-				intent = new Intent(this, CollapseActivity.class);
-				intent.putExtra("layout", CollapseActivity.LAYOUT_PERSON_PROFILE);
+				intent.putExtra("layout", MasterActivity.LAYOUT_PERSON_PROFILE);
 				intent.putExtra("title", "Dimas Danang");
+				intent.putExtra("activity", R.layout.activity_drawer);
 				startActivity(intent);
 				break;
 			case R.id.nav_notification:
-				intent = new Intent(this, DrawerStandardActivity.class);
 				intent.putExtra("title", "Notifications");
-				intent.putExtra("layout", DrawerStandardActivity.LAYOUT_NOTIFICATION);
+				intent.putExtra("layout", MasterActivity.LAYOUT_NOTIFICATION);
+				intent.putExtra("activity", R.layout.activity_drawer_standard);
 				startActivity(intent);
 				break;
 			case R.id.nav_virtual_card:
-				intent = new Intent(this, DrawerActivity.class);
 				intent.putExtra("title", "Virtual Card");
-				intent.putExtra("layout", DrawerActivity.LAYOUT_VIRTUAL_CARD);
+				intent.putExtra("layout", MasterActivity.LAYOUT_VIRTUAL_CARD);
+				intent.putExtra("activity", R.layout.activity_drawer);
 				startActivity(intent);
 				break;
 			case R.id.nav_setting:
-				intent = new Intent(this, DrawerStandardActivity.class);
 				intent.putExtra("title", "Settings");
-				intent.putExtra("layout", DrawerStandardActivity.LAYOUT_SETTINGS);
+				intent.putExtra("layout", MasterActivity.LAYOUT_SETTINGS);
+				intent.putExtra("activity", R.layout.activity_drawer_standard);
 				startActivity(intent);
 				break;
 			case R.id.nav_player:
-				intent = new Intent(this, CollapseActivity.class);
 				intent.putExtra("title", "Player");
-				intent.putExtra("layout", CollapseActivity.LAYOUT_PLAYER);
+				intent.putExtra("layout", MasterActivity.LAYOUT_PLAYER);
+				intent.putExtra("activity", R.layout.activity_drawer);
 				startActivity(intent);
 				break;
 		}
@@ -178,4 +609,422 @@ public class DrawerActivity extends AppCompatActivity
 		drawer.closeDrawer(GravityCompat.START);
 		return true;
 	}
+
+	private void reloadPreferences() {
+		SharedPreferences sharedPrefs = getSharedPreferences("MainActivity", MODE_PRIVATE);
+		//mCurrentFragment = sharedPrefs.getString("fragment", "video");
+	}
+
+	private final BroadcastReceiver messageReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+
+
+			if (action.equalsIgnoreCase(ACTION_SHOW_PROGRESSBAR)) {
+				setSupportProgressBarIndeterminateVisibility(true);
+				getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+			} else if (action.equalsIgnoreCase(ACTION_HIDE_PROGRESSBAR)) {
+				setSupportProgressBarIndeterminateVisibility(false);
+				getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+			} else if (action.equalsIgnoreCase(ACTION_SHOW_TEXTINFO)) {
+				String info = intent.getStringExtra("info");
+				int max = intent.getIntExtra("max", 0);
+				int progress = intent.getIntExtra("progress", 100);
+				//mInfoText.setText(info);
+				//mInfoProgress.setMax(max);
+				//mInfoProgress.setProgress(progress);
+
+				if (info == null) {
+                    /* Cancel any upcoming visibility change */
+					mHandler.removeMessages(ACTIVITY_SHOW_INFOLAYOUT);
+					//mInfoLayout.setVisibility(View.GONE);
+				}
+				else {
+                    /* Slightly delay the appearance of the progress bar to avoid unnecessary flickering */
+					if (!mHandler.hasMessages(ACTIVITY_SHOW_INFOLAYOUT)) {
+						Message m = new Message();
+						m.what = ACTIVITY_SHOW_INFOLAYOUT;
+						mHandler.sendMessageDelayed(m, 300);
+					}
+				}
+			} else if (action.equalsIgnoreCase(ACTION_SHOW_PLAYER)) {
+				showAudioPlayer();
+			}
+		}
+	};
+
+	private static class MainActivityHandler extends WeakHandler<DrawerActivity> {
+		public MainActivityHandler(DrawerActivity owner) {
+			super(owner);
+		}
+
+		@Override
+		public void handleMessage(Message msg) {
+			DrawerActivity ma = getOwner();
+			if(ma == null) return;
+
+			switch (msg.what) {
+				case ACTIVITY_SHOW_INFOLAYOUT:
+					//ma.mInfoLayout.setVisibility(View.VISIBLE);
+					break;
+			}
+		}
+	};
+
+	public static void showProgressBar() {
+		Intent intent = new Intent();
+		intent.setAction(ACTION_SHOW_PROGRESSBAR);
+		VLCApplication.getAppContext().sendBroadcast(intent);
+	}
+
+	public static void hideProgressBar() {
+		Intent intent = new Intent();
+		intent.setAction(ACTION_HIDE_PROGRESSBAR);
+		VLCApplication.getAppContext().sendBroadcast(intent);
+	}
+
+	public static void sendTextInfo(String info, int progress, int max) {
+		Intent intent = new Intent();
+		intent.setAction(ACTION_SHOW_TEXTINFO);
+		intent.putExtra("info", info);
+		intent.putExtra("progress", progress);
+		intent.putExtra("max", max);
+		VLCApplication.getAppContext().sendBroadcast(intent);
+	}
+
+	public static void clearTextInfo() {
+		sendTextInfo(null, 0, 100);
+	}
+
+	/**
+	 * Show the audio player.
+	 */
+	public void showAudioPlayer() {
+		// Open the pane only if is entirely opened.
+		/*if (mSlidingPane.getState() == mSlidingPane.STATE_OPENED_ENTIRELY)
+			mSlidingPane.openPane();
+		mAudioPlayerFilling.setVisibility(View.VISIBLE);*/
+		/*Intent intent = new Intent(this, DrawerActivity.class);
+		intent.putExtra("parent", true);
+		intent.putExtra("title", "Player");
+		intent.putExtra("layout", MasterActivity.LAYOUT_PLAYER);
+		intent.putExtra("activity", R.layout.activity_drawer);
+		startActivity(intent);*/
+	}
+
+	public void hideAudioPlayer() {
+		/*mSlidingPane.openPaneEntirely();
+		mAudioPlayerFilling.setVisibility(View.GONE);*/
+	}
+
+	public void addMediaToDB(){
+		String location;
+		long time;
+		long length;
+		int type;
+		Bitmap picture;
+		String title;
+		String artist;
+		String genre;
+		String album;
+		String albumArtist;
+		int width;
+		int height;
+		String artworkURL;
+		int audio;
+		int spu;
+		int trackNumber;
+
+		List <Media> alMedia = new ArrayList<Media>();
+
+		MediaList mediaList = null;
+
+		mediaList = mlibVLC.getMediaList();
+
+		Media m;
+
+		MediaDatabase mDB = MediaDatabase.getInstance();
+
+
+		location = mFilePath;
+		time = 0;
+		length = 0;
+		type = -1;
+		picture = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.background_login);
+		title = "JUDULLLLLL";
+		artist = "ARTISSSS";
+		genre = "";
+		album = "ALBUUUM";
+		albumArtist = "ALBUM ARTISSSS";
+		width = 0;
+		height = 0;
+		artworkURL = "";
+		audio = 0;
+		spu = 0;
+		trackNumber = 0;
+
+		m = new Media(location, time, length, type,
+		picture, title, artist, genre, album, albumArtist,
+		width, height, artworkURL, audio, spu, trackNumber);
+
+
+		mDB.addMedia(m);
+
+		location = mFilePath2;
+		time = 0;
+		length = 0;
+		type = -1;
+		picture = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.wallpaper);
+		title = "JUD 222";
+		artist = "ART222";
+		genre = "";
+		album = "ALBU222";
+		albumArtist = "ALBUM ARTISS2222";
+		width = 0;
+		height = 0;
+		artworkURL = "";
+		audio = 0;
+		spu = 0;
+		trackNumber = 0;
+
+		m = new Media(location, time, length, type,
+				picture, title, artist, genre, album, albumArtist,
+				width, height, artworkURL, audio, spu, trackNumber);
+
+
+		mDB.addMedia(m);
+
+
+
+	}
+
+	public void loadMediaQueue(){
+		/*String location;
+		long time;
+		long length;
+		int type;
+		Bitmap picture;
+		String title;
+		String artist;
+		String genre;
+		String album;
+		String albumArtist;
+		int width;
+		int height;
+		String artworkURL;
+		int audio;
+		int spu;
+		int trackNumber;
+
+		List <Media> alMedia = new ArrayList<Media>();
+
+		//MediaList mediaList = null;
+
+		//mediaList = mlibVLC.getMediaList();
+
+		Media m;
+
+		MediaDatabase mDB = MediaDatabase.getInstance();
+
+
+		location = mFilePath;
+		time = 0;
+		length = 0;
+		type = -1;
+		picture = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.background_login);
+		title = "JUDULLLLLL";
+		artist = "ARTISSSS";
+		genre = "";
+		album = "ALBUUUM";
+		albumArtist = "ALBUM ARTISSSS";
+		width = 0;
+		height = 0;
+		artworkURL = "http://ecx.images-amazon.com/images/I/61RKZnb8kBL.jpg";
+		audio = 0;
+		spu = 0;
+		trackNumber = 0;
+
+		m = new Media(location, time, length, type,
+				picture, title, artist, genre, album, albumArtist,
+				width, height, artworkURL, audio, spu, trackNumber);
+
+
+		mDB.addMedia(m);
+		alMedia.add(m);
+
+		location = mFilePath2;
+		time = 0;
+		length = 0;
+		type = -1;
+		picture = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.wallpaper);
+		title = "JUD 222";
+		artist = "ART222";
+		genre = "";
+		album = "ALBU222";
+		albumArtist = "ALBUM ARTISS2222";
+		width = 0;
+		height = 0;
+		artworkURL = "http://static.asiawebdirect.com/m/phuket/portals/thaiwave-com/homepage/mae-hong-son/pagePropertiesImage/mae-hong-son.jpg";
+		audio = 0;
+		spu = 0;
+		trackNumber = 0;
+
+		m = new Media(location, time, length, type,
+				picture, title, artist, genre, album, albumArtist,
+				width, height, artworkURL, audio, spu, trackNumber);
+
+
+		mDB.addMedia(m);
+
+		alMedia.add(m);
+		System.out.println("]]]]]]]]]]]]]]]]]]]]]load media");
+		mAudioController.loadMedia(alMedia);
+
+		*//**//*System.out.println("]]]]]]]]]]]]]]]]]]]]]]]reload ueue");
+		mAudioController.reloadQueue();*//**//*
+
+		List<String> mediaLocation = new ArrayList<String>();
+		for (int i =0; i< alMedia.size();i++){
+			mediaLocation.add(alMedia.get(i).getLocation());
+		}
+
+		mAudioController.load(mediaLocation,0);*/
+		new getQueueArray().execute();
+
+	}
+
+	private class getQueueArray extends AsyncTask<Void, Void, Void> {
+		String location;
+		long time;
+		long length;
+		int type;
+		Bitmap picture;
+		String title;
+		String artist;
+		String genre;
+		String album;
+		String albumArtist;
+		int width;
+		int height;
+		String artworkURL;
+		int audio;
+		int spu;
+		int trackNumber;
+
+		List <Media> alMedia = new ArrayList<Media>();
+
+		//MediaList mediaList = null;
+
+		//mediaList = mlibVLC.getMediaList();
+
+		Media m;
+
+		MediaDatabase mDB = MediaDatabase.getInstance();
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			// Showing progress dialog
+			pDialog = new ProgressDialog(mContext);
+			pDialog.setMessage("Please wait...");
+			pDialog.setCancelable(false);
+			pDialog.show();
+
+		}
+
+		@Override
+		protected Void doInBackground(Void... arg0) {
+			// Creating service handler class instance
+
+
+			ServiceQueueJson sh = new ServiceQueueJson();
+
+			String url = "http://www.1071klitefm.com/apis/data/lists/pop-indonesia";
+
+			// Making a request to url and getting response
+			String jsonStr = sh.makeServiceCall(url, ServiceQueueJson.GET);
+
+			Log.d("Response: ", "> " + jsonStr);
+
+			if (jsonStr != null) {
+				try {
+					//JSONObject jsonObj = new JSONObject(jsonStr);
+					JSONArray mJsonArray = new JSONArray(jsonStr);
+
+					// looping through All Contacts
+					for (int i = 0; i < mJsonArray.length(); i++) {
+						//JSONObject mJsonObjectProperty = mJsonArray.getJSONObject(i);
+						JSONObject mJsonObject = mJsonArray.getJSONObject(i);
+						/*String id = mJsonObject.getString("id");
+						String title = mJsonObject.getString("title");
+						String album = mJsonObject.getString("post_date");
+						String file = mJsonObject.getString("file");
+						String cover = mJsonObject.getString("attachment");
+
+						// adding contact to contact list
+						playlists.add(new Playlist(title, album,id,cover,file, id ));*/
+
+						location = mJsonObject.getString("file");
+						time = 0;
+						length = 0;
+						type = -1;
+						picture = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.background_login);
+						title = mJsonObject.getString("title");
+						artist = mJsonObject.getString("title");
+						genre = "";
+						album = mJsonObject.getString("title");
+						albumArtist = mJsonObject.getString("title");
+						width = 0;
+						height = 0;
+						artworkURL = mJsonObject.getString("attachment");
+						audio = 0;
+						spu = 0;
+						trackNumber = 0;
+
+						m = new Media(location, time, length, type,
+								picture, title, artist, genre, album, albumArtist,
+								width, height, artworkURL, audio, spu, trackNumber);
+
+						mDB.addMedia(m);
+						alMedia.add(m);
+
+					}
+
+					mAudioController.loadMedia(alMedia);
+
+
+					List<String> mediaLocation = new ArrayList<String>();
+					for (int i =0; i< alMedia.size();i++){
+						mediaLocation.add(alMedia.get(i).getLocation());
+					}
+					mAudioController.load(mediaLocation,0);
+
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			} else {
+				Log.e("ServiceHandler", "Couldn't get any data from the url");
+			}
+
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			super.onPostExecute(result);
+			// Dismiss the progress dialog
+			if (pDialog.isShowing())
+				pDialog.dismiss();
+			/**
+			 * Updating parsed JSON data into ListView
+			 * */
+
+
+
+
+		}
+
+	}
+
+
 }

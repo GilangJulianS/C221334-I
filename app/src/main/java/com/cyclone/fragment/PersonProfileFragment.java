@@ -10,11 +10,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
@@ -22,10 +24,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.cyclone.CollapseActivity;
+import com.cyclone.DrawerActivity;
 import com.cyclone.R;
-import com.cyclone.StandardActivity;
 import com.cyclone.custom.OnOffsetChangedListener;
+import com.cyclone.custom.SnapGestureListener;
 import com.cyclone.custom.Tools;
 import com.cyclone.custom.UniversalAdapter;
 import com.cyclone.model.Post;
@@ -42,12 +44,14 @@ public class PersonProfileFragment extends Fragment implements OnOffsetChangedLi
 
 	public static final int MODE_OWN_PROFILE = 101;
 	public static final int MODE_OTHERS_PROFILE = 102;
-	private CollapseActivity activity;
 	private RecyclerView recyclerView;
 	private SwipeRefreshLayout swipeLayout;
 	private UniversalAdapter adapter;
 	private List<Object> datas;
 	private String transitionId;
+	private DrawerActivity activity;
+	private LinearLayoutManager layoutManager;
+	private GestureDetectorCompat gd;
 	private int mode;
 	private boolean swipeEnabled = true;
 
@@ -83,7 +87,8 @@ public class PersonProfileFragment extends Fragment implements OnOffsetChangedLi
 		});
 
 		recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
-		recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+		layoutManager = new LinearLayoutManager(getContext());
+		recyclerView.setLayoutManager(layoutManager);
 
 		SlideInUpAnimator slideAnimator = new SlideInUpAnimator(new
 				DecelerateInterpolator());
@@ -97,38 +102,50 @@ public class PersonProfileFragment extends Fragment implements OnOffsetChangedLi
 		datas = parse("");
 		animate(datas.get(0));
 
+		if(activity != null){
+			gd = new GestureDetectorCompat(activity, new SnapGestureListener(activity));
+			recyclerView.setOnTouchListener(new View.OnTouchListener() {
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					System.out.println("touch recycler");
+					if(layoutManager.findFirstCompletelyVisibleItemPosition() == 0)
+						return gd.onTouchEvent(event);
+					return false;
+				}
+			});
+		}
+
 		return v;
 	}
 
 	public List<Object> parse(String json){
 		List<Object> datas = new ArrayList<>();
-		datas.add(new Post(""+R.drawable.aaa_darto, "<b>Imam Darto</b> created new <b>Mix</b>", "1 Hour ago", "Mix",
-				""+R.drawable.kimmi_s, "Funky Sunshine", "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST));
-		datas.add(new Post(""+R.drawable.aaa_desta, "<b>Desta</b> liked a Playlist", "2 Hour ago", "Playlist",
-				""+R.drawable.aaa_kenny, "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST));
-		datas.add(new Post(""+R.drawable.aaa_dimas_danang, "<b>Danang</b> created new <b>Playlist</b>", "4 Hour ago",
-				"Playlist", ""+R.drawable.aaa_cj, "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post
+		datas.add(new Post("", "<b>Imam Darto</b> created new <b>Mix</b>", "1 Hour ago", "Mix",
+				"", "Funky Sunshine", "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST));
+		datas.add(new Post("", "<b>Desta</b> liked a Playlist", "2 Hour ago", "Playlist",
+				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST));
+		datas.add(new Post("", "<b>Desta</b> created new <b>Playlist</b>", "4 Hour ago",
+				"Playlist", "", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post
 				.TYPE_POST));
-		datas.add(new Post(""+R.drawable.aaa_julio,"<b>Julio</b> shared a <b>Playlist</b>", "4 Hour ago", "Playlist",
-				""+R.drawable.aaa_cj, "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST));
-		datas.add(new Post(""+R.drawable.aaa_julio, "<b>Julio</b> created new <b>Mix</b>", "1 Hour ago", "Mix",
-				""+R.drawable.aa_40_gallery, "Funky Sunshine", "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST));
-		datas.add(new Post(""+R.drawable.aaa_jeje, "<b>Jeje</b> liked a Playlist", "2 Hour ago", "Playlist",
-				""+R.drawable.aaa_nadia, "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST));
-		datas.add(new Post(""+R.drawable.aaa_cj, "<b>CJ</b> created new <b>Playlist</b>", "4 Hour ago",
-				"Playlist", ""+R.drawable.aaa_gina, "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post
+		datas.add(new Post("", "<b>Desta</b> shared a <b>Playlist</b>", "4 Hour ago", "Playlist",
+				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST));
+		datas.add(new Post("", "<b>Imam Darto</b> created new <b>Mix</b>", "1 Hour ago", "Mix",
+				"", "Funky Sunshine", "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST));
+		datas.add(new Post("", "<b>Desta</b> liked a Playlist", "2 Hour ago", "Playlist",
+				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST));
+		datas.add(new Post("", "<b>Desta</b> created new <b>Playlist</b>", "4 Hour ago",
+				"Playlist", "", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post
 				.TYPE_POST));
-		datas.add(new Post(""+R.drawable.kimmi_s, "<b>Kimmi</b> shared a <b>Playlist</b>", "4 Hour ago", "Playlist",
-				""+R.drawable.aaa_kenny, "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST));
+		datas.add(new Post("", "<b>Desta</b> shared a <b>Playlist</b>", "4 Hour ago", "Playlist",
+				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST));
 		return datas;
 	}
 
 	@Override
 	public void onAttach(Context context){
 		super.onAttach(context);
-		AppCompatActivity activity;
-		if(context instanceof AppCompatActivity) {
-			activity = (AppCompatActivity)context;
+		if(context instanceof DrawerActivity) {
+			activity = (DrawerActivity)context;
 			ViewGroup parallaxHeader = (ViewGroup) activity.findViewById(R.id
 					.parallax_header);
 			LayoutInflater inflater = activity.getLayoutInflater();
@@ -138,8 +155,8 @@ public class PersonProfileFragment extends Fragment implements OnOffsetChangedLi
 			parallaxHeader.removeAllViews();
 			parallaxHeader.addView(header);
 		}
-		if(context instanceof CollapseActivity){
-			this.activity = (CollapseActivity) context;
+		if(context instanceof DrawerActivity){
+			this.activity = (DrawerActivity) context;
 		}
 	}
 
@@ -168,8 +185,8 @@ public class PersonProfileFragment extends Fragment implements OnOffsetChangedLi
 		txtShowlist.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(getContext(), StandardActivity.class);
-				i.putExtra("layout", StandardActivity.LAYOUT_FEED);
+				Intent i = new Intent(getContext(), DrawerActivity.class);
+				i.putExtra("layout", DrawerActivity.LAYOUT_FEED);
 				i.putExtra("title", "Showlist");
 				startActivity(i);
 			}
@@ -177,8 +194,8 @@ public class PersonProfileFragment extends Fragment implements OnOffsetChangedLi
 		txtContent.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(getContext(), StandardActivity.class);
-				i.putExtra("layout", StandardActivity.LAYOUT_FEED);
+				Intent i = new Intent(getContext(), DrawerActivity.class);
+				i.putExtra("layout", DrawerActivity.LAYOUT_FEED);
 				i.putExtra("title", "Content");
 				startActivity(i);
 			}
@@ -186,8 +203,8 @@ public class PersonProfileFragment extends Fragment implements OnOffsetChangedLi
 		txtFollower.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(getContext(), StandardActivity.class);
-				i.putExtra("layout", StandardActivity.LAYOUT_PEOPLE);
+				Intent i = new Intent(getContext(), DrawerActivity.class);
+				i.putExtra("layout", DrawerActivity.LAYOUT_PEOPLE);
 				i.putExtra("title", "Follower");
 				startActivity(i);
 			}
@@ -195,8 +212,8 @@ public class PersonProfileFragment extends Fragment implements OnOffsetChangedLi
 		txtFollowing.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(getContext(), StandardActivity.class);
-				i.putExtra("layout", StandardActivity.LAYOUT_PEOPLE);
+				Intent i = new Intent(getContext(), DrawerActivity.class);
+				i.putExtra("layout", DrawerActivity.LAYOUT_PEOPLE);
 				i.putExtra("title", "Following");
 				startActivity(i);
 			}

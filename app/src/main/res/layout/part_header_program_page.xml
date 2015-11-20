@@ -5,12 +5,12 @@
 	xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<ImageView
-		android:id="@+id/img_cover"
+		android:id="@+id/program_page_header"
 		android:transitionName="program"
 		android:layout_width="match_parent"
 		android:layout_height="210dp"
 		android:scaleType="centerCrop"
-		android:src="@drawable/aa_desta_gina"/>
+		android:src="@drawable/background_login"/>
 
 </RelativeLayout>
 

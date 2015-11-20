@@ -5,19 +5,28 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GestureDetectorCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.cyclone.DrawerActivity;
 import com.cyclone.R;
+import com.cyclone.custom.SnapGestureListener;
 import com.cyclone.custom.Tools;
 
 /**
  * Created by gilang on 25/10/2015.
  */
 public class VirtualCardFragment extends Fragment {
+
+	private NestedScrollView nestedScrollView;
+	private DrawerActivity activity;
+	private GestureDetectorCompat gd;
 
 	public VirtualCardFragment(){}
 
@@ -29,15 +38,29 @@ public class VirtualCardFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
 		View v = inflater.inflate(R.layout.fragment_virtual_card, parent, false);
+
+		nestedScrollView = (NestedScrollView) v.findViewById(R.id.nested_scroll_view);
+		if(activity != null){
+			gd = new GestureDetectorCompat(activity, new SnapGestureListener(activity));
+			nestedScrollView.setOnTouchListener(new View.OnTouchListener() {
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					System.out.println("touch recycler");
+					if(nestedScrollView.computeVerticalScrollOffset() == 0)
+						return gd.onTouchEvent(event);
+					return false;
+				}
+			});
+		}
+
 		return v;
 	}
 
 	@Override
 	public void onAttach(Context context){
 		super.onAttach(context);
-		AppCompatActivity activity;
-		if(context instanceof AppCompatActivity) {
-			activity = (AppCompatActivity)context;
+		if(context instanceof DrawerActivity) {
+			activity = (DrawerActivity)context;
 			ViewGroup parallaxHeader = (ViewGroup) activity.findViewById(R.id
 					.parallax_header);
 			LayoutInflater inflater = activity.getLayoutInflater();
@@ -51,7 +74,7 @@ public class VirtualCardFragment extends Fragment {
 
 	public void setupBackground(View header){
 		ImageView imgHeader = (ImageView) header.findViewById(R.id.img_header_background);
-		Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.aaa_cj);
+		Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.background_login);
 		bitmap = Tools.blur(bitmap, 0.5f, 10);
 		int width = bitmap.getWidth();
 		int height = bitmap.getHeight();

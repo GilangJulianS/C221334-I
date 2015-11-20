@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView
+	android:id="@+id/nested_scroll_view"
 	android:layout_height="match_parent"
 	android:layout_width="match_parent"
 	app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -35,8 +36,7 @@
 					android:layout_width="0dp"
 					android:layout_weight="2"
 					android:layout_height="110dp"
-					android:layout_margin="5dp"
-					android:src="@drawable/prambors"/>
+					android:src="@drawable/radio_icon"/>
 
 				<LinearLayout
 					android:layout_width="0dp"
@@ -51,7 +51,7 @@
 						android:layout_weight="1"
 						android:textSize="16sp"
 						android:textStyle="bold"
-						android:text="Prambors FM"/>
+						android:text="K-Lite FM Bandung"/>
 
 					<LinearLayout
 						android:layout_width="wrap_content"
@@ -62,14 +62,13 @@
 
 						<ImageView
 							android:layout_width="25dp"
-							android:layout_height="25dp"
-							android:src="@drawable/ic_radio_black_24dp"/>
+							android:layout_height="25dp"/>
 
 						<TextView
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
 							android:layout_marginLeft="10dp"
-							android:text="98.4 FM"/>
+							android:text="107.1 FM"/>
 
 					</LinearLayout>
 
@@ -82,9 +81,7 @@
 
 						<ImageView
 							android:layout_width="25dp"
-							android:layout_height="25dp"
-							android:src="@android:drawable/ic_dialog_map"
-							android:tint="#000"/>
+							android:layout_height="25dp"/>
 
 						<TextView
 							android:layout_width="wrap_content"
@@ -131,8 +128,7 @@
 					android:layout_width="0dp"
 					android:layout_weight="2"
 					android:layout_height="110dp"
-					android:padding="5dp"
-					android:src="@drawable/prambors"/>
+					android:src="@drawable/radio_icon"/>
 
 				<TextView
 					android:layout_width="0dp"
@@ -186,7 +182,7 @@
 				android:layout_height="wrap_content"
 				android:layout_margin="5dp"/>
 
-			<include layout="@layout/card_program2"
+			<include layout="@layout/card_program"
 				 android:layout_width="0dp"
 				 android:layout_weight="1"
 				 android:layout_height="wrap_content"
@@ -237,14 +233,14 @@
 				android:layout_margin="5dp"/>
 
 			<include
-				layout="@layout/card_announcer2"
+				layout="@layout/card_announcer"
 				android:layout_width="0dp"
 				android:layout_weight="1"
 				android:layout_height="wrap_content"
 				android:layout_margin="5dp"/>
 
 			<include
-				layout="@layout/card_announcer3"
+				layout="@layout/card_announcer"
 				android:layout_width="0dp"
 				android:layout_weight="1"
 				android:layout_height="wrap_content"
@@ -299,7 +295,7 @@
 						android:layout_marginLeft="10dp"
 						android:textSize="12sp"
 						android:textStyle="bold"
-						android:text=" Jl. Sukajadi no 137-139, Bandung 40162"/>
+						android:text="Jl. Sumur Bandung No.12\nDago - Bandung"/>
 
 				</LinearLayout>
 
@@ -321,7 +317,7 @@
 						android:layout_marginLeft="10dp"
 						android:textSize="12sp"
 						android:textStyle="bold"
-						android:text="(021) 720 - 2238"/>
+						android:text="+6222 21 231231"/>
 
 
 				</LinearLayout>
@@ -344,7 +340,7 @@
 						android:layout_marginLeft="10dp"
 						android:textSize="12sp"
 						android:textStyle="bold"
-						android:text="info@pramborsfm.com"/>
+						android:text="kllitefm@gmail.com"/>
 
 				</LinearLayout>
 
@@ -399,7 +395,7 @@
 						android:layout_marginLeft="10dp"
 						android:textSize="12sp"
 						android:textStyle="bold"
-						android:text="www.pramborsfm.com"/>
+						android:text="www.kllitefm.com"/>
 
 				</LinearLayout>
 
@@ -420,7 +416,7 @@
 						android:layout_marginLeft="10dp"
 						android:textSize="12sp"
 						android:textStyle="bold"
-						android:text="RADIO Pramborsm FM"/>
+						android:text="RADIO K-LITE 107.1 FM BANDUNG"/>
 
 
 				</LinearLayout>
@@ -442,7 +438,7 @@
 						android:layout_marginLeft="10dp"
 						android:textSize="12sp"
 						android:textStyle="bold"
-						android:text="Prambors FM"/>
+						android:text="\@107klitefm"/>
 
 				</LinearLayout>
 

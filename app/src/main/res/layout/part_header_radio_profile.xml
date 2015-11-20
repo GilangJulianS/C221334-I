@@ -22,7 +22,7 @@
 		android:layout_height="80dp"
 		android:layout_centerHorizontal="true"
 		android:layout_marginTop="40dp"
-		android:src="@drawable/logo_prambors"/>
+		android:src="@drawable/background_login"/>
 
 	<LinearLayout
 		android:layout_width="match_parent"
@@ -35,7 +35,7 @@
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="Prambors Inspiring Sound"
+			android:text="Bandung's Inspiring Sound"
 			android:textColor="#fff"
 			android:textSize="16sp"/>
 
