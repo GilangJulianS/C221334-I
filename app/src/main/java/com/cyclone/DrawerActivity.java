@@ -31,12 +31,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.cyclone.fragment.AccountSettingFragment;
 import com.cyclone.fragment.AlbumFragment;
 import com.cyclone.fragment.AnnouncersFragment;
 import com.cyclone.fragment.ArtistFragment;
+import com.cyclone.fragment.CategoryFragment;
 import com.cyclone.fragment.ClubRadioFragment;
+import com.cyclone.fragment.HomeFragment;
 import com.cyclone.fragment.LiveStreamFragment;
 import com.cyclone.fragment.NotificationFragment;
 import com.cyclone.fragment.PersonListFragment;
@@ -48,6 +53,7 @@ import com.cyclone.fragment.RadioProfileFragment;
 import com.cyclone.fragment.RequestFragment;
 import com.cyclone.fragment.SettingsFragment;
 import com.cyclone.fragment.StreamPlayerFragment;
+import com.cyclone.fragment.SubcategoryFragment;
 import com.cyclone.fragment.VirtualCardFragment;
 import com.cyclone.player.CompatErrorActivity;
 import com.cyclone.player.MediaDatabase;
@@ -83,8 +89,13 @@ public class DrawerActivity extends MasterActivity
 
 	private static final String PREF_FIRST_RUN = "first_run";
 
+
 	private static final int ACTIVITY_RESULT_PREFERENCES = 1;
 	private static final int ACTIVITY_SHOW_INFOLAYOUT = 2;
+
+	public static final String PREF_GOOGLE = "google_login";
+	public static final String PREF_GOOGLE_USR = "google_username";
+	public static final String PREF_GOOGLE_EMAIL = "google_email";
 
 	private Context mContext;
 	private ActionBar mActionBar;
@@ -94,6 +105,8 @@ public class DrawerActivity extends MasterActivity
 	private ServiceConnection mAudioServiceConnection;
 
 	private SharedPreferences mSettings;
+
+	int layout;
 
 	private int mVersionNumber = -1;
 	private boolean mFirstRun = false;
@@ -107,7 +120,7 @@ public class DrawerActivity extends MasterActivity
 	private boolean isCollapseLayout = false;
 	private ActionBarDrawerToggle toggle;
 	CollapsingToolbarLayout toolbarLayout;
-	private boolean showMiniPlayer = true;
+	public static boolean showMiniPlayer = true;
 	private ProgressDialog pDialog;
 
 	private String mFilePath = "http://stream.suararadio.com/bloom-mae.mp3";
@@ -124,7 +137,7 @@ public class DrawerActivity extends MasterActivity
 	public final static int MSG_LOADING = 0;
 
 	LibVLC mlibVLC;
-
+	private View miniPlayer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +165,12 @@ public class DrawerActivity extends MasterActivity
         /* Get settings */
 		mSettings = PreferenceManager.getDefaultSharedPreferences(this);
 
+		if(!mSettings.getBoolean(PREF_GOOGLE, false)){
+			Intent intent = new Intent(this, EmptyActivity.class);
+			intent.putExtra("title", "Login");
+			startActivity(intent);
+		}
+
         /* Check if it's the first run */
 		mFirstRun = mSettings.getInt(PREF_FIRST_RUN, -1) != mVersionNumber;
 		if (mFirstRun) {
@@ -159,6 +178,8 @@ public class DrawerActivity extends MasterActivity
 			editor.putInt(PREF_FIRST_RUN, mVersionNumber);
 			editor.commit();
 		}
+
+
 
 		try {
 			// Start LibVLC
@@ -205,14 +226,17 @@ public class DrawerActivity extends MasterActivity
 			isCollapseLayout = true;
 		}
 
+
 		setupToolbar();
 		setupMiniPlayer();
 		setupAppbarLayout();
 		setupGestureListener();
 
+		miniPlayer = findViewById(R.id.minimized_player);
+
 		NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 		navigationView.setNavigationItemSelectedListener(this);
-
+		navigationView.getMenu().getItem(3).setTitle(mSettings.getString(PREF_GOOGLE_USR, "User"));
 		if(isCollapseLayout) {
 			toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id
 					.collapsing_toolbar_layout);
@@ -223,8 +247,9 @@ public class DrawerActivity extends MasterActivity
 		if(caller != null && caller.getExtras() != null) {
 			isParentView = caller.getExtras().getBoolean("parent", false);
 			String title = caller.getExtras().getString("title", "");
-			int layout = caller.getExtras().getInt("layout", LAYOUT_HOME);
+			layout = caller.getExtras().getInt("layout", LAYOUT_HOME);
 			int mode = caller.getExtras().getInt("mode", -1);
+			int menuId = caller.getExtras().getInt("menuId", 0);
 			String transitionId = caller.getExtras().getString("transition", "profile");
 			FragmentManager manager = getSupportFragmentManager();
 			if(title != null && !title.equals("")) {
@@ -233,54 +258,70 @@ public class DrawerActivity extends MasterActivity
 				else
 					getSupportActionBar().setTitle(title);
 			}
-			if(layout == LAYOUT_HOME){
+			if(layout == LAYOUT_RADIO_PROFILE){
 				manager.beginTransaction().replace(R.id.container, RadioProfileFragment.newInstance()).commit();
-				loadMediaQueue();
+				showMiniPlayer = true;
+
+			}else if(layout == LAYOUT_HOME){
+				manager.beginTransaction().replace(R.id.container, HomeFragment.newInstance("")).commit();
+				showMiniPlayer = true;
+
 			}else if(layout == LAYOUT_VIRTUAL_CARD){
 				manager.beginTransaction().replace(R.id.container, VirtualCardFragment.newInstance()).commit();
+				showMiniPlayer = true;
 			}else if(layout == LAYOUT_CLUB){
-				manager.beginTransaction().replace(R.id.container, ClubRadioFragment.newInstance()).commit();
+				manager.beginTransaction().replace(R.id.container, ClubRadioFragment.newInstance("")).commit();
+				showMiniPlayer = true;
 			}else if(layout == LAYOUT_NOTIFICATION){
-				manager.beginTransaction().replace(R.id.container, NotificationFragment.newInstance()).commit();
+				manager.beginTransaction().replace(R.id.container, NotificationFragment.newInstance("")).commit();
+				showMiniPlayer = true;
 			}else if(layout == LAYOUT_SETTINGS){
 				manager.beginTransaction().replace(R.id.container, SettingsFragment.newInstance()).commit();
+				showMiniPlayer = true;
 			}else if(layout == LAYOUT_LIVE){
-				manager.beginTransaction().replace(R.id.container, LiveStreamFragment.newInstance()).commit();
+				manager.beginTransaction().replace(R.id.container, LiveStreamFragment.newInstance("")).commit();
+				showMiniPlayer = true;
 			}else if (layout == LAYOUT_PROGRAM_PAGE) {
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, ProgramPageFragment
 						.newInstance()).commit();
+				showMiniPlayer = true;
 			} else if (layout == LAYOUT_PERSON_PROFILE) {
-				PersonProfileFragment fragment = PersonProfileFragment.newInstance(mode, transitionId);
+				PersonProfileFragment fragment = PersonProfileFragment.newInstance(mode,
+						transitionId, "");
 				callback = fragment;
 				manager.beginTransaction().replace(R.id.container, fragment).commit();
 			} else if (layout == LAYOUT_PLAYER) {
 				callback = null;
 				showMiniPlayer = false;
-				manager.beginTransaction().replace(R.id.container, PlayerFragment.newInstance())
+				manager.beginTransaction().replace(R.id.container, PlayerFragment.newInstance(""))
 						.commit();
-
 			} else if (layout == LAYOUT_ALBUM) {
 				callback = null;
-				manager.beginTransaction().replace(R.id.container, AlbumFragment.newInstance())
+				manager.beginTransaction().replace(R.id.container, AlbumFragment.newInstance(""))
 						.commit();
-
+				showMiniPlayer = true;
 			} else if (layout == LAYOUT_ARTIST) {
 				callback = null;
-				manager.beginTransaction().replace(R.id.container, ArtistFragment.newInstance())
+				manager.beginTransaction().replace(R.id.container, ArtistFragment.newInstance(""))
 						.commit();
+				showMiniPlayer = true;
 			} else if (layout == LAYOUT_PROGRAMS){
 				callback = null;
-				manager.beginTransaction().replace(R.id.container, ProgramsFragment.newInstance()).commit();
+				manager.beginTransaction().replace(R.id.container, ProgramsFragment.newInstance("")).commit();
+				showMiniPlayer = true;
 			}else if (layout == LAYOUT_ANNOUNCERS){
 				callback = null;
-				manager.beginTransaction().replace(R.id.container, AnnouncersFragment.newInstance()).commit();
+				manager.beginTransaction().replace(R.id.container, AnnouncersFragment.newInstance("")).commit();
+				showMiniPlayer = true;
 			}else if (layout == LAYOUT_FEED){
 				callback = null;
-				manager.beginTransaction().replace(R.id.container, ClubRadioFragment.newInstance()).commit();
+				manager.beginTransaction().replace(R.id.container, ClubRadioFragment.newInstance("")).commit();
+				showMiniPlayer = true;
 			}else if (layout == LAYOUT_PEOPLE){
 				callback = null;
-				manager.beginTransaction().replace(R.id.container, PersonListFragment.newInstance()).commit();
+				manager.beginTransaction().replace(R.id.container, PersonListFragment.newInstance("")).commit();
+				showMiniPlayer = true;
 			}else if (layout == LAYOUT_ACCOUNT_SETTINGS){
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, AccountSettingFragment.newInstance()).commit();
@@ -289,15 +330,29 @@ public class DrawerActivity extends MasterActivity
 				showMiniPlayer = false;
 				manager.beginTransaction().replace(R.id.container, StreamPlayerFragment
 						.newInstance()).commit();
+				showMiniPlayer = true;
 			}else if(layout == LAYOUT_REQUEST){
 				callback = null;
-				manager.beginTransaction().replace(R.id.container, RequestFragment.newInstance())
+				manager.beginTransaction().replace(R.id.container, RequestFragment.newInstance(""))
 						.commit();
+				showMiniPlayer = true;
+			}else if(layout == LAYOUT_CATEGORY){
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, CategoryFragment.newInstance(""))
+						.commit();
+				showMiniPlayer = true;
+			}else if(layout == LAYOUT_SUBCATEGORY){
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, SubcategoryFragment.newInstance(""))
+						.commit();
+				showMiniPlayer = true;
 			}
+			navigationView.getMenu().getItem(menuId).setChecked(true);
 		}else{
 			isParentView = true;
 			FragmentManager manager = getSupportFragmentManager();
 			manager.beginTransaction().replace(R.id.container, RadioProfileFragment.newInstance()).commit();
+			navigationView.getMenu().getItem(0).setChecked(true);
 		}
 
 		if(isParentView){
@@ -313,6 +368,7 @@ public class DrawerActivity extends MasterActivity
 			drawer.setDrawerListener(toggle);
 			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		}
+
 
 		 /* Set up the audio player */
 		//mAudioPlayer = new PlayerFragment();
@@ -331,88 +387,58 @@ public class DrawerActivity extends MasterActivity
         /* Reload the latest preferences */
 		reloadPreferences();
 
+		imgCoverMini = (ImageView)findViewById(R.id.imgCoverMini);
 
-		/*while (!mAudioController.isIsServiceConnected()){
-			System.out.println(">>>>>>>>???????????????>>>>>>>>>> service : "+mAudioController.isIsServiceConnected());
-		}
-*/
+		txtJudul = (TextView) findViewById(R.id.txtTitleMini);
+		txtArtist = (TextView)findViewById(R.id.txtArtstMini);
 
+		btnPlay = (ImageButton) findViewById(R.id.btnPlayMini);
+		btnNext = (ImageButton) findViewById(R.id.btnNextMini);
 
-		//mAudioController.setArtist(0, "INI ARTIS SUCKSESSSS");
+		btnPlay.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (mAudioController.isPlaying()) {
+					mAudioController.pause();
+					//btnPlay.setBackgroundResource(R.drawable.ic_pause_white_48dp);
+					btnPlay.setImageResource(R.drawable.ic_play_arrow_white_36dp);
+				} else {
+					mAudioController.play();
+					//btnPlay.setBackgroundResource(R.drawable.ic_play_arrow_white_48dp);
+					btnPlay.setImageResource(R.drawable.ic_pause_white_36dp);
+				}
+			}
+		});
 
+		btnNext.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mAudioController.next();
+			}
+		});
 
+		miniPlayer.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(mContext, DrawerActivity.class);
+				intent.putExtra("parent", true);
+				intent.putExtra("title", "Player");
+				intent.putExtra("layout", MasterActivity.LAYOUT_PLAYER);
+				intent.putExtra("activity", R.layout.activity_drawer);
+				startActivity(intent);
+				finish();
+			}
+		});
 
-
-
-
-
-
-		/*location = mFilePath2;
-		time = 0;
-		length = 0;
-		type = -1;
-		picture = BitmapFactory.decodeResource(getResources(), R.drawable.wallpaper);
-		title = "JUDULLLLLL 444444444444";
-		artist = "ARTISSSS44444444444444444";
-		genre = "";
-		album = "ALBUUUM 4444444444444";
-		albumArtist = "ALBUM ARTISSSS 444444444444";
-		width = 0;
-		height = 0;
-		artworkURL = "";
-		audio = 0;
-		spu = 0;
-		trackNumber = 0;
-		m = new Media(location, time, length, type,
-				picture, title, artist, genre, album, albumArtist,
-				width, height, artworkURL, audio, spu, trackNumber);
-
-
-		//mDB.addMedia(m);
-		mediaList.add(m);*/
-
-		//mAudioController.loadMediaList(mediaList);
-
-
-		/*List<String> mediaLocation = new ArrayList<String>();
-		mediaLocation.add(mFilePath);
-		mediaLocation.add(mFilePath2);
-		mediaLocation.add(mFilePath3);
-		mediaLocation.add(mFilePath4);
-		mediaLocation.add(mFilePath5);
-		mediaLocation.add(mFilePath6);
-
-		System.out.println("Check isi location " + mediaLocation.get(0));
-		mAudioController.load(mediaLocation, 0, false);
-		//mAudioController.isPlaying();
-
-
-
-
-
-
-		//VLCInstance.getLibVlcInstance().getMeta(0).replace()
-
-		//mAudioController.load(alMedia, 0);
-		//addMediaToDB(); */
-
-		//loadMediaQueue();
-
+		setupHandler();
 
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		SharedPreferences pref = getSharedPreferences(getString(R.string.preference_key), Context
-				.MODE_PRIVATE);
-		if(!showMiniPlayer && pref.getInt("state", PlayerFragment.STATE_STOP) == PlayerFragment
-				.STATE_STOP){
-			miniPlayer.setVisibility(View.GONE);
-		}else if(showMiniPlayer){
-			miniPlayer.setVisibility(View.VISIBLE);
-		}
-
+		setupMiniPlayer();
+		setupHandler();
 		//mAudioController.addAudioPlayer(mAudioPlayer);
 		AudioServiceController.getInstance().bindAudioService(this);
 
@@ -422,7 +448,7 @@ public class DrawerActivity extends MasterActivity
 
 		if (mMediaLibrary.isWorking())
 			mHandler.sendEmptyMessageDelayed(MSG_LOADING, 300);
-			updateLists();
+		updateLists();
 		mMediaLibrary.addUpdateHandler(mHandler1);
 	}
 
@@ -430,6 +456,7 @@ public class DrawerActivity extends MasterActivity
 	protected void onPause() {
 		super.onPause();
 		mMediaLibrary.removeUpdateHandler(mHandler1);
+		handler.removeCallbacks(sendToUi);
 	}
 
 	/**
@@ -495,6 +522,7 @@ public class DrawerActivity extends MasterActivity
 		try {
 			unregisterReceiver(messageReceiver);
 		} catch (IllegalArgumentException e) {}
+		handler.removeCallbacks(sendToUi);
 	}
 
 	@Override
@@ -521,6 +549,14 @@ public class DrawerActivity extends MasterActivity
 		}else{
 			supportFinishAfterTransition();
 		}
+
+		/*Intent intent = new Intent(this, DrawerActivity.class);
+		intent.putExtra("parent", true);
+
+		intent.putExtra("layout", MasterActivity.LAYOUT_HOME);
+		intent.putExtra("activity", R.layout.activity_drawer);
+		startActivity(intent);
+		finish();*/
 	}
 
 	@Override
@@ -575,7 +611,7 @@ public class DrawerActivity extends MasterActivity
 				break;
 			case R.id.nav_profile:
 				intent.putExtra("layout", MasterActivity.LAYOUT_PERSON_PROFILE);
-				intent.putExtra("title", "Dimas Danang");
+				intent.putExtra("title", mSettings.getString(PREF_GOOGLE_USR, "User"));
 				intent.putExtra("activity", R.layout.activity_drawer);
 				startActivity(intent);
 				break;
@@ -598,10 +634,16 @@ public class DrawerActivity extends MasterActivity
 				startActivity(intent);
 				break;
 			case R.id.nav_player:
-				intent.putExtra("title", "Player");
+				/*intent.putExtra("title", "Player");
 				intent.putExtra("layout", MasterActivity.LAYOUT_PLAYER);
 				intent.putExtra("activity", R.layout.activity_drawer);
-				startActivity(intent);
+				startActivity(intent);*/
+				loadMediaQueue();
+				break;
+			case R.id.loguot:
+				Intent in = new Intent(this, EmptyActivity.class);
+				in.putExtra("title", "Login");
+				startActivity(in);
 				break;
 		}
 
@@ -651,6 +693,10 @@ public class DrawerActivity extends MasterActivity
 			} else if (action.equalsIgnoreCase(ACTION_SHOW_PLAYER)) {
 				showAudioPlayer();
 			}
+			if (action.equalsIgnoreCase(AudioService.ACTION_SHOW_HIDE_MINI_PLAYER)) {
+				setupMiniPlayer();
+			}
+
 		}
 	};
 
@@ -765,8 +811,8 @@ public class DrawerActivity extends MasterActivity
 		trackNumber = 0;
 
 		m = new Media(location, time, length, type,
-		picture, title, artist, genre, album, albumArtist,
-		width, height, artworkURL, audio, spu, trackNumber);
+				picture, title, artist, genre, album, albumArtist,
+				width, height, artworkURL, audio, spu, trackNumber);
 
 
 		mDB.addMedia(m);
@@ -1018,13 +1064,53 @@ public class DrawerActivity extends MasterActivity
 			/**
 			 * Updating parsed JSON data into ListView
 			 * */
-
-
+			Intent intent = new Intent(mContext, DrawerActivity.class);
+			intent.putExtra("parent", true);
+			intent.putExtra("title", "Player");
+			intent.putExtra("layout", MasterActivity.LAYOUT_PLAYER);
+			intent.putExtra("activity", R.layout.activity_drawer);
+			startActivity(intent);
+			finish();
 
 
 		}
 
 	}
+
+	private final Handler handler = new Handler();
+	private void setupHandler() {
+		handler.removeCallbacks(sendToUi);
+		handler.postDelayed(sendToUi, 1000); // 1 second
+	}
+
+
+	private Runnable sendToUi = new Runnable() {
+		public void run() {
+
+			//setupMiniPlayer();
+			txtJudul.setText(mAudioController.getTitle());
+			txtArtist.setText(mAudioController.getArtist());
+
+			imgCoverMini.setImageBitmap(mAudioController.getCover());
+
+			if(!mAudioController.hasNext()){
+				btnNext.setVisibility(View.INVISIBLE);
+			}
+			else{
+				btnNext.setVisibility(View.VISIBLE);
+			}
+
+			if(mAudioController.isPlaying()){
+				btnPlay.setImageResource(R.drawable.ic_pause_white_36dp);
+			}
+			else{
+				btnPlay.setImageResource(R.drawable.ic_play_arrow_white_36dp);
+			}
+			handler.postDelayed(this, 1000); // 2 seconds
+		}
+	};
+
+
 
 
 }

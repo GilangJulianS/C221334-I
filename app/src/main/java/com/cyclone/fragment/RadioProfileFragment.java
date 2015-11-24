@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -88,12 +89,8 @@ public class RadioProfileFragment extends Fragment {
 			LayoutInflater inflater = activity.getLayoutInflater();
 			View header = inflater.inflate(R.layout.part_header_radio_profile, parallaxHeader,
 					false);
-			try{
-				parallaxHeader.removeAllViews();
-				parallaxHeader.addView(header);
-			}
-			catch (Exception e){}
-
+			parallaxHeader.removeAllViews();
+			parallaxHeader.addView(header);
 		}
 	}
 }

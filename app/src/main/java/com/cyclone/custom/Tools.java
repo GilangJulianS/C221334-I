@@ -7,6 +7,17 @@ import android.graphics.Bitmap;
  */
 public class Tools {
 
+	public static Bitmap crop(Bitmap bitmap){
+		int width = bitmap.getWidth();
+		int height = bitmap.getHeight();
+		int x = width / 8;
+		int y = height / 8;
+		int newWidth = width * 6/8;
+		int newHeight = height * 6/8;
+		Bitmap newBitmap = Bitmap.createBitmap(bitmap, x, y, newWidth, newHeight);
+		return newBitmap;
+	}
+
 	public static Bitmap blur(Bitmap sentBitmap, float scale, int radius) {
 		int width = Math.round(sentBitmap.getWidth() * scale);
 		int height = Math.round(sentBitmap.getHeight() * scale);

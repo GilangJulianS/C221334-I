@@ -39,8 +39,8 @@ public class ClubFeedHolder extends UniversalHolder{
 	private int transitionId;
 	public static int autoId = 0;
 
-	public ClubFeedHolder(View v) {
-		super(v);
+	public ClubFeedHolder(View v, Activity activity) {
+		super(v, activity);
 		imgUser = (ImageView) v.findViewById(R.id.img_user);
 		txtHeaderName = (TextView) v.findViewById(R.id.txt_header_name);
 		txtHeaderInfo = (TextView) v.findViewById(R.id.txt_header_info);

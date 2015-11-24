@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<drawable name="btn_header">@drawable/btn_white</drawable>
+	<drawable name="btn_header_dark">@drawable/btn_dark</drawable>
+	<drawable name="btn_normal_yellow">@drawable/btn_yellow</drawable>
+	<drawable name="btn_normal_blue">@drawable/btn_blue</drawable>
+	<drawable name="btn_normal_green">@drawable/btn_green</drawable>
+	<drawable name="btn_normal_orange">@drawable/btn_orange</drawable>
+	<drawable name="btn_flat_transparent">@drawable/btn_transparent</drawable>
+</resources>

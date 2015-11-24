@@ -19,6 +19,7 @@
  *****************************************************************************/
 package com.cyclone.player;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -35,6 +36,7 @@ import java.util.Locale;
 public class VLCApplication extends Application {
     public final static String TAG = "VLC/VLCApplication";
     private static VLCApplication instance;
+    private static Activity activity;
 
     public final static String SLEEP_INTENT = "com.cyclone.player.SleepIntent";
     public final static String INCOMING_CALL_INTENT = "com.cyclone.player.IncomingCallIntent";
@@ -77,6 +79,8 @@ public class VLCApplication extends Application {
 
         instance = this;
 
+        activity = getActivity();
+
         // Initialize the database soon enough to avoid any race condition and crash
         MediaDatabase.getInstance();
         // Prepare cache folder constants
@@ -108,5 +112,9 @@ public class VLCApplication extends Application {
     public static Resources getAppResources()
     {
         return instance.getResources();
+    }
+
+    public static Activity getActivity(){
+        return activity;
     }
 }

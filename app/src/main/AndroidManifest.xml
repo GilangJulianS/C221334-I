@@ -44,8 +44,6 @@
         </activity>
         <activity android:name=".EmptyActivity" >
         </activity>
-
-        <activity android:name=".player.CompatErrorActivity" />
         <activity android:name=".player.CompatErrorActivity" />
         <activity android:name=".player.PreferencesActivity" />
 
@@ -61,18 +59,18 @@
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
-       <!-- <receiver
-            android:name=".player.widget.VLCAppWidgetProvider"
-            android:exported="false"
-            android:label="VLC mini player" >
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
+        <!-- <receiver
+             android:name=".player.widget.VLCAppWidgetProvider"
+             android:exported="false"
+             android:label="VLC mini player" >
+             <intent-filter>
+                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+             </intent-filter>
 
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/vlcwidget" />
-        </receiver>-->
+             <meta-data
+                 android:name="android.appwidget.provider"
+                 android:resource="@xml/vlcwidget" />
+         </receiver>-->
         <receiver android:name=".player.RemoteControlClientReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />

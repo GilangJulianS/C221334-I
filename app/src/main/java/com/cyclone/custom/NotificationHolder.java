@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.cyclone.DrawerActivity;
 import com.cyclone.R;
 import com.cyclone.model.Notification;
 
@@ -18,8 +19,8 @@ public class NotificationHolder extends UniversalHolder{
 	public TextView txtInfo;
 	public TextView txtTime;
 
-	public NotificationHolder(View v) {
-		super(v);
+	public NotificationHolder(View v, Activity activity) {
+		super(v, activity);
 		imgUser = (ImageView) v.findViewById(R.id.img_user);
 		txtInfo = (TextView) v.findViewById(R.id.txt_info);
 		txtTime = (TextView) v.findViewById(R.id.txt_time);

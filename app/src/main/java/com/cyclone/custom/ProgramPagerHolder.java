@@ -5,6 +5,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.cyclone.DrawerActivity;
 import com.cyclone.R;
 import com.cyclone.fragment.SimpleImageFragment;
 import com.cyclone.model.ProgramPager;
@@ -19,8 +20,8 @@ public class ProgramPagerHolder extends UniversalHolder {
 	private CirclePageIndicator indicator;
 	private CustomPagerAdapter adapter;
 
-	public ProgramPagerHolder(View v) {
-		super(v);
+	public ProgramPagerHolder(View v, Activity activity) {
+		super(v, activity);
 		viewPager = (ViewPager) v.findViewById(R.id.view_pager);
 		indicator = (CirclePageIndicator) v.findViewById(R.id.view_pager_indicator);
 	}

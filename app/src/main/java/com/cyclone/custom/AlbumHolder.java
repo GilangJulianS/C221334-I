@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.cyclone.DrawerActivity;
 import com.cyclone.R;
 import com.cyclone.model.Album;
 
@@ -17,8 +18,8 @@ public class AlbumHolder extends UniversalHolder {
 	public TextView txtPrimary;
 	public TextView txtSecondary;
 
-	public AlbumHolder(View v) {
-		super(v);
+	public AlbumHolder(View v, Activity activity) {
+		super(v, activity);
 		imgCover = (ImageView) v.findViewById(R.id.img_cover);
 		txtPrimary = (TextView) v.findViewById(R.id.txt_primary);
 		txtSecondary = (TextView) v.findViewById(R.id.txt_secondary);

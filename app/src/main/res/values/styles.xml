@@ -19,6 +19,13 @@
 		<item name="android:minWidth">0dp</item>
 	</style>
 
+
+
+	<style name="ButtonTheme.White" parent="@style/AppTheme">
+		<!-- Customize your theme here. -->
+		<item name="colorButtonNormal">#FFF</item>
+	</style>
+
 	<style name="ButtonTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
 		<!-- Customize your theme here. -->
 		<item name="colorPrimary">@color/colorPrimaryDefault</item>

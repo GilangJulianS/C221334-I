@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.cyclone.DrawerActivity;
 import com.cyclone.R;
 import com.cyclone.model.Announcer;
 
@@ -17,8 +18,8 @@ public class AnnouncerHolder extends UniversalHolder{
 	public TextView txtName;
 	public ImageView image;
 
-	public AnnouncerHolder(View v){
-		super(v);
+	public AnnouncerHolder(View v, Activity activity){
+		super(v, activity);
 		txtName = (TextView) v.findViewById(R.id.txt_announcer_name);
 		image = (ImageView) v.findViewById(R.id.img_announcer);
 	}

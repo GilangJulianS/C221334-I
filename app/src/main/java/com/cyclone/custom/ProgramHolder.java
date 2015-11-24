@@ -26,8 +26,8 @@ public class ProgramHolder extends UniversalHolder{
 	public RatingBar ratingBar;
 	public ViewGroup card;
 
-	public ProgramHolder(View v){
-		super(v);
+	public ProgramHolder(View v, Activity activity){
+		super(v, activity);
 		imgCover = (ImageView) v.findViewById(R.id.img_cover);
 		txtTitle = (TextView) v.findViewById(R.id.txt_title);
 		txtSchedule = (TextView) v.findViewById(R.id.txt_schedule);

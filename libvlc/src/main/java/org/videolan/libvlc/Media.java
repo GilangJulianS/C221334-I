@@ -407,8 +407,4 @@ public class Media {
     public int getFlags() {
         return mFlags;
     }
-
-    public void setArtist(String artist) {
-        mArtist = artist;
-    }
 }

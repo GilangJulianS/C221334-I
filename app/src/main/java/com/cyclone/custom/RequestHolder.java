@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.cyclone.DrawerActivity;
 import com.cyclone.R;
 import com.cyclone.model.Request;
 
@@ -19,8 +20,8 @@ public class RequestHolder extends UniversalHolder {
 	public TextView txtContent;
 	public TextView txtTime;
 
-	public RequestHolder(View v) {
-		super(v);
+	public RequestHolder(View v, Activity activity) {
+		super(v, activity);
 		imgUser = (ImageView) v.findViewById(R.id.img_user);
 		imgSocmed = (ImageView) v.findViewById(R.id.img_socmed);
 		txtUsername = (TextView) v.findViewById(R.id.txt_username);

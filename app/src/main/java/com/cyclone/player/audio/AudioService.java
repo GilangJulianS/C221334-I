@@ -49,13 +49,16 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.cyclone.DrawerActivity;
 import com.cyclone.IAudioService;
 import com.cyclone.IAudioServiceCallback;
+import com.cyclone.MasterActivity;
 import com.cyclone.R;
+import com.cyclone.fragment.PlayerFragment;
 import com.cyclone.player.MediaDatabase;
 import com.cyclone.player.RemoteControlClientReceiver;
 import com.cyclone.player.VLCApplication;
@@ -110,6 +113,8 @@ public class AudioService extends Service {
     public static final String ACTION_WIDGET_UPDATE_COVER = "org.videolan.vlc.widget.UPDATE_COVER";
     public static final String ACTION_WIDGET_UPDATE_POSITION = "org.videolan.vlc.widget.UPDATE_POSITION";
 
+    public static final String ACTION_SHOW_HIDE_MINI_PLAYER = "com.cyclone.ShowHideMiniPLayer";
+
     public static final String WIDGET_PACKAGE = "org.videolan.vlc";
     public static final String WIDGET_CLASS = "org.videolan.vlc.widget.VLCAppWidgetProvider";
 
@@ -155,6 +160,8 @@ public class AudioService extends Service {
 
     public static MediaList myQueue;
 
+    public static SharedPreferences pref;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -198,7 +205,7 @@ public class AudioService extends Service {
         filter.addAction(VLCApplication.CALL_ENDED_INTENT);
         registerReceiver(serviceReceiver, filter);
 
-        final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
         boolean stealRemoteControl = pref.getBoolean("enable_steal_remote_control", false);
 
         if (!LibVlcUtil.isFroyoOrLater() || stealRemoteControl) {
@@ -305,6 +312,8 @@ public class AudioService extends Service {
             unregisterReceiver(mRemoteControlClientReceiver);
             mRemoteControlClientReceiver = null;
         }
+
+
     }
 
     @Override
@@ -493,6 +502,18 @@ public class AudioService extends Service {
                     service.showNotification();
                     if (!service.mWakeLock.isHeld())
                         service.mWakeLock.acquire();
+
+
+                   // pref = VLCApplication.getActivity().getSharedPreferences(VLCApplication.getAppContext().getString(R.string.preference_key), MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putInt("state", PlayerFragment.STATE_PLAYING);
+                    editor.commit();
+
+                    Intent intent = new Intent();
+                    intent.setAction(ACTION_SHOW_HIDE_MINI_PLAYER);
+                    VLCApplication.getAppContext().sendBroadcast(intent);
+                    System.out.println("send croadcasr action show hide player");
+
                     break;
                 case EventHandler.MediaPlayerPaused:
                     Log.i(TAG, "MediaPlayerPaused");
@@ -504,12 +525,23 @@ public class AudioService extends Service {
                         service.mWakeLock.release();
                     break;
                 case EventHandler.MediaPlayerStopped:
+                    SharedPreferences.Editor editor2 = pref.edit();
+                    editor2.putInt("state", PlayerFragment.STATE_STOP);
+                    editor2.commit();
+
+                    Intent intent2 = new Intent();
+                    intent2.setAction(ACTION_SHOW_HIDE_MINI_PLAYER);
+                    VLCApplication.getAppContext().sendBroadcast(intent2);
+                    System.out.println("send croadcasr action show hide player");
                     Log.i(TAG, "MediaPlayerStopped");
                     service.executeUpdate();
                     service.executeUpdateProgress();
                     service.setRemoteControlClientPlaybackState(EventHandler.MediaPlayerStopped);
                     if (service.mWakeLock.isHeld())
                         service.mWakeLock.release();
+
+
+
                     break;
                 case EventHandler.MediaPlayerEndReached:
                     Log.i(TAG, "MediaPlayerEndReached");
@@ -754,6 +786,10 @@ public class AudioService extends Service {
             notificationIntent.setAction(DrawerActivity.ACTION_SHOW_PLAYER);
             notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
             notificationIntent.putExtra(START_FROM_NOTIFICATION, true);
+            notificationIntent.putExtra("title", "Player");
+            notificationIntent.putExtra("layout", MasterActivity.LAYOUT_PLAYER);
+            notificationIntent.putExtra("activity", R.layout.activity_drawer);
+            notificationIntent.putExtra("menuId", 8);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             if (LibVlcUtil.isJellyBeanOrLater()) {
@@ -843,6 +879,8 @@ public class AudioService extends Service {
             mHandler.sendEmptyMessage(SHOW_PROGRESS);
             showNotification();
             updateWidget(this);
+
+
         }
     }
 
@@ -858,6 +896,7 @@ public class AudioService extends Service {
         executeUpdate();
         executeUpdateProgress();
         changeAudioFocus(false);
+
     }
 
     private void determinePrevAndNextIndices() {
@@ -1254,6 +1293,8 @@ public class AudioService extends Service {
                 mCurrentIndex = 0;
             }
 
+
+
             mEventHandler.addHandler(mVlcEventHandler);
             mLibVLC.playIndex(mCurrentIndex);
             mHandler.sendEmptyMessage(SHOW_PROGRESS);
@@ -1262,6 +1303,7 @@ public class AudioService extends Service {
             updateWidget(AudioService.this);
             updateRemoteControlClientMetadata();
             determinePrevAndNextIndices();
+
         }
 
         /**

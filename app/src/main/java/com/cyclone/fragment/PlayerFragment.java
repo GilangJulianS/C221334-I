@@ -2,6 +2,7 @@ package com.cyclone.fragment;
 
 import android.animation.Animator;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,23 +13,17 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.graphics.Palette;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -36,8 +31,6 @@ import android.widget.TextView;
 
 import com.cyclone.DrawerActivity;
 import com.cyclone.R;
-import com.cyclone.custom.SnapGestureListener;
-import com.cyclone.custom.UniversalAdapter;
 import com.cyclone.model.Playlist;
 import com.cyclone.player.MediaDatabase;
 import com.cyclone.player.audio.AudioServiceController;
@@ -56,13 +49,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
-
 /**
  * Created by gilang on 29/10/2015.
  */
-public class PlayerFragment extends Fragment implements IAudioPlayer {
-
+public class PlayerFragment extends RecyclerFragment implements IAudioPlayer, RecyclerView.OnClickListener{
 	public static final String TAG = "VLC/AudioPlayer";
 
 	private String mFilePath = "http://stream.suararadio.com/bloom-mae.mp3";
@@ -75,12 +65,7 @@ public class PlayerFragment extends Fragment implements IAudioPlayer {
 	public static final int STATE_PLAYING = 100;
 	public static final int STATE_STOP = 101;
 	public static int state;
-	private RecyclerView recyclerView;
-	private List<Playlist> datas, persistentDatas;
-	private UniversalAdapter adapter;
-	private LinearLayoutManager layoutManager;
-	private DrawerActivity activity;
-	private GestureDetectorCompat gd;
+	private List<Object> persistentDatas;
 	private ImageButton btnMinimize, btnRepeat, btnPrevious, btnPlay, btnNext, btnShuffle, btnMenu;
 	private ViewGroup groupInfo, groupControl;
 	private ViewGroup btnArtist, btnAlbum;
@@ -91,28 +76,44 @@ public class PlayerFragment extends Fragment implements IAudioPlayer {
 	private SwipeRefreshLayout swipeLayout;
 	private SeekBar seekBar;
 
+	private RecyclerView recyclerView;
+	private Activity mactivity;
+
 	private AudioServiceController mAudioController;
 	private boolean mShowRemainingTime = false;
-	private boolean mPreviewingSeek = false;
-
-
-	private boolean mAdvFuncVisible;
-	private boolean mPlaylistSwitchVisible;
-	private boolean mHeaderPlayPauseVisible;
-	private boolean mProgressBarVisible;
-	private boolean mHeaderTimeVisible;
-
-	//LibVLC mLibVLC;
-
-	// Tips
-	private static final String PREF_PLAYLIST_TIPS_SHOWN = "playlist_tips_shown";
-	private static final String PREF_AUDIOPLAYER_TIPS_SHOWN = "audioplayer_tips_shown";
 
 	public PlayerFragment(){}
 
-	public static PlayerFragment newInstance(){
+	public static PlayerFragment newInstance(String json){
 		PlayerFragment fragment = new PlayerFragment();
+		fragment.json = json;
 		return fragment;
+	}
+
+
+	@Override
+	public List<Object> getDatas() {
+		return parse(json);
+	}
+
+	@Override
+	public void onCreateView(View v, ViewGroup parent, Bundle savedInstanceState) {
+		setHasOptionsMenu(true);
+	}
+
+	@Override
+	public int getColumnNumber() {
+		return 1;
+	}
+
+	@Override
+	public boolean isRefreshEnabled() {
+		return false;
+	}
+
+	@Override
+	public int getHeaderLayoutId() {
+		return R.layout.part_header_player;
 	}
 
 	@Override
@@ -121,6 +122,9 @@ public class PlayerFragment extends Fragment implements IAudioPlayer {
 		mAudioController = AudioServiceController.getInstance();
 		mAudioController.bindAudioService(getContext());
 
+		mactivity = getActivity();
+
+		getActivity().setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		/*try {
 			mLibVLC = VLCInstance.getLibVlcInstance();
 		} catch (LibVlcException e) {
@@ -137,61 +141,24 @@ public class PlayerFragment extends Fragment implements IAudioPlayer {
 		//System.out.println(""+mdb.getMedia(mFilePath).getTitle());
 		//loadFromDB();
 		setupHandler();
+
 	}
+
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
-		setHasOptionsMenu(true);
-		View v = inflater.inflate(R.layout.fragment_recycler, parent, false);
+	public void prepareHeader(View v) {
+		bindHeaderView(v);
+		SharedPreferences pref = activity.getSharedPreferences(getString(R.string
+				.preference_key), Context.MODE_PRIVATE);
+		state = pref.getInt("state", STATE_STOP);
 
-		swipeLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh_layout);
-		swipeLayout.setEnabled(false);
-
-
-		bindView(v);
-
-		layoutManager = new LinearLayoutManager(getActivity());
-		recyclerView.setLayoutManager(layoutManager);
-
-		adapter = new UniversalAdapter(getActivity(), "");
-
-		SlideInUpAnimator slideAnimator = new SlideInUpAnimator(new
-				DecelerateInterpolator());
-		slideAnimator.setAddDuration(500);
-		slideAnimator.setMoveDuration(500);
-		recyclerView.setItemAnimator(slideAnimator);
-
-		recyclerView.setAdapter(adapter);
-
-
-
-		animate(datas.get(0));
-
-		if(activity != null){
-			gd = new GestureDetectorCompat(activity, new SnapGestureListener(activity));
-			recyclerView.setOnTouchListener(new View.OnTouchListener() {
-				@Override
-				public boolean onTouch(View v, MotionEvent event) {
-					System.out.println("touch recycler");
-					if(layoutManager.findFirstCompletelyVisibleItemPosition() == 0)
-						return gd.onTouchEvent(event);
-					return false;
-				}
-			});
-		}
-
-		getActivity().setVolumeControlStream(AudioManager.STREAM_MUSIC);
-
-		//addToData();
-		//addMusic();
-
+		persistentDatas = parse(json);
+		minimizedPlayer = activity.findViewById(R.id.minimized_player);
+		minimizedPlayer.setVisibility(View.GONE);
 		setPlayerColor();
 		update();
-		return v;
-	}
 
-	public void bindView(View v){
-		recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
+
 
 	}
 
@@ -208,40 +175,6 @@ public class PlayerFragment extends Fragment implements IAudioPlayer {
 			activity.appBarLayout.setExpanded(true);
 		}
 		return super.onOptionsItemSelected(item);
-	}
-
-	@Override
-	public void onAttach(Context context){
-		super.onAttach(context);
-		AudioServiceController.getInstance().bindAudioService(context);
-		SharedPreferences pref = context.getSharedPreferences(getString(R.string
-				.preference_key), Context.MODE_PRIVATE);
-		state = pref.getInt("state", STATE_STOP);
-
-		datas = parse("");
-		persistentDatas = new ArrayList<>();
-		persistentDatas.addAll(datas);
-
-		System.out.println("attached player");
-		if(context instanceof DrawerActivity){
-			activity = (DrawerActivity) context;
-			ViewGroup parallaxHeader = (ViewGroup) activity.findViewById(R.id
-					.parallax_header);
-			LayoutInflater inflater = activity.getLayoutInflater();
-			View header = inflater.inflate(R.layout.part_header_player, parallaxHeader,
-					false);
-			bindHeaderView(header);
-			minimizedPlayer = activity.findViewById(R.id.minimized_player);
-			minimizedPlayer.setVisibility(View.GONE);
-			System.out.println("hide mini player");
-			parallaxHeader.addView(header);
-		}
-	}
-
-	@Override
-	public void onDetach() {
-		super.onDetach();
-//		minimizedPlayer.setVisibility(View.VISIBLE);
 	}
 
 	@Override
@@ -286,8 +219,8 @@ public class PlayerFragment extends Fragment implements IAudioPlayer {
 
 		seekBar = (SeekBar) v.findViewById(R.id.seekbar);
 
-		/*if(state == STATE_PLAYING)
-			btnPlay.setImageResource(R.drawable.ic_pause_white_48dp);*/
+		if(state == STATE_PLAYING)
+			btnPlay.setImageResource(R.drawable.ic_pause_white_48dp);
 
 		btnPlay.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -405,7 +338,8 @@ public class PlayerFragment extends Fragment implements IAudioPlayer {
 				}
 			}
 		});
-
+		imgCover.setImageResource(R.drawable.wallpaper);
+		setPlayerColor();
 
 
 		btnArtist.setOnClickListener(new View.OnClickListener() {
@@ -431,59 +365,67 @@ public class PlayerFragment extends Fragment implements IAudioPlayer {
 		seekBar.setOnSeekBarChangeListener(mTimelineListner);
 
 		update();
+
 	}
 
 	public void setPlayerColor(){
-		try{
-			Bitmap bitmap = ((BitmapDrawable)imgCover.getDrawable()).getBitmap();
-			Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+		Bitmap bitmap = ((BitmapDrawable)imgCover.getDrawable()).getBitmap();
+		Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
 
-				@Override
-				public void onGenerated(Palette palette) {
-					int color = ContextCompat.getColor(getContext(), R.color.colorPrimaryDark);
-					color = palette.getDarkVibrantColor(color);
-					int r = (color >> 16) & 0xFF;
-					int g = (color >> 8) & 0xFF;
-					int b = (color >> 0) & 0xFF;
-					System.out.println("RGB : " + r + " " + g + " " + b);
-					r += 50;
-					g += 50;
-					b += 50;
-					System.out.println("RGB : " + r + " " + g + " " + b);
-					if (r > 255)
-						r = 255;
-					if (g > 255)
-						g = 255;
-					if (b > 255)
-						b = 255;
-					int lightColor = Color.rgb(r, g, b);
-					groupInfo.setBackgroundColor(color);
-					groupControl.setBackgroundColor(lightColor);
-				}
-			});
-		}
-		catch (Exception e){}
-
-	}
-
-	private void animate(final Playlist playlist){
-		final Handler handler = new Handler();
-		final Playlist s = playlist;
-		handler.postDelayed(new Runnable() {
 			@Override
-			public void run() {
-				adapter.add(s);
-				datas.remove(s);
-				adapter.notifyItemInserted(adapter.datas.size() - 1);
-				if (!datas.isEmpty()) {
-					animate(datas.get(0));
-				}
+			public void onGenerated(Palette palette) {
+				int color = ContextCompat.getColor(getContext(), R.color.colorPrimaryDark);
+				color = palette.getDarkVibrantColor(color);
+				int r = (color >> 16) & 0xFF;
+				int g = (color >> 8) & 0xFF;
+				int b = (color >> 0) & 0xFF;
+				System.out.println("RGB : " + r + " " + g + " " + b);
+				r += 50;
+				g += 50;
+				b += 50;
+				System.out.println("RGB : " + r + " " + g + " " + b);
+				if (r > 255)
+					r = 255;
+				if (g > 255)
+					g = 255;
+				if (b > 255)
+					b = 255;
+				int lightColor = Color.rgb(r, g, b);
+				groupInfo.setBackgroundColor(color);
+				groupControl.setBackgroundColor(lightColor);
 			}
-		}, 200);
+		});
 	}
 
-	public List<Playlist> parse(String json){
-		List<Playlist> playlists = new ArrayList<>();
+	public List<Object> parse(String json){
+		List<Object> playlists = new ArrayList<>();
+		/*playlists.add(new Playlist("The Celestials", "The Smashing Pumpkins", "03:20"));
+		playlists.add(new Playlist("Track 5 of 30 Playlist", "Morning Songs", "1:08:20"));
+		playlists.add(new Playlist("Drones", "Muse", "05:45"));
+		playlists.add(new Playlist("Extraordinary", "Clean Bandit", "04:48"));
+		playlists.add(new Playlist("Heart Like Yours", "Willamette Willamette Willamette", "03:15"));
+		playlists.add(new Playlist("The Celestials", "The Smashing Pumpkins", "03:20"));
+		playlists.add(new Playlist("Track 5 of 30 Playlist", "Morning Songs", "1:08:20"));
+		playlists.add(new Playlist("Drones", "Muse", "05:45"));
+		playlists.add(new Playlist("Extraordinary", "Clean Bandit", "04:48"));
+		playlists.add(new Playlist("Heart Like Yours", "Willamette Willamette Willamette", "03:15"));
+		playlists.add(new Playlist("The Celestials", "The Smashing Pumpkins", "03:20"));
+		playlists.add(new Playlist("Track 5 of 30 Playlist", "Morning Songs", "1:08:20"));
+		playlists.add(new Playlist("Drones", "Muse", "05:45"));
+		playlists.add(new Playlist("Extraordinary", "Clean Bandit", "04:48"));
+		playlists.add(new Playlist("Heart Like Yours", "Willamette Willamette Willamette", "03:15"));
+		playlists.add(new Playlist("The Celestials", "The Smashing Pumpkins", "03:20"));
+		playlists.add(new Playlist("Track 5 of 30 Playlist", "Morning Songs", "1:08:20"));
+		playlists.add(new Playlist("Drones", "Muse", "05:45"));
+		playlists.add(new Playlist("Extraordinary", "Clean Bandit", "04:48"));
+		playlists.add(new Playlist("Heart Like Yours", "Willamette Willamette Willamette", "03:15"));
+		playlists.add(new Playlist("The Celestials", "The Smashing Pumpkins", "03:20"));
+		playlists.add(new Playlist("Track 5 of 30 Playlist", "Morning Songs", "1:08:20"));
+		playlists.add(new Playlist("Drones", "Muse", "05:45"));
+		playlists.add(new Playlist("Extraordinary", "Clean Bandit", "04:48"));
+		playlists.add(new Playlist("Heart Like Yours", "Willamette Willamette Willamette", "03:15"));*/
+
+		/*List<Playlist> playlists = new ArrayList<>();*/
 
 		MediaList mList = null;
 		try {
@@ -516,16 +458,7 @@ public class PlayerFragment extends Fragment implements IAudioPlayer {
 			v.setVisibility(View.VISIBLE);
 			anim.start();
 		}catch (Exception e){}
-
-
 	}
-
-	public static void start(Context context) {
-		Intent intent = new Intent();
-		intent.setAction(DrawerActivity.ACTION_SHOW_PLAYER);
-		context.getApplicationContext().sendBroadcast(intent);
-	}
-
 	@Override
 	public synchronized void update() {
 
@@ -585,11 +518,11 @@ public class PlayerFragment extends Fragment implements IAudioPlayer {
 			btnPrevious.setVisibility(ImageButton.INVISIBLE);
 
 
-			try{
-				txtTitle.setText(mAudioController.getTitle());
-				txtArtist.setText(mAudioController.getArtist());
-			}
-			catch (Exception e){}
+		try{
+			txtTitle.setText(mAudioController.getTitle());
+			txtArtist.setText(mAudioController.getArtist());
+		}
+		catch (Exception e){}
 
 
 		updateList();
@@ -643,7 +576,7 @@ public class PlayerFragment extends Fragment implements IAudioPlayer {
 		public void onStopTrackingTouch(SeekBar arg0) {
 			// TODO Auto-generated method stub
 			mAudioController.setTime(pros);
-			txtCurTimePlaying.setText(Strings.millisToString(mShowRemainingTime ? pros-mAudioController.getLength() : pros));
+			txtCurTimePlaying.setText(Strings.millisToString(mShowRemainingTime ? pros - mAudioController.getLength() : pros));
 		}
 
 		@Override
@@ -670,12 +603,7 @@ public class PlayerFragment extends Fragment implements IAudioPlayer {
 		if (mAudioController.isPlaying()) {
 			mAudioController.pause();
 		} else {
-			if(mAudioController.getTime()<3000){
-				mAudioController.playIndex(0);
-			}
-			else{
-				mAudioController.play();
-			}
+			mAudioController.play();
 
 		}
 		update();
@@ -802,7 +730,7 @@ public class PlayerFragment extends Fragment implements IAudioPlayer {
 
 		while (mykey.hasNext()){
 			String key = (String)mykey.next();
-		//	mediaList.add(hashMapMediaList.get(key));
+			//	mediaList.add(hashMapMediaList.get(key));
 		}
 	}
 
@@ -887,39 +815,8 @@ public class PlayerFragment extends Fragment implements IAudioPlayer {
 	};
 
 
+	@Override
+	public void onClick(View v) {
+		System.out.println("sfsadsdsdsdasdsad}}}}}}}}}}}}}}|}||}}}}}}}}}}}}}}}}|");
+	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

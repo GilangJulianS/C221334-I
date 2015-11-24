@@ -16,11 +16,13 @@ public class PlaylistHolder extends UniversalHolder{
 	public TextView txtArtist;
 	public TextView txtDuration;
 
-	public PlaylistHolder(View v) {
-		super(v);
+
+	public PlaylistHolder(View v, Activity activity) {
+		super(v, activity);
 		txtTitle = (TextView) v.findViewById(R.id.txt_song_title);
 		txtArtist = (TextView) v.findViewById(R.id.txt_song_artist);
 		txtDuration = (TextView) v.findViewById(R.id.txt_duration);
+
 	}
 
 	@Override

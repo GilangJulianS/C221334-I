@@ -1,1 +1,1 @@
-include ':app', ':libvlc', ':libvlc2'
+include ':app', ':libvlc'

@@ -1,8 +1,8 @@
 package com.cyclone;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.GestureDetectorCompat;
@@ -11,8 +11,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.cyclone.R;
 import com.cyclone.custom.OnOffsetChangedListener;
 import com.cyclone.fragment.PlayerFragment;
 
@@ -27,7 +29,7 @@ public abstract class MasterActivity extends AppCompatActivity implements Gestur
 	public static final int LAYOUT_PLAYER = 103;
 	public static final int LAYOUT_ALBUM = 104;
 	public static final int LAYOUT_ARTIST = 105;
-	public static final int LAYOUT_HOME = 106;
+	public static final int LAYOUT_RADIO_PROFILE = 106;
 	public static final int LAYOUT_VIRTUAL_CARD = 107;
 	public static final int LAYOUT_CLUB = 108;
 	public static final int LAYOUT_NOTIFICATION = 109;
@@ -40,6 +42,11 @@ public abstract class MasterActivity extends AppCompatActivity implements Gestur
 	public static final int LAYOUT_ACCOUNT_SETTINGS = 116;
 	public static final int LAYOUT_STREAM_PLAYER = 117;
 	public static final int LAYOUT_REQUEST = 118;
+	public static final int LAYOUT_HOME = 119;
+	public static final int LAYOUT_CATEGORY = 120;
+	public static final int LAYOUT_SUBCATEGORY = 121;
+
+	public static final String ulr_stream = "http://stream.suararadio.com:8000/bandung_klitefm_mp3";
 
 	public AppBarLayout appBarLayout;
 	public boolean isExpanded = true;
@@ -49,11 +56,25 @@ public abstract class MasterActivity extends AppCompatActivity implements Gestur
 	protected OnOffsetChangedListener callback;
 	protected Toolbar toolbar;
 
+	protected ImageButton btnPlay, btnNext;
+
+	protected TextView txtJudul, txtArtist;
+
+	ImageView imgCoverMini;
+
+	//private AudioServiceController mAudioController;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+	//	mAudioController = AudioServiceController.getInstance();
+
+
+
 	}
+
 
 	protected void setupToolbar(){
 		toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -62,12 +83,11 @@ public abstract class MasterActivity extends AppCompatActivity implements Gestur
 
 	protected void setupMiniPlayer(){
 		miniPlayer = findViewById(R.id.minimized_player);
-		SharedPreferences pref = getSharedPreferences(getString(R.string.preference_key), Context
-				.MODE_PRIVATE);
-		if(pref.getInt("state", PlayerFragment.STATE_STOP) == PlayerFragment.STATE_STOP){
-			miniPlayer.setVisibility(View.GONE);
-		}else{
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		if(pref.getInt("state", PlayerFragment.STATE_PLAYING) == PlayerFragment.STATE_PLAYING && DrawerActivity.showMiniPlayer ){
 			miniPlayer.setVisibility(View.VISIBLE);
+		}else{
+			miniPlayer.setVisibility(View.GONE);
 		}
 	}
 
@@ -88,22 +108,21 @@ public abstract class MasterActivity extends AppCompatActivity implements Gestur
 		appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
 			@Override
 			public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-				float percent = (float)Math.abs(verticalOffset) / (float)appBarLayout
+				float percent = (float) Math.abs(verticalOffset) / (float) appBarLayout
 						.getTotalScrollRange()
 						* 100;
 //				System.out.println(percent);
-				if(percent == 0) {
+				if (percent == 0) {
 					isExpanded = true;
 					System.out.println("expanded blalbla");
-				}
-				else if(percent == 100) {
+				} else if (percent == 100) {
 					isExpanded = false;
 					System.out.println("collapsed blalbla");
 				}
-				if(percent == 100 || percent == 0){
+				if (percent == 100 || percent == 0) {
 					System.out.println("finish");
 				}
-				if(callback != null) {
+				if (callback != null) {
 					callback.onChanged(percent);
 				}
 			}

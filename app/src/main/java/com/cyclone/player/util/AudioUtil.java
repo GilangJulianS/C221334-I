@@ -162,7 +162,7 @@ public class AudioUtil {
         if (album == null)
             return null;
         ContentResolver contentResolver = context.getContentResolver();
-        Uri uri = android.provider.MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
+        Uri uri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
         Cursor cursor = contentResolver.query(uri, new String[]{
                         MediaStore.Audio.Albums.ALBUM,
                         MediaStore.Audio.Albums.ALBUM_ART},
@@ -174,7 +174,7 @@ public class AudioUtil {
             // do nothing
             cursor.close();
         } else {
-            int titleColumn = cursor.getColumnIndex(android.provider.MediaStore.Audio.Albums.ALBUM_ART);
+            int titleColumn = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
             String albumArt = cursor.getString(titleColumn);
             cursor.close();
             return albumArt;
@@ -246,7 +246,7 @@ public class AudioUtil {
 
         try {
             // try to load from cache
-            int hash = MurmurHash.hash32(Util.getMediaArtist(context, media)+Util.getMediaAlbum(context, media));
+            int hash = MurmurHash.hash32(Util.getMediaArtist(context, media)+ Util.getMediaAlbum(context, media));
             cachePath = COVER_DIR + (hash >= 0 ? "" + hash : "m" + (-hash)) + "_" + width;
             System.out.println("AUDIO UTIL,,,,,,,,,,,,,,,,,,,sssssssss,,,,,,,,,,,,,,,");
             // try to get the cover from the LRUCache first

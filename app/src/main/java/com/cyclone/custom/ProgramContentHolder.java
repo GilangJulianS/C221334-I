@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.cyclone.DrawerActivity;
 import com.cyclone.R;
 import com.cyclone.model.ProgramContent;
 
@@ -16,8 +17,8 @@ public class ProgramContentHolder extends UniversalHolder {
 	public TextView txtTime;
 	public TextView txtContent;
 
-	public ProgramContentHolder(View v) {
-		super(v);
+	public ProgramContentHolder(View v, Activity activity) {
+		super(v, activity);
 		txtType = (TextView) v.findViewById(R.id.txt_type);
 		txtTime = (TextView) v.findViewById(R.id.txt_time);
 		txtContent = (TextView) v.findViewById(R.id.txt_content);

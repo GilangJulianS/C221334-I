@@ -1,25 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-	<group android:checkableBehavior="none">
+	<group android:checkableBehavior="single">
 		<item
 			android:id="@+id/nav_home"
-			android:icon="@android:drawable/ic_menu_camera"
+			android:icon="@drawable/ic_home_black_36dp"
 			android:title="Home"/>
 		<item
 			android:id="@+id/nav_live"
-			android:icon="@android:drawable/ic_menu_gallery"
+			android:icon="@drawable/ic_radio_black_36dp"
 			android:title="Live"/>
 		<item
 			android:id="@+id/nav_klub"
-			android:icon="@android:drawable/ic_menu_slideshow"
+			android:icon="@drawable/ic_people_black_36dp"
 			android:title="KlubRadio"/>
-	</group>
-
-	<group android:checkableBehavior="none">
 		<item
 			android:id="@+id/nav_profile"
-			android:icon="@drawable/background_login"
+			android:icon="@drawable/ic_person_black_36dp"
 			android:title="Dimas Danang"/>
 		<item
 			android:id="@+id/nav_favorite"
@@ -33,9 +30,6 @@
 			android:id="@+id/nav_virtual_card"
 			android:icon="@drawable/ic_credit_card_black_36dp"
 			android:title="Virtual Card"/>
-	</group>
-
-	<group android:checkableBehavior="none">
 		<item
 			android:id="@+id/nav_setting"
 			android:icon="@drawable/ic_settings_black_36dp"
@@ -44,6 +38,10 @@
 			android:id="@+id/nav_player"
 			android:icon="@drawable/ic_play_arrow_black_48dp"
 			android:title="Player"/>
+		<item
+			android:id="@+id/loguot"
+			android:icon="@drawable/common_google_signin_btn_icon_light_normal"
+			android:title="Google"/>
 	</group>
 
 </menu>

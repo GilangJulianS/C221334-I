@@ -61,6 +61,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
 			public void onClick(View v) {
 				Intent i = new Intent(context, DrawerActivity.class);
 				i.putExtra("title", "Account Settings");
+				i.putExtra("activity", R.layout.activity_drawer_standard);
 				i.putExtra("layout", DrawerActivity.LAYOUT_ACCOUNT_SETTINGS);
 				activity.startActivity(i);
 			}

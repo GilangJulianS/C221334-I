@@ -1,7 +1,6 @@
 package com.cyclone.custom;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +9,8 @@ import android.view.ViewGroup;
 import com.cyclone.R;
 import com.cyclone.model.Album;
 import com.cyclone.model.Announcer;
+import com.cyclone.model.Categories;
+import com.cyclone.model.Contents;
 import com.cyclone.model.Notification;
 import com.cyclone.model.Person;
 import com.cyclone.model.Post;
@@ -21,6 +22,7 @@ import com.cyclone.model.Request;
 import com.cyclone.model.RunningProgram;
 import com.cyclone.model.Section;
 import com.cyclone.model.Song;
+import com.cyclone.model.SubcategoryItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,15 +45,16 @@ public class UniversalAdapter extends Adapter<UniversalHolder> {
 	public static final int TYPE_PROGRAM_CONTENT = 111;
 	public static final int TYPE_PROGRAM_PAGER = 112;
 	public static final int TYPE_REQUEST = 113;
+	public static final int TYPE_CATEGORIES = 114;
+	public static final int TYPE_CONTENTS = 115;
+	public static final int TYPE_SUBCATEGORY_ITEM = 116;
 
 	public List<Object> datas;
 	private Activity activity;
-	private Context context;
 
-	public UniversalAdapter(Activity activity, String json){
+	public UniversalAdapter(Activity activity){
 		datas = new ArrayList<>();
 		this.activity = activity;
-		this.context = (Context)activity;
 	}
 
 	public void add(Object o){
@@ -94,6 +97,9 @@ public class UniversalAdapter extends Adapter<UniversalHolder> {
 		else if(o instanceof ProgramContent) return TYPE_PROGRAM_CONTENT;
 		else if(o instanceof ProgramPager) return TYPE_PROGRAM_PAGER;
 		else if(o instanceof Request) return TYPE_REQUEST;
+		else if(o instanceof Categories) return  TYPE_CATEGORIES;
+		else if(o instanceof Contents) return TYPE_CONTENTS;
+		else if(o instanceof SubcategoryItem) return TYPE_SUBCATEGORY_ITEM;
 		return -1;
 	}
 
@@ -112,6 +118,9 @@ public class UniversalAdapter extends Adapter<UniversalHolder> {
 			case TYPE_PROGRAM_CONTENT: return R.layout.card_program_content;
 			case TYPE_PROGRAM_PAGER: return R.layout.card_image_pager;
 			case TYPE_REQUEST: return R.layout.card_request;
+			case TYPE_CATEGORIES: return R.layout.card_categories;
+			case TYPE_CONTENTS: return R.layout.card_contents;
+			case TYPE_SUBCATEGORY_ITEM: return R.layout.card_subcategory_item;
 			default: return -1;
 		}
 	}
@@ -120,19 +129,22 @@ public class UniversalAdapter extends Adapter<UniversalHolder> {
 	public UniversalHolder createViewHolder(View v, int viewType){
 		UniversalHolder holder = null;
 		switch (viewType){
-			case TYPE_ANNOUNCER: holder = new AnnouncerHolder(v); break;
-			case TYPE_CLUB_FEED: holder = new ClubFeedHolder(v); break;
-			case TYPE_NOTIFICATION: holder = new NotificationHolder(v); break;
-			case TYPE_PERSON: holder = new PersonHolder(v); break;
-			case TYPE_PROGRAM: holder = new ProgramHolder(v); break;
-			case TYPE_PLAYLIST: holder = new PlaylistHolder(v); break;
-			case TYPE_SECTION: holder = new SectionHolder(v); break;
-			case TYPE_SONG: holder = new SongHolder(v); break;
-			case TYPE_ALBUM: holder = new AlbumHolder(v); break;
-			case TYPE_RUNNING_PROGRAM: holder = new RunningProgramHolder(v); break;
-			case TYPE_PROGRAM_CONTENT: holder = new ProgramContentHolder(v); break;
-			case TYPE_PROGRAM_PAGER: holder = new ProgramPagerHolder(v); break;
-			case TYPE_REQUEST: holder = new RequestHolder(v); break;
+			case TYPE_ANNOUNCER: holder = new AnnouncerHolder(v, activity); break;
+			case TYPE_CLUB_FEED: holder = new ClubFeedHolder(v, activity); break;
+			case TYPE_NOTIFICATION: holder = new NotificationHolder(v, activity); break;
+			case TYPE_PERSON: holder = new PersonHolder(v, activity); break;
+			case TYPE_PROGRAM: holder = new ProgramHolder(v, activity); break;
+			case TYPE_PLAYLIST: holder = new PlaylistHolder(v, activity); break;
+			case TYPE_SECTION: holder = new SectionHolder(v, activity); break;
+			case TYPE_SONG: holder = new SongHolder(v, activity); break;
+			case TYPE_ALBUM: holder = new AlbumHolder(v, activity); break;
+			case TYPE_RUNNING_PROGRAM: holder = new RunningProgramHolder(v, activity); break;
+			case TYPE_PROGRAM_CONTENT: holder = new ProgramContentHolder(v, activity); break;
+			case TYPE_PROGRAM_PAGER: holder = new ProgramPagerHolder(v, activity); break;
+			case TYPE_REQUEST: holder = new RequestHolder(v, activity); break;
+			case TYPE_CATEGORIES: holder = new CategoriesHolder(v, activity); break;
+			case TYPE_CONTENTS: holder = new ContentsHolder(v, activity); break;
+			case TYPE_SUBCATEGORY_ITEM: holder = new SubcategoryHolder(v, activity); break;
 		}
 		return holder;
 	}

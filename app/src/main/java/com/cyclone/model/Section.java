@@ -6,8 +6,10 @@ package com.cyclone.model;
 public class Section {
 
 	public String name;
+	public String category;
 
-	public Section(String name){
+	public Section(String name, String category){
 		this.name = name;
+		this.category = category;
 	}
 }

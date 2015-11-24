@@ -29,8 +29,8 @@ public class PersonHolder extends UniversalHolder{
 	private int transitionId;
 	public static int autoId = 0;
 
-	public PersonHolder(View v) {
-		super(v);
+	public PersonHolder(View v, Activity activity) {
+		super(v, activity);
 		imgUser = (ImageView)v.findViewById(R.id.img_user);
 		txtName = (TextView) v.findViewById(R.id.txt_name);
 		txtUsername = (TextView) v.findViewById(R.id.txt_username);
