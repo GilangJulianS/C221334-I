@@ -13,7 +13,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -29,20 +28,23 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cyclone.fragment.AccountSettingFragment;
+import com.cyclone.fragment.AddMixFragment;
 import com.cyclone.fragment.AlbumFragment;
 import com.cyclone.fragment.AnnouncersFragment;
 import com.cyclone.fragment.ArtistFragment;
 import com.cyclone.fragment.CategoryFragment;
 import com.cyclone.fragment.ClubRadioFragment;
+import com.cyclone.fragment.CommentFragment;
+import com.cyclone.fragment.GridMixFragment;
 import com.cyclone.fragment.HomeFragment;
 import com.cyclone.fragment.LiveStreamFragment;
+import com.cyclone.fragment.MixFragment;
 import com.cyclone.fragment.NotificationFragment;
 import com.cyclone.fragment.PersonListFragment;
 import com.cyclone.fragment.PersonProfileFragment;
@@ -58,13 +60,15 @@ import com.cyclone.fragment.VirtualCardFragment;
 import com.cyclone.player.CompatErrorActivity;
 import com.cyclone.player.MediaDatabase;
 import com.cyclone.player.MediaLibrary;
-import com.cyclone.player.PreferencesActivity;
 import com.cyclone.player.VLCApplication;
 import com.cyclone.player.audio.AudioService;
 import com.cyclone.player.audio.AudioServiceController;
 import com.cyclone.player.audio.ServiceQueueJson;
 import com.cyclone.player.util.VLCInstance;
 import com.cyclone.player.util.WeakHandler;
+import com.facebook.FacebookSdk;
+import com.facebook.Profile;
+import com.facebook.appevents.AppEventsLogger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,6 +84,7 @@ import java.util.List;
 
 public class DrawerActivity extends MasterActivity
 		implements NavigationView.OnNavigationItemSelectedListener {
+
 	public final static String TAG = "VLC/DrawerActivity";
 
 	protected static final String ACTION_SHOW_PROGRESSBAR = "com.cyclone.ShowProgressBar";
@@ -96,6 +101,7 @@ public class DrawerActivity extends MasterActivity
 	public static final String PREF_GOOGLE = "google_login";
 	public static final String PREF_GOOGLE_USR = "google_username";
 	public static final String PREF_GOOGLE_EMAIL = "google_email";
+	public static final String PREF_USER = "used_user";
 
 	private Context mContext;
 	private ActionBar mActionBar;
@@ -139,9 +145,11 @@ public class DrawerActivity extends MasterActivity
 	LibVLC mlibVLC;
 	private View miniPlayer;
 
+	private int CheckUsrFacebook = 0;
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		if (!LibVlcUtil.hasCompatibleCPU(this)) {
 			Log.e(TAG, LibVlcUtil.getErrorMsg());
 			Intent i = new Intent(this, CompatErrorActivity.class);
@@ -162,14 +170,48 @@ public class DrawerActivity extends MasterActivity
 		if (pinfo != null)
 			mVersionNumber = pinfo.versionCode;
 
+		//Facebook check user
+		AppEventsLogger
+				.activateApp(mContext);
+		FacebookSdk.sdkInitialize(mContext);
+		Profile profile = Profile.getCurrentProfile();
+
+		try{
+			System.out.println("facebook name :" +profile.getName());
+			CheckUsrFacebook = 1;
+		}catch (Exception e){
+			System.out.println("logoutttttttttttt facebook");
+			CheckUsrFacebook = 0;
+		}
         /* Get settings */
 		mSettings = PreferenceManager.getDefaultSharedPreferences(this);
 
-		if(!mSettings.getBoolean(PREF_GOOGLE, false)){
+		if(!mSettings.getBoolean(PREF_GOOGLE, false) && CheckUsrFacebook == 0){
 			Intent intent = new Intent(this, EmptyActivity.class);
 			intent.putExtra("title", "Login");
 			startActivity(intent);
 		}
+
+		else if(mSettings.getBoolean(PREF_GOOGLE, false)){
+			SharedPreferences.Editor editor = mSettings.edit();
+			editor.putString(PREF_USER, mSettings.getString(PREF_GOOGLE_USR, "Unamed"));
+			editor.commit();
+			System.out.println("masuk di state google ");
+		}
+		else if(CheckUsrFacebook == 1){
+			SharedPreferences.Editor editor = mSettings.edit();
+			editor.putString(PREF_USER, profile.getName());
+			editor.commit();
+			System.out.println("masuk di state faebook dengan nama :" +profile.getName());
+
+		}
+		else{
+			Intent intent = new Intent(this, EmptyActivity.class);
+			intent.putExtra("title", "Login");
+			startActivity(intent);
+		}
+
+
 
         /* Check if it's the first run */
 		mFirstRun = mSettings.getInt(PREF_FIRST_RUN, -1) != mVersionNumber;
@@ -177,7 +219,13 @@ public class DrawerActivity extends MasterActivity
 			SharedPreferences.Editor editor = mSettings.edit();
 			editor.putInt(PREF_FIRST_RUN, mVersionNumber);
 			editor.commit();
+
+			SharedPreferences.Editor editor2 = mSettings.edit();
+			editor2.putInt("state", PlayerFragment.STATE_STOP);
+			editor2.commit();
 		}
+
+
 
 
 
@@ -204,15 +252,10 @@ public class DrawerActivity extends MasterActivity
 		/*** Start initializing the UI ***/
 
 
+
+
+
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-		boolean enableBlackTheme = pref.getBoolean("enable_black_theme", false);
-		if (enableBlackTheme) {
-			//setTheme(R.style.Theme_VLC_Black);
-			//We need to manually change statusbar color, otherwise, it remains orange.
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-				getWindow().setStatusBarColor(Color.DKGRAY);
-			}
-		}
 
 		Intent caller = getIntent();
 		if(caller != null && caller.getExtras() != null) {
@@ -226,7 +269,6 @@ public class DrawerActivity extends MasterActivity
 			isCollapseLayout = true;
 		}
 
-
 		setupToolbar();
 		setupMiniPlayer();
 		setupAppbarLayout();
@@ -235,19 +277,36 @@ public class DrawerActivity extends MasterActivity
 		miniPlayer = findViewById(R.id.minimized_player);
 
 		NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+		navigationView.getMenu().getItem(3).setTitle(mSettings.getString(PREF_USER, "Unamed"));
+		View headerView = getLayoutInflater().inflate(R.layout.nav_header_main, navigationView, false);
+		ImageView radioLogo = (ImageView) headerView.findViewById(R.id.img_drawer_logo);
+		radioLogo.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(getApplicationContext(), DrawerActivity.class);
+				i.putExtra("activity", R.layout.activity_drawer);
+				i.putExtra("layout", MasterActivity.LAYOUT_RADIO_PROFILE);
+				i.putExtra("parent", true);
+				i.putExtra("title", "Prambors FM Jakarta");
+				startActivity(i);
+				finish();
+			}
+		});
+		navigationView.addHeaderView(headerView);
 		navigationView.setNavigationItemSelectedListener(this);
-		navigationView.getMenu().getItem(3).setTitle(mSettings.getString(PREF_GOOGLE_USR, "User"));
+
+
 		if(isCollapseLayout) {
 			toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id
 					.collapsing_toolbar_layout);
 			toolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
-			toolbarLayout.setTitle("K-Lite FM Bandung");
+			toolbarLayout.setTitle("Prambors FM Jakarta");
 		}
 
 		if(caller != null && caller.getExtras() != null) {
 			isParentView = caller.getExtras().getBoolean("parent", false);
 			String title = caller.getExtras().getString("title", "");
-			layout = caller.getExtras().getInt("layout", LAYOUT_HOME);
+			int layout = caller.getExtras().getInt("layout", LAYOUT_HOME);
 			int mode = caller.getExtras().getInt("mode", -1);
 			int menuId = caller.getExtras().getInt("menuId", 0);
 			String transitionId = caller.getExtras().getString("transition", "profile");
@@ -258,34 +317,26 @@ public class DrawerActivity extends MasterActivity
 				else
 					getSupportActionBar().setTitle(title);
 			}
+
+			showMiniPlayer = true;
 			if(layout == LAYOUT_RADIO_PROFILE){
 				manager.beginTransaction().replace(R.id.container, RadioProfileFragment.newInstance()).commit();
-				showMiniPlayer = true;
-
 			}else if(layout == LAYOUT_HOME){
 				manager.beginTransaction().replace(R.id.container, HomeFragment.newInstance("")).commit();
-				showMiniPlayer = true;
-
 			}else if(layout == LAYOUT_VIRTUAL_CARD){
 				manager.beginTransaction().replace(R.id.container, VirtualCardFragment.newInstance()).commit();
-				showMiniPlayer = true;
 			}else if(layout == LAYOUT_CLUB){
 				manager.beginTransaction().replace(R.id.container, ClubRadioFragment.newInstance("")).commit();
-				showMiniPlayer = true;
 			}else if(layout == LAYOUT_NOTIFICATION){
 				manager.beginTransaction().replace(R.id.container, NotificationFragment.newInstance("")).commit();
-				showMiniPlayer = true;
 			}else if(layout == LAYOUT_SETTINGS){
 				manager.beginTransaction().replace(R.id.container, SettingsFragment.newInstance()).commit();
-				showMiniPlayer = true;
 			}else if(layout == LAYOUT_LIVE){
 				manager.beginTransaction().replace(R.id.container, LiveStreamFragment.newInstance("")).commit();
-				showMiniPlayer = true;
 			}else if (layout == LAYOUT_PROGRAM_PAGE) {
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, ProgramPageFragment
 						.newInstance()).commit();
-				showMiniPlayer = true;
 			} else if (layout == LAYOUT_PERSON_PROFILE) {
 				PersonProfileFragment fragment = PersonProfileFragment.newInstance(mode,
 						transitionId, "");
@@ -300,28 +351,22 @@ public class DrawerActivity extends MasterActivity
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, AlbumFragment.newInstance(""))
 						.commit();
-				showMiniPlayer = true;
 			} else if (layout == LAYOUT_ARTIST) {
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, ArtistFragment.newInstance(""))
 						.commit();
-				showMiniPlayer = true;
 			} else if (layout == LAYOUT_PROGRAMS){
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, ProgramsFragment.newInstance("")).commit();
-				showMiniPlayer = true;
 			}else if (layout == LAYOUT_ANNOUNCERS){
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, AnnouncersFragment.newInstance("")).commit();
-				showMiniPlayer = true;
 			}else if (layout == LAYOUT_FEED){
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, ClubRadioFragment.newInstance("")).commit();
-				showMiniPlayer = true;
 			}else if (layout == LAYOUT_PEOPLE){
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, PersonListFragment.newInstance("")).commit();
-				showMiniPlayer = true;
 			}else if (layout == LAYOUT_ACCOUNT_SETTINGS){
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, AccountSettingFragment.newInstance()).commit();
@@ -330,28 +375,40 @@ public class DrawerActivity extends MasterActivity
 				showMiniPlayer = false;
 				manager.beginTransaction().replace(R.id.container, StreamPlayerFragment
 						.newInstance()).commit();
-				showMiniPlayer = true;
 			}else if(layout == LAYOUT_REQUEST){
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, RequestFragment.newInstance(""))
 						.commit();
-				showMiniPlayer = true;
 			}else if(layout == LAYOUT_CATEGORY){
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, CategoryFragment.newInstance(""))
 						.commit();
-				showMiniPlayer = true;
 			}else if(layout == LAYOUT_SUBCATEGORY){
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, SubcategoryFragment.newInstance(""))
 						.commit();
-				showMiniPlayer = true;
+			}else if(layout == LAYOUT_ADD_MIX){
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, AddMixFragment.newInstance(""))
+						.commit();
+			}else if(layout == LAYOUT_GRID_MIX){
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, GridMixFragment.newInstance(""))
+						.commit();
+			}else if(layout == LAYOUT_COMMENT){
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, CommentFragment.newInstance(""))
+						.commit();
+			}else if(layout == LAYOUT_MIX){
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, MixFragment.newInstance(""))
+						.commit();
 			}
 			navigationView.getMenu().getItem(menuId).setChecked(true);
 		}else{
 			isParentView = true;
 			FragmentManager manager = getSupportFragmentManager();
-			manager.beginTransaction().replace(R.id.container, RadioProfileFragment.newInstance()).commit();
+			manager.beginTransaction().replace(R.id.container, HomeFragment.newInstance("")).commit();
 			navigationView.getMenu().getItem(0).setChecked(true);
 		}
 
@@ -369,8 +426,7 @@ public class DrawerActivity extends MasterActivity
 			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		}
 
-
-		 /* Set up the audio player */
+		/* Set up the audio player */
 		//mAudioPlayer = new PlayerFragment();
 		mAudioController = AudioServiceController.getInstance();
 		mAudioController.bindAudioService(this);
@@ -431,7 +487,6 @@ public class DrawerActivity extends MasterActivity
 		});
 
 		setupHandler();
-
 	}
 
 	@Override
@@ -515,7 +570,6 @@ public class DrawerActivity extends MasterActivity
 		}
 	}
 
-
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
@@ -523,20 +577,6 @@ public class DrawerActivity extends MasterActivity
 			unregisterReceiver(messageReceiver);
 		} catch (IllegalArgumentException e) {}
 		handler.removeCallbacks(sendToUi);
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == ACTIVITY_RESULT_PREFERENCES) {
-			if (resultCode == PreferencesActivity.RESULT_RESCAN)
-				MediaLibrary.getInstance().loadMediaItems(this, true);
-			else if (resultCode == PreferencesActivity.RESULT_RESTART) {
-				Intent intent = getIntent();
-				finish();
-				startActivity(intent);
-			}
-		}
 	}
 
 	@Override
@@ -549,14 +589,6 @@ public class DrawerActivity extends MasterActivity
 		}else{
 			supportFinishAfterTransition();
 		}
-
-		/*Intent intent = new Intent(this, DrawerActivity.class);
-		intent.putExtra("parent", true);
-
-		intent.putExtra("layout", MasterActivity.LAYOUT_HOME);
-		intent.putExtra("activity", R.layout.activity_drawer);
-		startActivity(intent);
-		finish();*/
 	}
 
 	@Override
@@ -583,6 +615,7 @@ public class DrawerActivity extends MasterActivity
 		return super.onOptionsItemSelected(item);
 	}
 
+
 	@SuppressWarnings("StatementWithEmptyBody")
 	@Override
 	public boolean onNavigationItemSelected(MenuItem item) {
@@ -594,59 +627,73 @@ public class DrawerActivity extends MasterActivity
 			case R.id.nav_home:
 				intent.putExtra("layout", MasterActivity.LAYOUT_HOME);
 				intent.putExtra("activity", R.layout.activity_drawer);
+				intent.putExtra("menuId", 0);
 				startActivity(intent);
 				finish();
 				break;
 			case R.id.nav_live:
 				intent.putExtra("layout", MasterActivity.LAYOUT_LIVE);
 				intent.putExtra("activity", R.layout.activity_drawer_standard);
+				intent.putExtra("title", "Live Stream");
+				intent.putExtra("menuId", 1);
 				startActivity(intent);
 				finish();
 				break;
 			case R.id.nav_klub:
-				intent.putExtra("title", "Imam Darto");
+				intent.putExtra("title", "Klub Radio");
 				intent.putExtra("layout", MasterActivity.LAYOUT_CLUB);
 				intent.putExtra("activity", R.layout.activity_drawer_standard);
+				intent.putExtra("menuId", 2);
 				startActivity(intent);
+				finish();
 				break;
 			case R.id.nav_profile:
 				intent.putExtra("layout", MasterActivity.LAYOUT_PERSON_PROFILE);
-				intent.putExtra("title", mSettings.getString(PREF_GOOGLE_USR, "User"));
+				intent.putExtra("title", mSettings.getString(PREF_USER, "Unamed"));
 				intent.putExtra("activity", R.layout.activity_drawer);
+				intent.putExtra("menuId", 3);
 				startActivity(intent);
+				finish();
 				break;
 			case R.id.nav_notification:
 				intent.putExtra("title", "Notifications");
 				intent.putExtra("layout", MasterActivity.LAYOUT_NOTIFICATION);
 				intent.putExtra("activity", R.layout.activity_drawer_standard);
+				intent.putExtra("menuId", 5);
 				startActivity(intent);
+				finish();
 				break;
 			case R.id.nav_virtual_card:
 				intent.putExtra("title", "Virtual Card");
 				intent.putExtra("layout", MasterActivity.LAYOUT_VIRTUAL_CARD);
 				intent.putExtra("activity", R.layout.activity_drawer);
+				intent.putExtra("menuId", 6);
 				startActivity(intent);
+				finish();
 				break;
 			case R.id.nav_setting:
 				intent.putExtra("title", "Settings");
 				intent.putExtra("layout", MasterActivity.LAYOUT_SETTINGS);
 				intent.putExtra("activity", R.layout.activity_drawer_standard);
+				intent.putExtra("menuId", 7);
 				startActivity(intent);
+				finish();
 				break;
 			case R.id.nav_player:
 				/*intent.putExtra("title", "Player");
 				intent.putExtra("layout", MasterActivity.LAYOUT_PLAYER);
 				intent.putExtra("activity", R.layout.activity_drawer);
-				startActivity(intent);*/
+				intent.putExtra("menuId", 8);
+				startActivity(intent);
+				finish();*/
 				loadMediaQueue();
 				break;
-			case R.id.loguot:
+			case R.id.nav_user:
 				Intent in = new Intent(this, EmptyActivity.class);
 				in.putExtra("title", "Login");
 				startActivity(in);
 				break;
 		}
-
 		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		drawer.closeDrawer(GravityCompat.START);
 		return true;
@@ -797,7 +844,7 @@ public class DrawerActivity extends MasterActivity
 		time = 0;
 		length = 0;
 		type = -1;
-		picture = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.background_login);
+		picture = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.background_login);
 		title = "JUDULLLLLL";
 		artist = "ARTISSSS";
 		genre = "";
@@ -1036,6 +1083,30 @@ public class DrawerActivity extends MasterActivity
 
 					}
 
+					location = "-rtmp_playpath \"melon\" -rtmp_tcurl \"rtmp://stm.melon.co.id/prelisten\" -rtmp_app \"prelisten\" -rtmp_swfurl \"http://www.melon.co.id/flash/player.swf?songId=114407172&contentType=M&channelCd=CH0001\" -o";
+					time = 0;
+					length = 0;
+					type = -1;
+					picture = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.background_login);
+					title = "title";
+					artist = "artis";
+					genre = "";
+					album = "album";
+					albumArtist = "alar";
+					width = 0;
+					height = 0;
+					artworkURL = "";
+					audio = 0;
+					spu = 0;
+					trackNumber = 0;
+
+					m = new Media(location, time, length, type,
+							picture, title, artist, genre, album, albumArtist,
+							width, height, artworkURL, audio, spu, trackNumber);
+
+					mDB.addMedia(m);
+					alMedia.add(0,m);
+
 					mAudioController.loadMedia(alMedia);
 
 
@@ -1043,7 +1114,10 @@ public class DrawerActivity extends MasterActivity
 					for (int i =0; i< alMedia.size();i++){
 						mediaLocation.add(alMedia.get(i).getLocation());
 					}
-					mAudioController.load(mediaLocation,0);
+					mAudioController.load(mediaLocation, 0);
+
+
+
 
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -1106,11 +1180,66 @@ public class DrawerActivity extends MasterActivity
 			else{
 				btnPlay.setImageResource(R.drawable.ic_play_arrow_white_36dp);
 			}
+
+			if(mAudioController.isPlaying() && showMiniPlayer){
+				miniPlayer.setVisibility(View.VISIBLE);
+			}
+
+			if(!showMiniPlayer){
+				miniPlayer.setVisibility(View.GONE);
+			}
+
+			if(txtJudul.getText().equals("")){
+				miniPlayer.setVisibility(View.GONE);
+			}
+
 			handler.postDelayed(this, 1000); // 2 seconds
 		}
 	};
 
+	public void coba(){
+
+		/*System.out.println("masuk coba");
+		MediaPlayer mp = new MediaPlayer();
+
+		HashMap<String , String> map = new HashMap<String, String>();
+		map.put("rtmp_swfurl",
+				"http://www.melon.co.id/flash/player.swf?songId=114407172&contentType=M&channelCd=CH0001");
+		map.put("rtmp_playpath", "melon");
+		map.put("rtmp_app", "prelisten");
+		map.put("rtmp_tcurl", "rtmp://stm.melon.co.id/prelisten");
+
+		try {
+			mp.setDataSource(mContext, Uri.parse("rtmp://stm.melon.co.id/prelisten"), map);
+			mp.prepare();
+			mp.start();
+
+			System.out.println("started");
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("not started");
+		}
+		CustomUrlStreamHandlerFactory cushf = new CustomUrlStreamHandlerFactory();
+		cushf.createURLStreamHandler(CustomUrlStreamHandlerFactory.URL_PROTOCOL_RTMP);
 
 
+		try {
+			url = new URL("rtmp://stm.melon.co.id/prelisten");
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
 
+		//new RtmpUrlConnection()
+		RtmpUrlConnection rtmpUrt = new RtmpUrlConnection(url, map);
+
+		try {
+			rtmpUrt.connect();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		System.out.println(rtmpUrt.getCommandLineParameter());*/
+
+
+	}
 }

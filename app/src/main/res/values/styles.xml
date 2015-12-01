@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
 	<!-- Base application theme. -->
 	<style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
@@ -17,6 +17,15 @@
 	<style name="AppTheme.Button" parent="Widget.AppCompat.Button">
 		<item name="android:minHeight">0dp</item>
 		<item name="android:minWidth">0dp</item>
+	</style>
+	<style name="Button.Header.White" parent="Widget.AppCompat.Button">
+		<item name="android:height">30dp</item>
+		<item name="android:paddingLeft">20dp</item>
+		<item name="android:paddingRight">20dp</item>
+		<item name="android:drawableTint" tools:targetApi="m">@color/colorAccentDark</item>
+		<item name="android:singleLine">true</item>
+		<item name="android:background">@drawable/btn_header</item>
+		<item name="android:textColor">@color/colorAccentDark</item>
 	</style>
 
 

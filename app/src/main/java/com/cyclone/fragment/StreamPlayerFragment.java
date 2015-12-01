@@ -2,6 +2,7 @@ package com.cyclone.fragment;
 
 import android.animation.Animator;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -26,8 +28,6 @@ import com.cyclone.DrawerActivity;
 import com.cyclone.R;
 import com.wunderlist.slidinglayer.SlidingLayer;
 
-import java.util.ArrayList;
-
 /**
  * Created by gilang on 07/11/2015.
  */
@@ -36,15 +36,15 @@ public class StreamPlayerFragment extends Fragment {
 	public static final int STATE_PLAYING = 100;
 	public static final int STATE_STOP = 101;
 	public static int state;
-	private DrawerActivity activity;
-	private ImageButton btnMinimize, btnRepeat, btnPrevious, btnPlay, btnNext, btnShuffle, btnMenu;
+	private ImageButton btnRepeat, btnPrevious, btnPlay, btnNext, btnShuffle, btnMenu;
 	private ViewGroup groupInfo, groupControl;
 	private ViewGroup btnArtist, btnAlbum;
 	private ImageView imgCover, imgTemp;
 	private View minimizedPlayer;
 	private TextView txtTitle, txtArtist, txtTotalTime;
 	private SlidingLayer slidingLayer;
-	private SwipeRefreshLayout swipeLayout;
+	private Activity activity;
+	private Toolbar toolbar;
 
 	public StreamPlayerFragment(){}
 
@@ -55,35 +55,20 @@ public class StreamPlayerFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
-		View v = new View(parent.getContext());
-		return v;
-	}
+		View v = inflater.inflate(R.layout.fragment_player, parent, false);
 
-	@Override
-	public void onAttach(Context context) {
-		super.onAttach(context);
-
-		SharedPreferences pref = context.getSharedPreferences(getString(R.string
+		SharedPreferences pref = getContext().getSharedPreferences(getString(R.string
 				.preference_key), Context.MODE_PRIVATE);
 		state = pref.getInt("state", STATE_STOP);
 
-		System.out.println("attached player");
-		if(context instanceof DrawerActivity){
-			activity = (DrawerActivity) context;
-			ViewGroup parallaxHeader = (ViewGroup) activity.findViewById(R.id
-					.parallax_header);
-			LayoutInflater inflater = activity.getLayoutInflater();
-			View header = inflater.inflate(R.layout.fragment_player, parallaxHeader,
-					false);
-			bindHeaderView(header);
-			minimizedPlayer = activity.findViewById(R.id.minimized_player);
-			minimizedPlayer.setVisibility(View.GONE);
-			System.out.println("hide mini player");
-			parallaxHeader.addView(header);
-		}
+		bindViews(v);
+		minimizedPlayer = activity.findViewById(R.id.minimized_player);
+		minimizedPlayer.setVisibility(View.GONE);
+
+		return v;
 	}
 
-	public void bindHeaderView(View v){
+	public void bindViews(View v){
 		btnRepeat = (ImageButton) v.findViewById(R.id.btn_repeat);
 		btnPrevious = (ImageButton) v.findViewById(R.id.btn_previous);
 		btnPlay = (ImageButton) v.findViewById(R.id.btn_play);
@@ -103,6 +88,9 @@ public class StreamPlayerFragment extends Fragment {
 
 		if(state == STATE_PLAYING)
 			btnPlay.setImageResource(R.drawable.ic_pause_white_48dp);
+
+		toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
+		toolbar.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
 
 		btnPlay.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -159,9 +147,11 @@ public class StreamPlayerFragment extends Fragment {
 	}
 
 	@Override
-	public void onDetach() {
-		super.onDetach();
-//		minimizedPlayer.setVisibility(View.VISIBLE);
+	public void onAttach(Context context){
+		super.onAttach(context);
+		if(context instanceof Activity){
+			activity = (Activity) context;
+		}
 	}
 
 	public void setPlayerColor(){

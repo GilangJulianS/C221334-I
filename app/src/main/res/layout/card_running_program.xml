@@ -1,45 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-  	android:layout_width="match_parent"
-  	android:layout_height="wrap_content"
-	android:background="#fff"
-	android:padding="10dp"
-	android:orientation="horizontal">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#fff"
+    android:padding="10dp"
+    android:orientation="horizontal">
 
-	<ImageButton
-		android:id="@+id/btn_play"
-		android:layout_width="50dp"
-		android:layout_height="50dp"
-		android:padding="10dp"
-		android:scaleType="centerCrop"
-		android:background="#8000"
-		android:src="@drawable/ic_play_arrow_white_48dp"/>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/wallpaper"/>
 
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:layout_marginLeft="10dp"
-		android:gravity="center_vertical"
-		android:orientation="vertical">
+        <ImageButton
+            android:id="@+id/btn_play"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:padding="10dp"
+            android:scaleType="centerCrop"
+            android:background="#8000"
+            android:src="@drawable/ic_play_arrow_white_48dp"/>
 
-		<TextView
-			android:id="@+id/txt_primary"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:textSize="18sp"
-			android:textStyle="bold"
-			android:text="The Dandees"/>
-
-		<TextView
-			android:id="@+id/txt_secondary"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="5dp"
-			android:text="The Most Wanted Guys In Town"/>
+    </RelativeLayout>
 
 
-	</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_primary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:text="The Dandees"/>
+
+        <TextView
+            android:id="@+id/txt_secondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="The Most Wanted Guys In Town"/>
+
+
+    </LinearLayout>
 
 </LinearLayout>

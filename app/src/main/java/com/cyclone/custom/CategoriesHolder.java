@@ -23,8 +23,8 @@ public class CategoriesHolder extends UniversalHolder{
 	private int counter;
 	public ViewGroup group1, group2;
 
-	public CategoriesHolder(View v, Activity activity){
-		super(v, activity);
+	public CategoriesHolder(View v, Activity activity, UniversalAdapter adapter){
+		super(v, activity, adapter);
 		counter = 0;
 		group1 = (ViewGroup) v.findViewById(R.id.group_1);
 		group2 = (ViewGroup) v.findViewById(R.id.group_2);

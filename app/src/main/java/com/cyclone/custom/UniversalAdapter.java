@@ -10,17 +10,21 @@ import com.cyclone.R;
 import com.cyclone.model.Album;
 import com.cyclone.model.Announcer;
 import com.cyclone.model.Categories;
+import com.cyclone.model.Comment;
 import com.cyclone.model.Contents;
+import com.cyclone.model.Mix;
+import com.cyclone.model.Mixes;
 import com.cyclone.model.Notification;
 import com.cyclone.model.Person;
 import com.cyclone.model.Post;
 import com.cyclone.model.Program;
-import com.cyclone.model.Playlist;
+import com.cyclone.model.Queue;
 import com.cyclone.model.ProgramContent;
 import com.cyclone.model.ProgramPager;
 import com.cyclone.model.Request;
 import com.cyclone.model.RunningProgram;
 import com.cyclone.model.Section;
+import com.cyclone.model.Section2;
 import com.cyclone.model.Song;
 import com.cyclone.model.SubcategoryItem;
 
@@ -48,6 +52,10 @@ public class UniversalAdapter extends Adapter<UniversalHolder> {
 	public static final int TYPE_CATEGORIES = 114;
 	public static final int TYPE_CONTENTS = 115;
 	public static final int TYPE_SUBCATEGORY_ITEM = 116;
+	public static final int TYPE_MIXES = 117;
+	public static final int TYPE_MIX = 118;
+	public static final int TYPE_SECTION_2 = 119;
+	public static final int TYPE_COMMENT = 120;
 
 	public List<Object> datas;
 	private Activity activity;
@@ -89,7 +97,7 @@ public class UniversalAdapter extends Adapter<UniversalHolder> {
 		else if(o instanceof Notification) return TYPE_NOTIFICATION;
 		else if(o instanceof Person) return TYPE_PERSON;
 		else if(o instanceof Program) return TYPE_PROGRAM;
-		else if(o instanceof Playlist) return TYPE_PLAYLIST;
+		else if(o instanceof Queue) return TYPE_PLAYLIST;
 		else if(o instanceof Section) return TYPE_SECTION;
 		else if(o instanceof Song) return TYPE_SONG;
 		else if(o instanceof Album) return TYPE_ALBUM;
@@ -100,6 +108,10 @@ public class UniversalAdapter extends Adapter<UniversalHolder> {
 		else if(o instanceof Categories) return  TYPE_CATEGORIES;
 		else if(o instanceof Contents) return TYPE_CONTENTS;
 		else if(o instanceof SubcategoryItem) return TYPE_SUBCATEGORY_ITEM;
+		else if(o instanceof Mixes) return TYPE_MIXES;
+		else if(o instanceof Mix) return TYPE_MIX;
+		else if(o instanceof Section2) return TYPE_SECTION_2;
+		else if(o instanceof Comment) return TYPE_COMMENT;
 		return -1;
 	}
 
@@ -110,7 +122,7 @@ public class UniversalAdapter extends Adapter<UniversalHolder> {
 			case TYPE_NOTIFICATION: return R.layout.card_notification;
 			case TYPE_PERSON: return R.layout.card_person;
 			case TYPE_PROGRAM: return R.layout.card_program;
-			case TYPE_PLAYLIST: return R.layout.card_playlist;
+			case TYPE_PLAYLIST: return R.layout.card_queue;
 			case TYPE_SECTION: return R.layout.card_section;
 			case TYPE_SONG: return R.layout.card_song;
 			case TYPE_ALBUM: return R.layout.card_album;
@@ -121,30 +133,37 @@ public class UniversalAdapter extends Adapter<UniversalHolder> {
 			case TYPE_CATEGORIES: return R.layout.card_categories;
 			case TYPE_CONTENTS: return R.layout.card_contents;
 			case TYPE_SUBCATEGORY_ITEM: return R.layout.card_subcategory_item;
+			case TYPE_MIXES: return R.layout.card_contents;
+			case TYPE_MIX: return R.layout.card_mix;
+			case TYPE_SECTION_2: return R.layout.card_section_2;
+			case TYPE_COMMENT: return R.layout.card_comment;
 			default: return -1;
 		}
 	}
 
-
 	public UniversalHolder createViewHolder(View v, int viewType){
 		UniversalHolder holder = null;
 		switch (viewType){
-			case TYPE_ANNOUNCER: holder = new AnnouncerHolder(v, activity); break;
-			case TYPE_CLUB_FEED: holder = new ClubFeedHolder(v, activity); break;
-			case TYPE_NOTIFICATION: holder = new NotificationHolder(v, activity); break;
-			case TYPE_PERSON: holder = new PersonHolder(v, activity); break;
-			case TYPE_PROGRAM: holder = new ProgramHolder(v, activity); break;
-			case TYPE_PLAYLIST: holder = new PlaylistHolder(v, activity); break;
-			case TYPE_SECTION: holder = new SectionHolder(v, activity); break;
-			case TYPE_SONG: holder = new SongHolder(v, activity); break;
-			case TYPE_ALBUM: holder = new AlbumHolder(v, activity); break;
-			case TYPE_RUNNING_PROGRAM: holder = new RunningProgramHolder(v, activity); break;
-			case TYPE_PROGRAM_CONTENT: holder = new ProgramContentHolder(v, activity); break;
-			case TYPE_PROGRAM_PAGER: holder = new ProgramPagerHolder(v, activity); break;
-			case TYPE_REQUEST: holder = new RequestHolder(v, activity); break;
-			case TYPE_CATEGORIES: holder = new CategoriesHolder(v, activity); break;
-			case TYPE_CONTENTS: holder = new ContentsHolder(v, activity); break;
-			case TYPE_SUBCATEGORY_ITEM: holder = new SubcategoryHolder(v, activity); break;
+			case TYPE_ANNOUNCER: holder = new AnnouncerHolder(v, activity, this); break;
+			case TYPE_CLUB_FEED: holder = new ClubFeedHolder(v, activity, this); break;
+			case TYPE_NOTIFICATION: holder = new NotificationHolder(v, activity, this); break;
+			case TYPE_PERSON: holder = new PersonHolder(v, activity, this); break;
+			case TYPE_PROGRAM: holder = new ProgramHolder(v, activity, this); break;
+			case TYPE_PLAYLIST: holder = new PlaylistHolder(v, activity, this); break;
+			case TYPE_SECTION: holder = new SectionHolder(v, activity, this); break;
+			case TYPE_SONG: holder = new SongHolder(v, activity, this); break;
+			case TYPE_ALBUM: holder = new AlbumHolder(v, activity, this); break;
+			case TYPE_RUNNING_PROGRAM: holder = new RunningProgramHolder(v, activity, this); break;
+			case TYPE_PROGRAM_CONTENT: holder = new ProgramContentHolder(v, activity, this); break;
+			case TYPE_PROGRAM_PAGER: holder = new ProgramPagerHolder(v, activity, this); break;
+			case TYPE_REQUEST: holder = new RequestHolder(v, activity, this); break;
+			case TYPE_CATEGORIES: holder = new CategoriesHolder(v, activity, this); break;
+			case TYPE_CONTENTS: holder = new ContentsHolder(v, activity, this); break;
+			case TYPE_SUBCATEGORY_ITEM: holder = new SubcategoryHolder(v, activity, this); break;
+			case TYPE_MIXES: holder = new MixesHolder(v, activity, this); break;
+			case TYPE_MIX: holder = new MixHolder(v, activity, this); break;
+			case TYPE_SECTION_2: holder = new Section2Holder(v, activity, this); break;
+			case TYPE_COMMENT: holder = new CommentHolder(v, activity, this); break;
 		}
 		return holder;
 	}

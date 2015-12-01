@@ -20,8 +20,8 @@ public class RequestHolder extends UniversalHolder {
 	public TextView txtContent;
 	public TextView txtTime;
 
-	public RequestHolder(View v, Activity activity) {
-		super(v, activity);
+	public RequestHolder(View v, Activity activity, UniversalAdapter adapter) {
+		super(v, activity, adapter);
 		imgUser = (ImageView) v.findViewById(R.id.img_user);
 		imgSocmed = (ImageView) v.findViewById(R.id.img_socmed);
 		txtUsername = (TextView) v.findViewById(R.id.txt_username);

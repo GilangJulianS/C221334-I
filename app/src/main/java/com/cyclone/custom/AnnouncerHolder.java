@@ -18,8 +18,8 @@ public class AnnouncerHolder extends UniversalHolder{
 	public TextView txtName;
 	public ImageView image;
 
-	public AnnouncerHolder(View v, Activity activity){
-		super(v, activity);
+	public AnnouncerHolder(View v, Activity activity, UniversalAdapter adapter){
+		super(v, activity, adapter);
 		txtName = (TextView) v.findViewById(R.id.txt_announcer_name);
 		image = (ImageView) v.findViewById(R.id.img_announcer);
 	}

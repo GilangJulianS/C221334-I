@@ -8,7 +8,7 @@
 		android:id="@+id/img_cover"
 		android:layout_width="match_parent"
 		android:layout_height="210dp"
-		android:src="@drawable/background_login"
+		android:src="@drawable/prambors_logo_1"
 		android:scaleType="centerCrop"/>
 
 	<View
@@ -22,7 +22,7 @@
 		android:layout_height="80dp"
 		android:layout_centerHorizontal="true"
 		android:layout_marginTop="40dp"
-		android:src="@drawable/background_login"/>
+		android:src="@drawable/logo_prambors"/>
 
 	<LinearLayout
 		android:layout_width="match_parent"
@@ -35,7 +35,7 @@
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="Bandung's Inspiring Sound"
+			android:text="Prambors No. 1 Hit Music Station"
 			android:textColor="#fff"
 			android:textSize="16sp"/>
 

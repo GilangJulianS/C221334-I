@@ -31,7 +31,7 @@ import android.widget.TextView;
 
 import com.cyclone.DrawerActivity;
 import com.cyclone.R;
-import com.cyclone.model.Playlist;
+import com.cyclone.model.Queue;
 import com.cyclone.player.MediaDatabase;
 import com.cyclone.player.audio.AudioServiceController;
 import com.cyclone.player.audio.RepeatType;
@@ -52,8 +52,7 @@ import java.util.List;
 /**
  * Created by gilang on 29/10/2015.
  */
-public class PlayerFragment extends RecyclerFragment implements IAudioPlayer, RecyclerView.OnClickListener{
-	public static final String TAG = "VLC/AudioPlayer";
+public class PlayerFragment extends RecyclerFragment implements IAudioPlayer {
 
 	private String mFilePath = "http://stream.suararadio.com/bloom-mae.mp3";
 	private String mFilePath2 = "http://stream.suararadio.com/the-ballad-of-distant-love.mp3";
@@ -82,6 +81,7 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer, Re
 	private AudioServiceController mAudioController;
 	private boolean mShowRemainingTime = false;
 
+
 	public PlayerFragment(){}
 
 	public static PlayerFragment newInstance(String json){
@@ -89,7 +89,6 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer, Re
 		fragment.json = json;
 		return fragment;
 	}
-
 
 	@Override
 	public List<Object> getDatas() {
@@ -99,21 +98,6 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer, Re
 	@Override
 	public void onCreateView(View v, ViewGroup parent, Bundle savedInstanceState) {
 		setHasOptionsMenu(true);
-	}
-
-	@Override
-	public int getColumnNumber() {
-		return 1;
-	}
-
-	@Override
-	public boolean isRefreshEnabled() {
-		return false;
-	}
-
-	@Override
-	public int getHeaderLayoutId() {
-		return R.layout.part_header_player;
 	}
 
 	@Override
@@ -141,9 +125,22 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer, Re
 		//System.out.println(""+mdb.getMedia(mFilePath).getTitle());
 		//loadFromDB();
 		setupHandler();
-
 	}
 
+	@Override
+	public int getColumnNumber() {
+		return 1;
+	}
+
+	@Override
+	public boolean isRefreshEnabled() {
+		return false;
+	}
+
+	@Override
+	public int getHeaderLayoutId() {
+		return R.layout.part_header_player;
+	}
 
 	@Override
 	public void prepareHeader(View v) {
@@ -158,8 +155,6 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer, Re
 		setPlayerColor();
 		update();
 
-
-
 	}
 
 	@Override
@@ -169,18 +164,8 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer, Re
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		int id = item.getItemId();
-		if(id == R.id.btn_collapse){
-			activity.appBarLayout.setExpanded(true);
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
-	@Override
 	public void onPause() {
 		super.onPause();
-
 		handler.removeCallbacks(sendToUi);
 	}
 
@@ -195,6 +180,16 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer, Re
 		super.onResume();
 		update();
 		setupHandler();
+	}
+
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+		if(id == R.id.btn_collapse){
+			activity.appBarLayout.setExpanded(true);
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	public void bindHeaderView(View v){
@@ -214,13 +209,13 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer, Re
 		btnMenu = (ImageButton) v.findViewById(R.id.btn_menu);
 		btnArtist = (ViewGroup) v.findViewById(R.id.btn_artist);
 		btnAlbum = (ViewGroup) v.findViewById(R.id.btn_album);
-
-		txtCurTimePlaying = (TextView) v.findViewById(R.id.txt_elapsed_time);
-
 		seekBar = (SeekBar) v.findViewById(R.id.seekbar);
+		txtCurTimePlaying = (TextView) v.findViewById(R.id.txt_elapsed_time);
 
 		if(state == STATE_PLAYING)
 			btnPlay.setImageResource(R.drawable.ic_pause_white_48dp);
+
+		seekBar.setPadding(0, 0, 0, 0);
 
 		btnPlay.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -238,11 +233,6 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer, Re
 				editor.putInt("state", state);
 				editor.commit();*/
 				onPlayPauseClick(v);
-
-				//mAudioController.playIndex(0);
-
-
-				//Toast.makeText(getContext(),""+mAudioController.getArtist()+","+mLibVLC.getMediaList().getMedia(0).getArtist()+","+mLibVLC.getMediaList().getMedia(0).getTitle(), Toast.LENGTH_LONG).show();
 			}
 		});
 
@@ -281,7 +271,6 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer, Re
 					activated = false;
 				}*/
 				onShuffleClick(v);
-
 			}
 		});
 
@@ -299,9 +288,10 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer, Re
 				if(Build.VERSION.SDK_INT >= 21) {
 					showImage(imgCover);
 				}
-				txtTitle.setText(persistentDatas.get(counter % persistentDatas.size()).title);
-				txtArtist.setText(persistentDatas.get(counter % persistentDatas.size()).artist);
-				txtTotalTime.setText(persistentDatas.get(counter % persistentDatas.size()).duration);
+				Queue p = (Queue) persistentDatas.get(counter % persistentDatas.size());
+				txtTitle.setText(p.title);
+				txtArtist.setText(p.artist);
+				txtTotalTime.setText(p.duration);
 				counter++;*/
 				onNextClick(v);
 			}
@@ -321,9 +311,10 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer, Re
 				if(Build.VERSION.SDK_INT >= 21) {
 					showImage(imgCover);
 				}
-				txtTitle.setText(persistentDatas.get(counter % persistentDatas.size()).title);
-				txtArtist.setText(persistentDatas.get(counter % persistentDatas.size()).artist);
-				txtTotalTime.setText(persistentDatas.get(counter % persistentDatas.size()).duration);
+				Queue p = (Queue) persistentDatas.get(counter % persistentDatas.size());
+				txtTitle.setText(p.title);
+				txtArtist.setText(p.artist);
+				txtTotalTime.setText(p.duration);
 				counter++;*/
 				onPreviousClick(v);
 			}
@@ -361,11 +352,6 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer, Re
 				activity.startActivity(i);
 			}
 		});
-
-		seekBar.setOnSeekBarChangeListener(mTimelineListner);
-
-		update();
-
 	}
 
 	public void setPlayerColor(){
@@ -399,33 +385,32 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer, Re
 
 	public List<Object> parse(String json){
 		List<Object> playlists = new ArrayList<>();
-		/*playlists.add(new Playlist("The Celestials", "The Smashing Pumpkins", "03:20"));
-		playlists.add(new Playlist("Track 5 of 30 Playlist", "Morning Songs", "1:08:20"));
-		playlists.add(new Playlist("Drones", "Muse", "05:45"));
-		playlists.add(new Playlist("Extraordinary", "Clean Bandit", "04:48"));
-		playlists.add(new Playlist("Heart Like Yours", "Willamette Willamette Willamette", "03:15"));
-		playlists.add(new Playlist("The Celestials", "The Smashing Pumpkins", "03:20"));
-		playlists.add(new Playlist("Track 5 of 30 Playlist", "Morning Songs", "1:08:20"));
-		playlists.add(new Playlist("Drones", "Muse", "05:45"));
-		playlists.add(new Playlist("Extraordinary", "Clean Bandit", "04:48"));
-		playlists.add(new Playlist("Heart Like Yours", "Willamette Willamette Willamette", "03:15"));
-		playlists.add(new Playlist("The Celestials", "The Smashing Pumpkins", "03:20"));
-		playlists.add(new Playlist("Track 5 of 30 Playlist", "Morning Songs", "1:08:20"));
-		playlists.add(new Playlist("Drones", "Muse", "05:45"));
-		playlists.add(new Playlist("Extraordinary", "Clean Bandit", "04:48"));
-		playlists.add(new Playlist("Heart Like Yours", "Willamette Willamette Willamette", "03:15"));
-		playlists.add(new Playlist("The Celestials", "The Smashing Pumpkins", "03:20"));
-		playlists.add(new Playlist("Track 5 of 30 Playlist", "Morning Songs", "1:08:20"));
-		playlists.add(new Playlist("Drones", "Muse", "05:45"));
-		playlists.add(new Playlist("Extraordinary", "Clean Bandit", "04:48"));
-		playlists.add(new Playlist("Heart Like Yours", "Willamette Willamette Willamette", "03:15"));
-		playlists.add(new Playlist("The Celestials", "The Smashing Pumpkins", "03:20"));
-		playlists.add(new Playlist("Track 5 of 30 Playlist", "Morning Songs", "1:08:20"));
-		playlists.add(new Playlist("Drones", "Muse", "05:45"));
-		playlists.add(new Playlist("Extraordinary", "Clean Bandit", "04:48"));
-		playlists.add(new Playlist("Heart Like Yours", "Willamette Willamette Willamette", "03:15"));*/
+		/*playlists.add(new Queue("The Celestials", "The Smashing Pumpkins", "03:20"));
+		playlists.add(new Queue("Track 5 of 30 Playlist", "Morning Songs", "1:08:20"));
+		playlists.add(new Queue("Drones", "Muse", "05:45"));
+		playlists.add(new Queue("Extraordinary", "Clean Bandit", "04:48"));
+		playlists.add(new Queue("Heart Like Yours", "Willamette Willamette Willamette", "03:15"));
+		playlists.add(new Queue("The Celestials", "The Smashing Pumpkins", "03:20"));
+		playlists.add(new Queue("Track 5 of 30 Playlist", "Morning Songs", "1:08:20"));
+		playlists.add(new Queue("Drones", "Muse", "05:45"));
+		playlists.add(new Queue("Extraordinary", "Clean Bandit", "04:48"));
+		playlists.add(new Queue("Heart Like Yours", "Willamette Willamette Willamette", "03:15"));
+		playlists.add(new Queue("The Celestials", "The Smashing Pumpkins", "03:20"));
+		playlists.add(new Queue("Track 5 of 30 Playlist", "Morning Songs", "1:08:20"));
+		playlists.add(new Queue("Drones", "Muse", "05:45"));
+		playlists.add(new Queue("Extraordinary", "Clean Bandit", "04:48"));
+		playlists.add(new Queue("Heart Like Yours", "Willamette Willamette Willamette", "03:15"));
+		playlists.add(new Queue("The Celestials", "The Smashing Pumpkins", "03:20"));
+		playlists.add(new Queue("Track 5 of 30 Playlist", "Morning Songs", "1:08:20"));
+		playlists.add(new Queue("Drones", "Muse", "05:45"));
+		playlists.add(new Queue("Extraordinary", "Clean Bandit", "04:48"));
+		playlists.add(new Queue("Heart Like Yours", "Willamette Willamette Willamette", "03:15"));
+		playlists.add(new Queue("The Celestials", "The Smashing Pumpkins", "03:20"));
+		playlists.add(new Queue("Track 5 of 30 Playlist", "Morning Songs", "1:08:20"));
+		playlists.add(new Queue("Drones", "Muse", "05:45"));
+		playlists.add(new Queue("Extraordinary", "Clean Bandit", "04:48"));
+		playlists.add(new Queue("Heart Like Yours", "Willamette Willamette Willamette", "03:15"));*/
 
-		/*List<Playlist> playlists = new ArrayList<>();*/
 
 		MediaList mList = null;
 		try {
@@ -436,7 +421,7 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer, Re
 
 		for (int i = 0 ; i < mList.size(); i++){
 			Media md = mList.getMedia(i);
-			playlists.add(new Playlist(md.getArtist(), md.getTitle(),""+md.getLength()));
+			playlists.add(new Queue(md.getArtist(), md.getTitle(),""+md.getLength()));
 		}
 
 		return playlists;
@@ -459,6 +444,11 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer, Re
 			anim.start();
 		}catch (Exception e){}
 	}
+
+	public static void klikItem(String title){
+		System.out.println("kliked :" + title);
+	}
+
 	@Override
 	public synchronized void update() {
 
@@ -815,8 +805,4 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer, Re
 	};
 
 
-	@Override
-	public void onClick(View v) {
-		System.out.println("sfsadsdsdsdasdsad}}}}}}}}}}}}}}|}||}}}}}}}}}}}}}}}}|");
-	}
 }

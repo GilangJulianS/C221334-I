@@ -29,7 +29,7 @@
 			android:layout_marginLeft="40dp"
 			android:layout_marginRight="40dp"
 			android:scaleType="centerInside"
-			android:src="@drawable/background_login"/>
+			android:src="@drawable/qrcode"/>
 
 	</LinearLayout>
 

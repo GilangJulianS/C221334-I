@@ -6,18 +6,18 @@
 	<ImageView
 		android:id="@+id/img_header_background"
 		android:layout_width="match_parent"
-		android:layout_height="260dp"
+		android:layout_height="230dp"
 		android:scaleType="centerCrop"
-		android:background="@color/colorPrimaryDefault"/>
+		android:src="@drawable/wallpaper"/>
 
 	<View
 		android:layout_width="match_parent"
-		android:layout_height="260dp"
+		android:layout_height="230dp"
 		android:background="@color/dim_filter"/>
 
 	<LinearLayout
 		android:layout_width="match_parent"
-		android:layout_height="260dp"
+		android:layout_height="wrap_content"
 		android:gravity="center_horizontal"
 		android:orientation="vertical">
 
@@ -49,16 +49,18 @@
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="5dp"
 			android:gravity="center_horizontal"
 			android:orientation="horizontal">
 
 			<LinearLayout
+				android:id="@+id/group_tracks"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:gravity="center_horizontal"
-				android:layout_marginLeft="10dp"
-				android:layout_marginRight="10dp"
+				android:paddingLeft="10dp"
+				android:paddingRight="10dp"
+				android:paddingTop="5dp"
+				android:paddingBottom="5dp"
 				android:orientation="vertical">
 
 				<TextView
@@ -80,10 +82,13 @@
 			</LinearLayout>
 
 			<LinearLayout
+				android:id="@+id/group_favorites"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_marginLeft="10dp"
-				android:layout_marginRight="10dp"
+				android:paddingLeft="10dp"
+				android:paddingRight="10dp"
+				android:paddingTop="5dp"
+				android:paddingBottom="5dp"
 				android:gravity="center_horizontal"
 				android:orientation="vertical">
 
@@ -105,41 +110,54 @@
 			</LinearLayout>
 
 			<ImageButton
-				android:layout_width="30dp"
-				android:layout_height="30dp"
-				android:layout_marginLeft="10dp"
-				android:layout_marginRight="10dp"
+				android:id="@+id/btn_menu"
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:paddingLeft="10dp"
+				android:paddingRight="10dp"
+				android:paddingTop="5dp"
+				android:paddingBottom="5dp"
 				android:layout_gravity="center_vertical"
-				android:background="#0000"
-				android:src="@drawable/ic_more_horiz_white_48dp"/>
+				android:background="@drawable/btn_flat_transparent"
+				android:src="@drawable/ic_more_horiz_white_24dp"/>
 
 		</LinearLayout>
 
 		<LinearLayout
 			android:id="@+id/group_btn_own_profile"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="5dp"
+			android:layout_height="match_parent"
+			android:layout_marginTop="9dp"
+			android:paddingTop="5dp"
+			android:paddingBottom="5dp"
 			android:gravity="center_horizontal"
+			android:background="#fff"
 			android:orientation="horizontal">
 
 			<Button
 				android:id="@+id/btn_add_showlist"
 				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:drawableLeft="@drawable/ic_play_arrow_black_36dp"
-				android:theme="@style/ButtonTheme.White"
+				android:layout_height="30dp"
+				android:layout_marginRight="10dp"
+				android:drawableLeft="@drawable/ic_play_arrow_black_24dp"
+				style="@style/Button.Header.White"
 				android:text="Play"/>
 
 			<Button
 				android:id="@+id/btn_upload"
 				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:drawableLeft="@drawable/ic_add_black_36dp"
-				android:theme="@style/ButtonTheme.White"
+				android:layout_height="30dp"
+				android:layout_marginLeft="10dp"
+				android:drawableLeft="@drawable/ic_add_black_24dp"
+				style="@style/Button.Header.White"
 				android:text="Add to Favorites"/>
 
 		</LinearLayout>
+
+		<View
+			android:layout_width="match_parent"
+			android:layout_height="1dp"
+			android:background="#888"/>
 
 	</LinearLayout>
 

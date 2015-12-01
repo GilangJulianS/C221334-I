@@ -50,6 +50,7 @@
 					android:paddingLeft="25dp"
 					android:paddingRight="25dp"
 					android:paddingTop="30dp"
+					android:paddingBottom="25dp"
 					android:gravity="center_vertical"
 					android:orientation="horizontal">
 
@@ -63,6 +64,7 @@
 							android:id="@+id/txt_artist"
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
+							android:singleLine="true"
 							android:textSize="24sp"
 							android:textColor="#fff"
 							android:textStyle="bold"
@@ -73,6 +75,7 @@
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
 							android:layout_marginTop="5dp"
+							android:singleLine="true"
 							android:textSize="18sp"
 							android:textColor="#fff"
 							android:text="The Smashing Pumpkins"/>
@@ -81,47 +84,51 @@
 
 					<ImageButton
 						android:id="@+id/btn_menu"
-						android:layout_width="30dp"
-						android:layout_height="30dp"
-						style="?android:attr/borderlessButtonStyle"
-						android:src="@drawable/ic_more_vert_white_48dp"/>
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:padding="10dp"
+						android:background="@drawable/btn_flat_transparent_oval"
+						android:src="@drawable/ic_more_vert_white_24dp"/>
 
 				</LinearLayout>
 
-				<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_marginTop="25dp"
-					android:paddingLeft="15dp"
-					android:paddingRight="15dp"
-					android:orientation="horizontal">
+				<!--<LinearLayout-->
+					<!--android:layout_width="match_parent"-->
+					<!--android:layout_height="wrap_content"-->
+					<!--android:layout_marginTop="25dp"-->
+					<!--android:paddingLeft="15dp"-->
+					<!--android:paddingRight="15dp"-->
+					<!--android:orientation="horizontal">-->
 
-					<TextView
-						android:id="@+id/txt_elapsed_time"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:textColor="#fff"
-						android:text="01:15"/>
+					<!--<TextView-->
+						<!--android:id="@+id/txt_elapsed_time"-->
+						<!--android:layout_width="wrap_content"-->
+						<!--android:layout_height="wrap_content"-->
+						<!--android:textColor="#fff"-->
+						<!--android:text="01:15"/>-->
 
-					<View
-						android:layout_width="0dp"
-						android:layout_weight="1"
-						android:layout_height="match_parent"/>
+					<!--<View-->
+						<!--android:layout_width="0dp"-->
+						<!--android:layout_weight="1"-->
+						<!--android:layout_height="match_parent"/>-->
 
-					<TextView
-						android:id="@+id/txt_total_time"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:textColor="#fff"
-						android:text="03:20"/>
+					<!--<TextView-->
+						<!--android:id="@+id/txt_total_time"-->
+						<!--android:layout_width="wrap_content"-->
+						<!--android:layout_height="wrap_content"-->
+						<!--android:textColor="#fff"-->
+						<!--android:text="03:20"/>-->
 
-				</LinearLayout>
+				<!--</LinearLayout>-->
 
-				<SeekBar
-					android:id="@+id/seekbar"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_marginTop="10dp"/>
+				<!--<SeekBar-->
+					<!--android:id="@+id/seekbar"-->
+					<!--android:layout_width="match_parent"-->
+					<!--android:layout_height="7dp"-->
+					<!--android:progress="50"-->
+					<!--android:progressDrawable="@drawable/seekbar_progress"-->
+					<!--android:thumb="@android:color/transparent"-->
+					<!--android:layout_marginTop="10dp"/>-->
 
 
 			</LinearLayout>
@@ -137,8 +144,6 @@
 				<LinearLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:layout_marginTop="15dp"
-					android:layout_marginBottom="15dp"
 					android:gravity="center_vertical"
 					android:orientation="horizontal">
 
@@ -146,46 +151,55 @@
 
 					<ImageButton
 						android:id="@+id/btn_repeat"
-						android:layout_width="30dp"
-						android:layout_height="30dp"
-						style="?android:attr/borderlessButtonStyle"
-						android:src="@drawable/ic_repeat_white_48dp"/>
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:padding="10dp"
+						android:tint="#888"
+						android:background="@drawable/btn_flat_transparent_oval"
+						android:src="@drawable/ic_repeat_white_24dp"/>
 
 					<include layout="@layout/view_filler_horizontal"/>
 
 					<ImageButton
 						android:id="@+id/btn_previous"
-						android:layout_width="30dp"
-						android:layout_height="30dp"
-						style="?android:attr/borderlessButtonStyle"
-						android:src="@drawable/ic_skip_previous_white_48dp"/>
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:padding="10dp"
+						android:tint="#888"
+						android:background="@drawable/btn_flat_transparent_oval"
+						android:src="@drawable/ic_skip_previous_white_36dp"/>
 
 					<include layout="@layout/view_filler_horizontal"/>
 
 					<ImageButton
 						android:id="@+id/btn_play"
-						android:layout_width="30dp"
-						android:layout_height="30dp"
-						style="?android:attr/borderlessButtonStyle"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:padding="5dp"
+						android:background="@drawable/btn_flat_transparent_oval"
 						android:src="@drawable/ic_play_arrow_white_48dp"/>
 
 					<include layout="@layout/view_filler_horizontal"/>
 
 					<ImageButton
 						android:id="@+id/btn_next"
-						android:layout_width="30dp"
-						android:layout_height="30dp"
-						style="?android:attr/borderlessButtonStyle"
-						android:src="@drawable/ic_skip_next_white_48dp"/>
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:padding="10dp"
+						android:tint="#888"
+						android:background="@drawable/btn_flat_transparent_oval"
+						android:src="@drawable/ic_skip_next_white_36dp"/>
 
 					<include layout="@layout/view_filler_horizontal"/>
 
 					<ImageButton
 						android:id="@+id/btn_shuffle"
-						android:layout_width="30dp"
-						android:layout_height="30dp"
-						style="?android:attr/borderlessButtonStyle"
-						android:src="@drawable/ic_shuffle_white_48dp"/>
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:padding="10dp"
+						android:tint="#888"
+						android:background="@drawable/btn_flat_transparent_oval"
+						android:src="@drawable/ic_shuffle_white_24dp"/>
 
 					<include layout="@layout/view_filler_horizontal"/>
 

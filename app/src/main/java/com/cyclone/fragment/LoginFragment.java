@@ -20,6 +20,15 @@ import android.widget.TextView;
 import com.cyclone.DrawerActivity;
 import com.cyclone.MasterActivity;
 import com.cyclone.R;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.Profile;
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -37,7 +46,8 @@ import com.google.android.gms.common.api.Status;
 public class LoginFragment extends Fragment implements
 		GoogleApiClient.OnConnectionFailedListener,
 		View.OnClickListener {
-
+	CallbackManager callbackManager;
+	LoginButton loginButton;
 	private Button btnLogin;
 	private Button btnForget;
 	private ProgressBar progressBar;
@@ -106,8 +116,7 @@ public class LoginFragment extends Fragment implements
 		// [END configure_signin]
 
 		// [START build_client]
-		// Build a GoogleApiClient with access to the Google Sign-In API and the
-		// options specified by gso.
+
 		mGoogleApiClient = new GoogleApiClient.Builder(context)
 				.enableAutoManage((FragmentActivity) context /* FragmentActivity */, this /* OnConnectionFailedListener */)
 				.addApi(Auth.GOOGLE_SIGN_IN_API, gso)
@@ -128,8 +137,71 @@ public class LoginFragment extends Fragment implements
 		// [END customize_button]
 		view = v;
 
+		loginButton = (LoginButton) view.findViewById(R.id.login_button);
+		loginButton.setReadPermissions("public_profile");
+		// If using in a fragment
+		loginButton.setFragment(this);
+		// Other app specific specialization
+
+		// Callback registration
+		loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+			@Override
+			public void onSuccess(LoginResult loginResult) {
+				// App code
+				System.out.println("+++++++++++++++ atas");
+				//System.out.println(loginResult.getAccessToken().getUserId());
+				Profile profile;
+
+				profile = Profile.getCurrentProfile();
+
+				System.out.println(profile.getName());
+			}
+
+			@Override
+			public void onCancel() {
+				// App code
+				System.out.println("+++++++++++++++ atas cancel");
+			}
+
+			@Override
+			public void onError(FacebookException exception) {
+				// App code
+				System.out.println("+++++++++++++++ atas error");
+			}
+		});
+
 		return v;
 	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		FacebookSdk.sdkInitialize(this.getContext());
+
+		callbackManager = CallbackManager.Factory.create();
+
+		LoginManager.getInstance().registerCallback(callbackManager,
+				new FacebookCallback<LoginResult>() {
+					@Override
+					public void onSuccess(LoginResult loginResult) {
+						// App code
+						System.out.println("+++++++++++++++ bawah");
+					}
+
+					@Override
+					public void onCancel() {
+						// App code
+						System.out.println("+++++++++++++++ bawah cancel");
+					}
+
+					@Override
+					public void onError(FacebookException exception) {
+						// App code
+						System.out.println("+++++++++++++++ bawah error");
+					}
+				});
+	}
+
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -166,6 +238,8 @@ public class LoginFragment extends Fragment implements
 			GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
 			handleSignInResult(result);
 		}
+
+		callbackManager.onActivityResult(requestCode, resultCode, data);
 	}
 	// [END onActivityResult]
 
@@ -292,5 +366,21 @@ public class LoginFragment extends Fragment implements
 				break;
 		}
 	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		// Logs 'install' and 'app activate' App Events.
+		AppEventsLogger.activateApp(this.context);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		// Logs 'app deactivate' App Event.
+		//AppEventsLogger.deactivateApp(this.context);
+	}
+
+
 }
 

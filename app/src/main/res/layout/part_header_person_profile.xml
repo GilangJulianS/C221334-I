@@ -6,13 +6,13 @@
 	<ImageView
 		android:id="@+id/img_header_background"
 		android:layout_width="match_parent"
-		android:layout_height="200dp"
+		android:layout_height="220dp"
 		android:scaleType="centerCrop"
-		android:background="@color/colorPrimaryDefault"/>
+		android:src="@drawable/wallpaper"/>
 
 	<View
 		android:layout_width="match_parent"
-		android:layout_height="200dp"
+		android:layout_height="220dp"
 		android:background="@color/dim_filter"/>
 
 	<LinearLayout
@@ -41,16 +41,19 @@
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="10dp"
 			android:gravity="center_horizontal"
 			android:orientation="horizontal">
 
 			<LinearLayout
+				android:id="@+id/group_showlist"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:gravity="center_horizontal"
-				android:layout_marginLeft="5dp"
-				android:layout_marginRight="5dp"
+				android:gravity="center_horizontal|center_vertical"
+				android:paddingTop="10dp"
+				android:paddingBottom="10dp"
+				android:paddingLeft="5dp"
+				android:paddingRight="5dp"
+				android:background="@drawable/btn_flat_transparent"
 				android:orientation="vertical">
 
 				<TextView
@@ -72,11 +75,15 @@
 			</LinearLayout>
 
 			<LinearLayout
+				android:id="@+id/group_content"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_marginLeft="5dp"
-				android:layout_marginRight="5dp"
+				android:paddingTop="10dp"
+				android:paddingBottom="10dp"
+				android:paddingLeft="5dp"
+				android:paddingRight="5dp"
 				android:gravity="center_horizontal"
+				android:background="@drawable/btn_flat_transparent"
 				android:orientation="vertical">
 
 				<TextView
@@ -97,11 +104,15 @@
 			</LinearLayout>
 
 			<LinearLayout
+				android:id="@+id/group_follower"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_marginLeft="5dp"
-				android:layout_marginRight="5dp"
+				android:paddingTop="10dp"
+				android:paddingBottom="10dp"
+				android:paddingLeft="5dp"
+				android:paddingRight="5dp"
 				android:gravity="center_horizontal"
+				android:background="@drawable/btn_flat_transparent"
 				android:orientation="vertical">
 
 				<TextView
@@ -122,11 +133,15 @@
 			</LinearLayout>
 
 			<LinearLayout
+				android:id="@+id/group_following"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_marginLeft="5dp"
-				android:layout_marginRight="5dp"
+				android:paddingTop="10dp"
+				android:paddingBottom="10dp"
+				android:paddingLeft="5dp"
+				android:paddingRight="5dp"
 				android:gravity="center_horizontal"
+				android:background="@drawable/btn_flat_transparent"
 				android:orientation="vertical">
 
 				<TextView
@@ -151,7 +166,7 @@
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:layout_marginTop="15dp"
+			android:layout_marginTop="5dp"
 			android:paddingTop="10dp"
 			android:background="#fff"
 			android:orientation="vertical">
@@ -168,25 +183,18 @@
 					android:id="@+id/btn_add_showlist"
 					android:layout_width="wrap_content"
 					android:layout_height="30dp"
-					android:paddingLeft="20dp"
-					android:paddingRight="20dp"
+					android:layout_marginRight="10dp"
 					android:drawableLeft="@drawable/ic_add_black_24dp"
-					android:background="@drawable/btn_header"
-					android:drawableTint="@color/colorAccentDark"
-					android:textColor="@color/colorAccentDark"
+					style="@style/Button.Header.White"
 					android:text="Add Show List"/>
 
 				<Button
 					android:id="@+id/btn_upload"
 					android:layout_width="wrap_content"
 					android:layout_height="30dp"
-					android:paddingLeft="20dp"
-					android:paddingRight="20dp"
-					android:layout_marginLeft="20dp"
+					android:layout_marginLeft="10dp"
 					android:drawableLeft="@drawable/ic_file_upload_black_24dp"
-					android:background="@drawable/btn_header"
-					android:drawableTint="@color/colorAccentDark"
-					android:textColor="@color/colorAccentDark"
+					style="@style/Button.Header.White"
 					android:text="Upload"/>
 
 			</LinearLayout>
@@ -203,13 +211,9 @@
 					android:id="@+id/btn_follow"
 					android:layout_width="wrap_content"
 					android:layout_height="30dp"
-					android:paddingLeft="20dp"
-					android:paddingRight="20dp"
 					android:drawableLeft="@drawable/ic_add_black_24dp"
 					android:animateLayoutChanges="true"
-					android:background="@drawable/btn_header"
-					android:drawableTint="@color/colorAccentDark"
-					android:textColor="@color/colorAccentDark"
+					style="@style/Button.Header.White"
 					android:text="Follow"/>
 
 			</LinearLayout>

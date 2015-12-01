@@ -1,12 +1,9 @@
 package com.cyclone.custom;
 
 import android.app.Activity;
-import android.media.Image;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cyclone.R;
@@ -20,8 +17,8 @@ public class ContentsHolder extends UniversalHolder {
 
 	public ViewGroup container;
 
-	public ContentsHolder(View v, Activity activity) {
-		super(v, activity);
+	public ContentsHolder(View v, Activity activity, UniversalAdapter adapter) {
+		super(v, activity, adapter);
 		container = (ViewGroup) v.findViewById(R.id.content_container);
 	}
 
@@ -39,7 +36,8 @@ public class ContentsHolder extends UniversalHolder {
 			TextView txtSecondary = (TextView) v.findViewById(R.id.txt_secondary);
 			TextView txtTertiary = (TextView) v.findViewById(R.id.txt_tertiary);
 
-			imgCover.setImageResource(R.drawable.wallpaper);
+			if(c.imgUrl == null)
+				imgCover.setImageResource(c.imgResource);
 
 			if(c.txtPrimary != null)
 				txtPrimary.setText(c.txtPrimary);

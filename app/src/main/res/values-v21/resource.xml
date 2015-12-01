@@ -2,6 +2,7 @@
 <resources>
 	<drawable name="btn_header">@drawable/btn_white_ripple</drawable>
 	<drawable name="btn_flat_transparent">@drawable/btn_transparent_ripple</drawable>
+	<drawable name="btn_flat_transparent_oval">@drawable/btn_transparent_oval_ripple</drawable>
 	<drawable name="btn_normal_yellow">@drawable/btn_yellow_ripple</drawable>
 	<drawable name="btn_normal_blue">@drawable/btn_blue_ripple</drawable>
 	<drawable name="btn_normal_green">@drawable/btn_green_ripple</drawable>

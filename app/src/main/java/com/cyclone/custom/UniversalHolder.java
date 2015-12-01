@@ -4,18 +4,21 @@ import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.cyclone.DrawerActivity;
+
 /**
  * Created by gilang on 01/11/2015.
  */
-public abstract class UniversalHolder extends RecyclerView.ViewHolder{
+public abstract class UniversalHolder extends RecyclerView.ViewHolder {
 
 	protected Activity activity;
+	protected UniversalAdapter adapter;
 
-	public UniversalHolder(View itemView, Activity activity) {
+	public UniversalHolder(View itemView, Activity activity, UniversalAdapter adapter) {
 		super(itemView);
 		this.activity = activity;
+		this.adapter = adapter;
 	}
-
 
 	public abstract void bind(Object object, Activity activity, int position);
 }

@@ -17,8 +17,8 @@ public class ProgramContentHolder extends UniversalHolder {
 	public TextView txtTime;
 	public TextView txtContent;
 
-	public ProgramContentHolder(View v, Activity activity) {
-		super(v, activity);
+	public ProgramContentHolder(View v, Activity activity, UniversalAdapter adapter) {
+		super(v, activity, adapter);
 		txtType = (TextView) v.findViewById(R.id.txt_type);
 		txtTime = (TextView) v.findViewById(R.id.txt_time);
 		txtContent = (TextView) v.findViewById(R.id.txt_content);

@@ -1,16 +1,32 @@
 package com.cyclone.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.GestureDetectorCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 
+import com.cyclone.DrawerActivity;
 import com.cyclone.R;
+import com.cyclone.custom.SnapGestureListener;
+import com.cyclone.custom.UniversalAdapter;
 import com.cyclone.model.Album;
 import com.cyclone.model.Section;
 import com.cyclone.model.Song;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
 /**
  * Created by gilang on 02/11/2015.

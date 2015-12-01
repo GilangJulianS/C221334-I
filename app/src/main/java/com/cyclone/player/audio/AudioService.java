@@ -49,7 +49,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -312,6 +311,7 @@ public class AudioService extends Service {
             unregisterReceiver(mRemoteControlClientReceiver);
             mRemoteControlClientReceiver = null;
         }
+        DrawerActivity.showMiniPlayer = false;
 
 
     }

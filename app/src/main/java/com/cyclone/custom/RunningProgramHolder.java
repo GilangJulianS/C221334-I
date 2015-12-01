@@ -1,12 +1,10 @@
 package com.cyclone.custom;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.cyclone.DrawerActivity;
 import com.cyclone.MasterActivity;
 import com.cyclone.R;
 import com.cyclone.model.RunningProgram;
@@ -32,8 +30,8 @@ public class RunningProgramHolder extends UniversalHolder {
 	private AudioServiceController mAudioController;
 	private LibVLC mLibVLC;
 
-	public RunningProgramHolder(View v, Activity activity) {
-		super(v, activity);
+	public RunningProgramHolder(View v, Activity activity, UniversalAdapter adapter) {
+		super(v, activity, adapter);
 		txtPrimary = (TextView) v.findViewById(R.id.txt_primary);
 		txtSecondary = (TextView) v.findViewById(R.id.txt_secondary);
 		btnPlay = (ImageButton) v.findViewById(R.id.btn_play);
@@ -52,10 +50,10 @@ public class RunningProgramHolder extends UniversalHolder {
 			@Override
 			public void onClick(View v) {
 
-				Intent i = new Intent(activity, DrawerActivity.class);
+				/*Intent i = new Intent(activity, DrawerActivity.class);
 				i.putExtra("layout", DrawerActivity.LAYOUT_PLAYER);
 				i.putExtra("activity", R.layout.activity_drawer);
-				activity.startActivity(i);
+				activity.startActivity(i);*/
 
 				mAudioController = AudioServiceController.getInstance();
 
@@ -68,10 +66,10 @@ public class RunningProgramHolder extends UniversalHolder {
 				costumMedia cm = new costumMedia();
 				cm.setLocation(MasterActivity.ulr_stream);
 				cm.setTitle("Judul Acara");
-				cm.setArtist("K-Lite");
+				cm.setArtist("Prambors");
 				cm.setAlbum("Album");
 				cm.setArtist("albumArtist");
-				cm.setArtworkURL("https://pbs.twimg.com/profile_images/1643172883/Logo_K-Lite_FM.PNG");
+				cm.setArtworkURL("https://www.idjoel.com/wp-content/uploads/2015/01/Tangga-Lagu-Prambors.jpg");
 
 				m = new Media(cm.getLocation(), cm.getTime(), cm.getLength(), cm.getType(),
 						cm.getPicture(), cm.getTitle(), cm.getArtist(), cm.getGenre(), cm.getAlbum(), cm.getAlbumArtist(),

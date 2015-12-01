@@ -2,19 +2,15 @@ package com.cyclone.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.cyclone.DrawerActivity;
 import com.cyclone.R;
-import com.cyclone.custom.SnapGestureListener;
 
 
 /**
@@ -26,10 +22,12 @@ public class ProgramPageFragment extends Fragment {
 	private DrawerActivity activity;
 	private GestureDetectorCompat gd;
 
+
 	public ProgramPageFragment(){}
 
 	public static ProgramPageFragment newInstance(){
 		ProgramPageFragment fragment = new ProgramPageFragment();
+
 		return fragment;
 	}
 
@@ -37,18 +35,18 @@ public class ProgramPageFragment extends Fragment {
 		View v = inflater.inflate(R.layout.fragment_program_page, parent, false);
 		nestedScrollView = (NestedScrollView) v.findViewById(R.id.nested_scroll_view);
 
-		if(activity != null){
-			gd = new GestureDetectorCompat(activity, new SnapGestureListener(activity));
-			nestedScrollView.setOnTouchListener(new View.OnTouchListener() {
-				@Override
-				public boolean onTouch(View v, MotionEvent event) {
-					System.out.println("touch recycler");
-					if(nestedScrollView.computeVerticalScrollOffset() == 0)
-						return gd.onTouchEvent(event);
-					return false;
-				}
-			});
-		}
+//		if(activity != null){
+//			gd = new GestureDetectorCompat(activity, new SnapGestureListener(activity));
+//			nestedScrollView.setOnTouchListener(new View.OnTouchListener() {
+//				@Override
+//				public boolean onTouch(View v, MotionEvent event) {
+//					System.out.println("touch recycler");
+//					if(nestedScrollView.computeVerticalScrollOffset() == 0)
+//						return gd.onTouchEvent(event);
+//					return false;
+//				}
+//			});
+//		}
 
 		return v;
 	}

@@ -62,11 +62,16 @@ public class LiveStreamFragment extends RecyclerFragment {
 
 	public List<Object> parse(String json){
 		List<Object> datas = new ArrayList<>();
-		List<String> images = new ArrayList<>();
+		/*List<String> images = new ArrayList<>();
 		images.add("");
 		images.add("");
 		images.add("");
-		datas.add(new ProgramPager(images, 1));
+		datas.add(new ProgramPager(images, 1));*/
+		List<Integer> images = new ArrayList<>();
+		images.add(R.drawable.aa_dj_show);
+		images.add(R.drawable.aa_desta_gina);
+		images.add(R.drawable.aa_asia_pop_40);
+		datas.add(new ProgramPager(images, 1, true));
 		datas.add(new RunningProgram("The Dandees", "The Most Wanted Guys In Town"));
 		datas.add(new ProgramContent(ProgramContent.TYPE_MUSIC, "10:21", "Biru - Afgan"));
 		datas.add(new ProgramContent(ProgramContent.TYPE_MUSIC, "10:18", "Stop Look Listen - " +

@@ -64,6 +64,8 @@ public abstract class RecyclerFragment extends Fragment implements OnOffsetChang
 		if(datas != null && datas.size() > 0)
 			animate(datas.get(0));
 
+		onCreateView(v, parent, savedInstanceState);
+
 		return v;
 	}
 
@@ -83,6 +85,8 @@ public abstract class RecyclerFragment extends Fragment implements OnOffsetChang
 		setupAnimator();
 		setupAdapter();
 		if(hasHeader()) setupGestureDetector();
+
+
 	}
 
 	private void setupSwipeLayout(){
@@ -139,12 +143,11 @@ public abstract class RecyclerFragment extends Fragment implements OnOffsetChang
 							.findFirstCompletelyVisibleItemPosition() == 0) || (getColumnNumber()
 							> 1 && ((GridLayoutManager)layoutManager)
 							.findFirstCompletelyVisibleItemPosition() == 0)) {
-						return gd.onTouchEvent(event);
+							return gd.onTouchEvent(event);
 					}
 					return false;
 				}
 			});
-
 		}
 	}
 
@@ -180,7 +183,9 @@ public abstract class RecyclerFragment extends Fragment implements OnOffsetChang
 				LayoutInflater inflater = activity.getLayoutInflater();
 				View header = inflater.inflate(getHeaderLayoutId(), parallaxHeader, false);
 				prepareHeader(header);
-				parallaxHeader.removeAllViews();
+				try{parallaxHeader.removeAllViews();}
+				catch (Exception e){}
+
 				parallaxHeader.addView(header);
 			}
 		}else if(context instanceof DrawerActivity) {

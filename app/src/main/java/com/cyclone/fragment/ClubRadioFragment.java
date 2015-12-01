@@ -1,10 +1,14 @@
 package com.cyclone.fragment;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.cyclone.R;
 import com.cyclone.model.Post;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +17,8 @@ import java.util.List;
  * Created by gilang on 17/10/2015.
  */
 public class ClubRadioFragment extends RecyclerFragment {
+
+	private FloatingActionButton fabUpload, fabMix, fabPlaylist;
 
 	public ClubRadioFragment(){}
 
@@ -29,7 +35,32 @@ public class ClubRadioFragment extends RecyclerFragment {
 
 	@Override
 	public void onCreateView(View v, ViewGroup parent, Bundle savedInstanceState) {
+		ViewGroup fabContainer = (ViewGroup) activity.findViewById(R.id.container_fab);
+		LayoutInflater inflater = activity.getLayoutInflater();
+		View fab = inflater.inflate(R.layout.fab_club_radio, fabContainer, false);
 
+		fabUpload = (FloatingActionButton) fab.findViewById(R.id.fab_upload);
+		fabUpload.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(activity, "fab upload clicked", Toast.LENGTH_SHORT).show();
+			}
+		});
+		fabMix = (FloatingActionButton) fab.findViewById(R.id.fab_mix);
+		fabMix.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(activity, "fab mix clicked", Toast.LENGTH_SHORT).show();
+			}
+		});
+		fabPlaylist = (FloatingActionButton) fab.findViewById(R.id.fab_playlist);
+		fabPlaylist.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(activity, "fab playlist clicked", Toast.LENGTH_SHORT).show();
+			}
+		});
+		fabContainer.addView(fab);
 	}
 
 	@Override
@@ -54,24 +85,13 @@ public class ClubRadioFragment extends RecyclerFragment {
 
 	public List<Object> parse(String json){
 		List<Object> datas = new ArrayList<>();
-		datas.add(new Post("", "<b>Imam Darto</b> created new <b>Mix</b>", "1 Hour ago", "Mix",
-				"", "Funky Sunshine", "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST));
-		datas.add(new Post("", "<b>Desta</b> liked a Playlist", "2 Hour ago", "Playlist",
-				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST));
-		datas.add(new Post("", "<b>Desta</b> created new <b>Playlist</b>", "4 Hour ago",
-				"Playlist", "", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post
-				.TYPE_POST));
-		datas.add(new Post("", "<b>Desta</b> shared a <b>Playlist</b>", "4 Hour ago", "Playlist",
-				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST));
-		datas.add(new Post("", "<b>Imam Darto</b> created new <b>Mix</b>", "1 Hour ago", "Mix",
-				"", "Funky Sunshine", "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST));
-		datas.add(new Post("", "<b>Desta</b> liked a Playlist", "2 Hour ago", "Playlist",
-				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST));
-		datas.add(new Post("", "<b>Desta</b> created new <b>Playlist</b>", "4 Hour ago",
-				"Playlist", "", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post
-				.TYPE_POST));
-		datas.add(new Post("", "<b>Desta</b> shared a <b>Playlist</b>", "4 Hour ago", "Playlist",
-				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST));
+		datas.add(new Post(R.drawable.aaa_darto, "<b>Imam Darto</b> created new <b>Mix</b>", "1 Hour ago", "Mix",
+				R.drawable.aaa_klub_funky, "Funky Sunshine", "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST, false));
+		datas.add(new Post(R.drawable.aaa_desta, "<b>Desta</b> liked a Playlist", "2 Hour ago", "Playlist",
+				R.drawable.aaa_klub_funky, "Mix Max", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST, false));
+		datas.add(new Post(R.drawable.aaa_dimas_danang, "<b>Dimas Danang</b> created new <b>Playlist</b>", "4 Hour ago",
+				"Playlist", R.drawable.aaa_klub_cover_hey, "Cover - Hey", "2015 top hits", "20 tracks", 1024, 56, Post
+				.TYPE_POST, false));
 		return datas;
 	}
 }

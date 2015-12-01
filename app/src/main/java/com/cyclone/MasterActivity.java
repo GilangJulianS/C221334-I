@@ -45,8 +45,10 @@ public abstract class MasterActivity extends AppCompatActivity implements Gestur
 	public static final int LAYOUT_HOME = 119;
 	public static final int LAYOUT_CATEGORY = 120;
 	public static final int LAYOUT_SUBCATEGORY = 121;
-
-	public static final String ulr_stream = "http://stream.suararadio.com:8000/bandung_klitefm_mp3";
+	public static final int LAYOUT_GRID_MIX = 122;
+	public static final int LAYOUT_ADD_MIX = 123;
+	public static final int LAYOUT_COMMENT = 124;
+	public static final int LAYOUT_MIX = 125;
 
 	public AppBarLayout appBarLayout;
 	public boolean isExpanded = true;
@@ -60,21 +62,15 @@ public abstract class MasterActivity extends AppCompatActivity implements Gestur
 
 	protected TextView txtJudul, txtArtist;
 
-	ImageView imgCoverMini;
+	public static final String ulr_stream = "http://stream.suararadio.com:8000/bandung_klitefm_mp3";
 
-	//private AudioServiceController mAudioController;
+	ImageView imgCoverMini;
 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-	//	mAudioController = AudioServiceController.getInstance();
-
-
-
 	}
-
 
 	protected void setupToolbar(){
 		toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -108,21 +104,22 @@ public abstract class MasterActivity extends AppCompatActivity implements Gestur
 		appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
 			@Override
 			public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-				float percent = (float) Math.abs(verticalOffset) / (float) appBarLayout
+				float percent = (float)Math.abs(verticalOffset) / (float)appBarLayout
 						.getTotalScrollRange()
 						* 100;
 //				System.out.println(percent);
-				if (percent == 0) {
+				if(percent == 0) {
 					isExpanded = true;
 					System.out.println("expanded blalbla");
-				} else if (percent == 100) {
+				}
+				else if(percent == 100) {
 					isExpanded = false;
 					System.out.println("collapsed blalbla");
 				}
-				if (percent == 100 || percent == 0) {
+				if(percent == 100 || percent == 0){
 					System.out.println("finish");
 				}
-				if (callback != null) {
+				if(callback != null) {
 					callback.onChanged(percent);
 				}
 			}

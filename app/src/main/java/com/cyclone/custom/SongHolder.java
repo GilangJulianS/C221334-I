@@ -16,8 +16,8 @@ public class SongHolder extends UniversalHolder {
 	public TextView txtPrimary;
 	public TextView txtSecondary;
 
-	public SongHolder(View v, Activity activity) {
-		super(v, activity);
+	public SongHolder(View v, Activity activity, UniversalAdapter adapter) {
+		super(v, activity, adapter);
 		txtPrimary = (TextView) v.findViewById(R.id.txt_primary);
 		txtSecondary = (TextView) v.findViewById(R.id.txt_secondary);
 	}

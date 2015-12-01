@@ -36,7 +36,7 @@
 					android:layout_width="0dp"
 					android:layout_weight="2"
 					android:layout_height="110dp"
-					android:src="@drawable/radio_icon"/>
+					android:src="@drawable/prambors_logo_1"/>
 
 				<LinearLayout
 					android:layout_width="0dp"
@@ -51,7 +51,7 @@
 						android:layout_weight="1"
 						android:textSize="16sp"
 						android:textStyle="bold"
-						android:text="K-Lite FM Bandung"/>
+						android:text="PRAMBORS FM JAKARTA"/>
 
 					<LinearLayout
 						android:layout_width="wrap_content"
@@ -68,7 +68,7 @@
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
 							android:layout_marginLeft="10dp"
-							android:text="107.1 FM"/>
+							android:text="102.2 FM"/>
 
 					</LinearLayout>
 
@@ -87,7 +87,7 @@
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
 							android:layout_marginLeft="10dp"
-							android:text="Bandung"/>
+							android:text="JAKARTA"/>
 
 					</LinearLayout>
 
@@ -128,14 +128,14 @@
 					android:layout_width="0dp"
 					android:layout_weight="2"
 					android:layout_height="110dp"
-					android:src="@drawable/radio_icon"/>
+					android:src="@drawable/logo_prambors"/>
 
 				<TextView
 					android:layout_width="0dp"
 					android:layout_weight="3"
 					android:layout_height="wrap_content"
 					android:layout_gravity="center_vertical"
-					android:text="Bandung's inspiring Sound - K-Lite FM, Bandung, a broadtcast radio stationed in Bandung Indonesia, Providing young..."/>
+					android:text="Prambors sebagai Indonesia No. 1 Hit Music Station tetap setia menemani kawula muda dengan  Hits Terbaik  baik dari artis internasional maupun lokal."/>
 
 			</LinearLayout>
 
@@ -177,12 +177,14 @@
 			android:orientation="horizontal">
 
 			<include layout="@layout/card_program"
+			 	android:id="@+id/card_featured_program_1"
 				android:layout_width="0dp"
 				android:layout_weight="1"
 				android:layout_height="wrap_content"
 				android:layout_margin="5dp"/>
 
-			<include layout="@layout/card_program"
+			<include layout="@layout/card_program2"
+				 android:id="@+id/card_featured_program_2"
 				 android:layout_width="0dp"
 				 android:layout_weight="1"
 				 android:layout_height="wrap_content"
@@ -227,20 +229,23 @@
 
 			<include
 				layout="@layout/card_announcer"
+				android:id="@+id/card_featured_announcer_1"
 				android:layout_width="0dp"
 				android:layout_weight="1"
 				android:layout_height="wrap_content"
 				android:layout_margin="5dp"/>
 
 			<include
-				layout="@layout/card_announcer"
+				layout="@layout/card_announcer2"
+				android:id="@+id/card_featured_announcer_2"
 				android:layout_width="0dp"
 				android:layout_weight="1"
 				android:layout_height="wrap_content"
 				android:layout_margin="5dp"/>
 
 			<include
-				layout="@layout/card_announcer"
+				layout="@layout/card_announcer3"
+				android:id="@+id/card_featured_announcer_3"
 				android:layout_width="0dp"
 				android:layout_weight="1"
 				android:layout_height="wrap_content"
@@ -295,7 +300,7 @@
 						android:layout_marginLeft="10dp"
 						android:textSize="12sp"
 						android:textStyle="bold"
-						android:text="Jl. Sumur Bandung No.12\nDago - Bandung"/>
+						android:text="Jl. Adityawarman no.71, Kebayoran Baru, Jakarta"/>
 
 				</LinearLayout>
 
@@ -317,7 +322,7 @@
 						android:layout_marginLeft="10dp"
 						android:textSize="12sp"
 						android:textStyle="bold"
-						android:text="+6222 21 231231"/>
+						android:text="(021) 720-2238"/>
 
 
 				</LinearLayout>
@@ -340,7 +345,7 @@
 						android:layout_marginLeft="10dp"
 						android:textSize="12sp"
 						android:textStyle="bold"
-						android:text="kllitefm@gmail.com"/>
+						android:text="pramborsfm@gmail.com"/>
 
 				</LinearLayout>
 
@@ -395,7 +400,7 @@
 						android:layout_marginLeft="10dp"
 						android:textSize="12sp"
 						android:textStyle="bold"
-						android:text="www.kllitefm.com"/>
+						android:text="www.pramborsfm.com/"/>
 
 				</LinearLayout>
 
@@ -416,7 +421,7 @@
 						android:layout_marginLeft="10dp"
 						android:textSize="12sp"
 						android:textStyle="bold"
-						android:text="RADIO K-LITE 107.1 FM BANDUNG"/>
+						android:text="RADIO PRAMBORS 102.2FM JAKARTA"/>
 
 
 				</LinearLayout>
@@ -438,7 +443,7 @@
 						android:layout_marginLeft="10dp"
 						android:textSize="12sp"
 						android:textStyle="bold"
-						android:text="\@107klitefm"/>
+						android:text="\@102.2pramborsfm"/>
 
 				</LinearLayout>
 

@@ -2,6 +2,7 @@ package com.cyclone.custom;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,8 +20,8 @@ public class NotificationHolder extends UniversalHolder{
 	public TextView txtInfo;
 	public TextView txtTime;
 
-	public NotificationHolder(View v, Activity activity) {
-		super(v, activity);
+	public NotificationHolder(View v, Activity activity, UniversalAdapter adapter) {
+		super(v, activity, adapter);
 		imgUser = (ImageView) v.findViewById(R.id.img_user);
 		txtInfo = (TextView) v.findViewById(R.id.txt_info);
 		txtTime = (TextView) v.findViewById(R.id.txt_time);
@@ -33,7 +34,7 @@ public class NotificationHolder extends UniversalHolder{
 
 	public void bind(Notification notif){
 		imgUser.setImageResource(R.drawable.background_login);
-		txtInfo.setText(notif.info);
+		txtInfo.setText(Html.fromHtml(notif.info));
 		txtTime.setText(notif.time);
 	}
 }

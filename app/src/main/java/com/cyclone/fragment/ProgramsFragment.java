@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.cyclone.R;
 import com.cyclone.model.Program;
 
 import java.util.ArrayList;
@@ -59,25 +60,21 @@ public class ProgramsFragment extends RecyclerFragment {
 
 	public List<Object> parse(String json){
 		List<Object> datas = new ArrayList<>();
-		datas.add(new Program("http://imgurl.com", "Inspiring Life", "Sen - Jum, 04.00 - 05" +
+		datas.add(new Program(R.drawable.aa_desta_gina, "Desta and Gina In The Morning", "Sen - Jum, 04.00 - 05" +
 				".00", 4));
-		datas.add(new Program("http://imgurl.com", "Inspiring Morning", "Sen - Jum, 04.00 - 05" +
+		datas.add(new Program(R.drawable.aa_dj_show, "DJ Show", "Sen - Jum, 04.00 - 05" +
 				".00", 4));
-		datas.add(new Program("http://imgurl.com", "Easy Busy", "Sen - Jum, 04.00 - 05" +
+		datas.add(new Program(R.drawable.aa_the_dandless, "The Dandees ", "Sen - Jum, 04.00 - 05" +
 				".00", 4));
-		datas.add(new Program("http://imgurl.com", "Hit The Beat", "Sen - Jum, 04.00 - 05" +
+		datas.add(new Program(R.drawable.aa_light_night_hot, "Late Night Hot", "Sen - Jum, 04.00 - 05" +
 				".00", 4));
-		datas.add(new Program("http://imgurl.com", "Inspiring Night", "Sen - Jum, 04.00 - 05" +
+		datas.add(new Program(R.drawable.aa_jeli, "Jeli", "Sen - Jum, 04.00 - 05" +
 				".00", 4));
-		datas.add(new Program("http://imgurl.com", "Afternoon Cafe", "Sen - Jum, 04.00 - 05" +
+		datas.add(new Program(R.drawable.aa_40_gallery, "Top 40 Show", "Sen - Jum, 04.00 - 05" +
 				".00", 4));
-		datas.add(new Program("http://imgurl.com", "Soft Sensation", "Sen - Jum, 04.00 - 05" +
+		datas.add(new Program(R.drawable.aa_asia_pop_40, "Asia Pop 40", "Sen - Jum, 04.00 - 05" +
 				".00", 4));
-		datas.add(new Program("http://imgurl.com", "Headline News", "Sen - Jum, 04.00 - 05" +
-				".00", 4));
-		datas.add(new Program("http://imgurl.com", "Life Sports", "Sen - Jum, 04.00 - 05" +
-				".00", 4));
-		datas.add(new Program("http://imgurl.com", "Wild Life", "Sen - Jum, 04.00 - 05" +
+		datas.add(new Program(R.drawable.aa_twix_mis, "Twix Mix", "Sen - Jum, 04.00 - 05" +
 				".00", 4));
 		return datas;
 	}

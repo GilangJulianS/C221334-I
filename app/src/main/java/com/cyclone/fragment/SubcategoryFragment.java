@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.cyclone.model.Album;
 import com.cyclone.model.SubcategoryItem;
 
 import java.util.ArrayList;

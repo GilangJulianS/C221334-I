@@ -26,7 +26,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.cyclone.DrawerActivity;
 import com.cyclone.player.util.AndroidDevices;
 import com.cyclone.player.util.Util;
 import com.cyclone.player.util.VLCInstance;
@@ -219,7 +218,7 @@ public class MediaLibrary {
             final MediaDatabase DBManager = MediaDatabase.getInstance();
 
             // show progressbar in footer
-            DrawerActivity.showProgressBar();
+           // DrawerActivity.showProgressBar();
 
             List<File> mediaDirs = DBManager.getMediaDirs();
             if (mediaDirs.size() == 0) {
@@ -302,8 +301,8 @@ public class MediaLibrary {
                 // Process the stacked items
                 for (File file : mediaToScan) {
                     String fileURI = LibVLC.PathToURI(file.getPath());
-                    DrawerActivity.sendTextInfo(file.getName(), count,
-                            mediaToScan.size());
+                   // DrawerActivity.sendTextInfo(file.getName(), count,
+                      //      mediaToScan.size());
                     count++;
                     if (existingMedias.containsKey(fileURI)) {
                         /**
@@ -352,8 +351,8 @@ public class MediaLibrary {
                 }
 
                 // hide progressbar in footer
-                DrawerActivity.clearTextInfo();
-                DrawerActivity.hideProgressBar();
+               // DrawerActivity.clearTextInfo();
+               // DrawerActivity.hideProgressBar();
 
                 Util.actionScanStop();
 

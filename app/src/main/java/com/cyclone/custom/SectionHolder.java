@@ -22,8 +22,8 @@ public class SectionHolder extends UniversalHolder {
 	public TextView txtTitle;
 	public Button btnMore;
 
-	public SectionHolder(View v, Activity activity){
-		super(v, activity);
+	public SectionHolder(View v, Activity activity, UniversalAdapter adapter){
+		super(v, activity, adapter);
 		txtTitle = (TextView) v.findViewById(R.id.txt_section_title);
 		btnMore = (Button) v.findViewById(R.id.btn_more);
 	}

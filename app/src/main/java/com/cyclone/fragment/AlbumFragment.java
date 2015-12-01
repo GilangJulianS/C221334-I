@@ -1,16 +1,37 @@
 package com.cyclone.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.GestureDetectorCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.GestureDetector;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
+import com.cyclone.DrawerActivity;
 import com.cyclone.R;
+import com.cyclone.custom.SnapGestureListener;
+import com.cyclone.custom.UniversalAdapter;
 import com.cyclone.model.Album;
 import com.cyclone.model.Section;
 import com.cyclone.model.Song;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
 /**
  * Created by gilang on 01/11/2015.
@@ -56,7 +77,14 @@ public class AlbumFragment extends RecyclerFragment {
 	}
 
 	public void setupHeader(View v, String json){
+		ImageButton btnMenu = (ImageButton) v.findViewById(R.id.btn_menu);
 
+		btnMenu.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(activity, "Menu button clicked", Toast.LENGTH_SHORT).show();
+			}
+		});
 	}
 
 	public List<Object> parse(String json){

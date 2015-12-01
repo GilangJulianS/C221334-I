@@ -1,2 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<items version="2" />
+<items version="2" >
+
+    <item
+        jar="/home/solusi247/.gradle/caches/modules-2/files-2.1/com.parse.bolts/bolts-android/1.2.0/6ee2953ccf51ce72b6d548c30c4633b99eb4f9dd/bolts-android-1.2.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="6ee2953ccf51ce72b6d548c30c4633b99eb4f9dd">
+        <dex dex="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/pre-dexed/debug/bolts-android-1.2.0-67efbcb2a5eadf963ab760a1fb6dae56375c84ca.jar" />
+    </item>
+    <item
+        jar="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/exploded-aar/com.android.support/cardview-v7/23.1.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="d96886efea7cc74fbb3abd0e3b51d5638fc57be0">
+        <dex dex="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/pre-dexed/debug/classes-7dde72d3c552c9415ad90d315bd9557ff96f0751.jar" />
+    </item>
+    <item
+        jar="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-auth/8.3.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="fd76d95678a6b2b8a49bb8a9fb5bcef7aedb70e7">
+        <dex dex="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/pre-dexed/debug/classes-395db7303ce585351f46f1c841681de122e0c7c9.jar" />
+    </item>
+    <item
+        jar="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/exploded-aar/jp.wasabeef/recyclerview-animators/2.0.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="4a70cdeeea9b109cfc5cbf5afef1203d350fb9df">
+        <dex dex="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/pre-dexed/debug/classes-673e220b4c57f365792478e5d1039e6dedac5e9f.jar" />
+    </item>
+    <item
+        jar="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/exploded-aar/de.hdodenhof/circleimageview/2.0.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="031e8b3ab2df4ab43b1017f84417d7e10dfbb8d2">
+        <dex dex="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/pre-dexed/debug/classes-be05a76a74d13f1e3979b59a6a7028c6e527cebd.jar" />
+    </item>
+    <item
+        jar="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/exploded-aar/cyclone-frontend/libvlc/unspecified/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="91dd9ed17fcc7f30495188f53144fc1784ab81d6">
+        <dex dex="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/pre-dexed/debug/classes-a6ec39d31e76f8be7d764bbe039edfbf9b05250a.jar" />
+    </item>
+    <item
+        jar="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.7.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="5bdb38b7e4b6094891648c1dc4dc08589b460f97">
+        <dex dex="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/pre-dexed/debug/classes-d2f5127f203e491536c48efb3e25e908aa6754e6.jar" />
+    </item>
+    <item
+        jar="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="57ae0d750ff83f0c738d21720224ac7ea866a094">
+        <dex dex="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/pre-dexed/debug/classes-bf466b0af05d8605a78ab046ff9599b467609a06.jar" />
+    </item>
+    <item
+        jar="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/exploded-aar/com.flipboard/bottomsheet-core/1.4.3/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="eb5db1a2fff40e31592c12069212688b2293fb08">
+        <dex dex="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/pre-dexed/debug/classes-518bedbe3b18a0d98c9104740b0a68bc239a0b85.jar" />
+    </item>
+    <item
+        jar="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/exploded-aar/com.android.support/design/23.1.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="19026d31f5d3ae868db81319671a642be5fbba08">
+        <dex dex="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/pre-dexed/debug/classes-e4994411e154495d56f4114ec5659f866b1827ed.jar" />
+    </item>
+    <item
+        jar="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/8.3.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="345a1b5cf5b144ce18ba6962bc66a7e2f26c1c1b">
+        <dex dex="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/pre-dexed/debug/classes-4a5b86f98162e99f30d4fa1a9207775eab0f4f23.jar" />
+    </item>
+    <item
+        jar="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="ddde541c289c8b816a8f8fd6c325d80788c522a6">
+        <dex dex="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/pre-dexed/debug/classes-edfb027d680cb69bf73d37df9e576052a0cb57c3.jar" />
+    </item>
+    <item
+        jar="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/exploded-aar/com.android.support/percent/23.1.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="6e7040af4ab4aa797cbf6e6eacf94fcf241ae8f0">
+        <dex dex="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/pre-dexed/debug/classes-628a0aff4f46d3b7a2c23fffddf788f8ff30be05.jar" />
+    </item>
+    <item
+        jar="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.1.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="3f151e49c316a5ab2c065969a3b3b55ef9b393fc">
+        <dex dex="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/pre-dexed/debug/classes-6972a73afc59e02a8c1b15373a41c3b964732ae0.jar" />
+    </item>
+    <item
+        jar="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/exploded-aar/com.getbase/floatingactionbutton/1.10.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="f40cf334cdc8b098b74312e21c7741c6eefbeb0e">
+        <dex dex="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/pre-dexed/debug/classes-86cca170767fb423a2e75b24990347bf67a3cd28.jar" />
+    </item>
+    <item
+        jar="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/exploded-aar/com.wunderlist/sliding-layer/1.2.5/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="1c5b3d5fb866920693c8f19718e8d233e4e7f298">
+        <dex dex="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/pre-dexed/debug/classes-be3c067bd3910a2be04b7fa54ededa41bad600a4.jar" />
+    </item>
+    <item
+        jar="/home/solusi247/Android/Sdk/extras/android/m2repository/com/android/support/support-annotations/23.1.0/support-annotations-23.1.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="92e3fc113ec3ee36b64603a38857b95700025633">
+        <dex dex="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/pre-dexed/debug/support-annotations-23.1.0-bb39fe985fb179e9d1e32372d3d847482f557ee2.jar" />
+    </item>
+    <item
+        jar="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/exploded-aar/fr.avianey.com.viewpagerindicator/library/2.4.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="86f452c126cb92a79e1dcf08efec5404529b698e">
+        <dex dex="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/pre-dexed/debug/classes-0bfe866eb04e93732f26a1950a9165c7cb72d369.jar" />
+    </item>
+    <item
+        jar="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/8.3.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="01a90bbb9495a8bbf6f3cfdf12f1b35caaa9524b">
+        <dex dex="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/pre-dexed/debug/classes-56abdb641b5c0723d6d9380ca930ab64c8f7510e.jar" />
+    </item>
+    <item
+        jar="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/exploded-aar/com.android.support/palette-v7/23.1.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="167a5721524b1d2810d1b41ed76eff1d53a0e82b">
+        <dex dex="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/pre-dexed/debug/classes-4fc3e35ff753e141fb1898ccbfbf241f0b1e6d6e.jar" />
+    </item>
+    <item
+        jar="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.0/jars/libs/internal_impl-23.1.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="8716243bf04bae8d6c9ca94d27b9a9be7236f0a3">
+        <dex dex="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/app/build/intermediates/pre-dexed/debug/internal_impl-23.1.0-a1c19617082c49225876c5bcc26ed831096c2cea.jar" />
+    </item>
+
+</items>

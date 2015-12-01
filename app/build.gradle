@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
 
 android{
 	compileSdkVersion 23
@@ -40,5 +39,6 @@ dependencies {
 
 	// Dependency for Google Sign-In
 	compile 'com.google.android.gms:play-services-auth:8.3.0'
-
+	// Dependency for Facebook SDK
+	compile 'com.facebook.android:facebook-android-sdk:4.7.0'
 }

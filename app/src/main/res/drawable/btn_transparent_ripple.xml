@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
 		xmlns:tools="http://schemas.android.com/tools"
-		android:color="?attr/colorControlHighlight"
+		android:color="#8000"
 		tools:targetApi="21">
-	<item android:drawable="@drawable/btn_transparent"/>
+	<item android:id="@android:id/mask">
+		<selector>
+			<item>
+				<shape android:shape="rectangle">
+					<solid android:color="@android:color/white" />
+				</shape>
+			</item>
+			<item>
+				<color android:color="@android:color/transparent" />
+			</item>
+		</selector>
+	</item>
 </ripple>

@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.cyclone.model.Categories;
+import com.cyclone.model.Category;
 import com.cyclone.model.Content;
 import com.cyclone.model.Contents;
 import com.cyclone.model.Section;

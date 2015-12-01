@@ -18,8 +18,8 @@ public class SubcategoryHolder extends UniversalHolder {
 	public TextView txtPrimary;
 	public TextView txtSecondary;
 
-	public SubcategoryHolder(View v, Activity activity) {
-		super(v, activity);
+	public SubcategoryHolder(View v, Activity activity, UniversalAdapter adapter) {
+		super(v, activity, adapter);
 		imgCover = (ImageView) v.findViewById(R.id.img_cover);
 		txtPrimary = (TextView) v.findViewById(R.id.txt_primary);
 		txtSecondary = (TextView) v.findViewById(R.id.txt_secondary);

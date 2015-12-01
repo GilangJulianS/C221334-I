@@ -18,10 +18,14 @@ public class Post {
 	public int likesCount;
 	public int commentCount;
 	public int type;
+	public boolean isLiked;
+
+	public int imgInt;
+	public int postImgInt;
 
 	public Post(String imgUrl, String headerName, String timestamp, String playlistType, String
 			postImgUrl, String postTitle, String postContent, String postInfo, int likesCount,
-				int commentCount, int type){
+				int commentCount, int type, boolean isLiked){
 		this.imgUrl = imgUrl;
 		this.headerName = headerName;
 		this.timestamp = timestamp;
@@ -33,5 +37,22 @@ public class Post {
 		this.likesCount = likesCount;
 		this.commentCount = commentCount;
 		this.type = type;
+		this.isLiked = isLiked;
+	}
+	public Post(int imgInt, String headerName, String timestamp, String playlistType, int
+			postImgInt, String postTitle, String postContent, String postInfo, int likesCount,
+				int commentCount, int type, boolean isLiked){
+		this.imgInt = imgInt;
+		this.headerName = headerName;
+		this.timestamp = timestamp;
+		this.playlistType =  playlistType;
+		this.postImgInt = postImgInt;
+		this.postTitle = postTitle;
+		this.postContent = postContent;
+		this.postInfo =  postInfo;
+		this.likesCount = likesCount;
+		this.commentCount = commentCount;
+		this.type = type;
+		this.isLiked = isLiked;
 	}
 }
