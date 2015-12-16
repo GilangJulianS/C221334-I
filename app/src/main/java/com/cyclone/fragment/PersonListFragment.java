@@ -64,6 +64,16 @@ public class PersonListFragment extends RecyclerFragment {
 
 	}
 
+	@Override
+	public int getSlidingLayoutId() {
+		return 0;
+	}
+
+	@Override
+	public void prepareSlidingMenu(View v) {
+
+	}
+
 	public List<Object> parse(String json){
 		List<Object> persons = new ArrayList<>();
 		persons.add(new Person("", "Imam Darto", "@imamdarto"));

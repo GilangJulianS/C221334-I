@@ -20,7 +20,10 @@
 
 package com.cyclone.player.util;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Environment;
@@ -30,7 +33,7 @@ import android.view.MotionEvent;
 
 import com.cyclone.player.VLCApplication;
 
-import org.videolan.libvlc.LibVlcUtil;
+import org.videolan.libvlc.util.AndroidUtil;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -43,7 +46,8 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 public class AndroidDevices {
-    public final static String TAG = "VLC/Util/AndroidDevices";
+    public final static String TAG = "VLC/UiTools/AndroidDevices";
+    public final static String EXTERNAL_PUBLIC_DIRECTORY = Environment.getExternalStorageDirectory().getPath();
 
     final static boolean hasNavBar;
     final static boolean hasTsp;
@@ -54,7 +58,7 @@ public class AndroidDevices {
         devicesWithoutNavBar.add("HTC One S");
         devicesWithoutNavBar.add("HTC One X");
         devicesWithoutNavBar.add("HTC One XL");
-        hasNavBar = LibVlcUtil.isICSOrLater()
+        hasNavBar = AndroidUtil.isICSOrLater()
                 && !devicesWithoutNavBar.contains(android.os.Build.MODEL);
         hasTsp = VLCApplication.getAppContext().getPackageManager().hasSystemFeature("android.hardware.touchscreen");
     }
@@ -63,39 +67,36 @@ public class AndroidDevices {
         return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
 
-    public static boolean hasNavBar()
-    {
+    public static boolean hasNavBar() {
         return hasNavBar;
     }
 
-    /** hasCombBar test if device has Combined Bar : only for tablet with Honeycomb or ICS */
+    /**
+     * hasCombBar test if device has Combined Bar : only for tablet with Honeycomb or ICS
+     */
     public static boolean hasCombBar() {
         return (!AndroidDevices.isPhone()
                 && ((VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) &&
-                    (VERSION.SDK_INT <= VERSION_CODES.JELLY_BEAN)));
+                (VERSION.SDK_INT <= VERSION_CODES.JELLY_BEAN)));
     }
 
-    public static boolean isPhone(){
+    public static boolean isPhone() {
         TelephonyManager manager = (TelephonyManager) VLCApplication.getAppContext().getSystemService(Context.TELEPHONY_SERVICE);
-        if(manager.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE){
-            return false;
-        }else{
-            return true;
-        }
+        return manager.getPhoneType() != TelephonyManager.PHONE_TYPE_NONE;
     }
 
-    public static boolean hasTsp(){
+    public static boolean hasTsp() {
         return hasTsp;
     }
 
     public static ArrayList<String> getStorageDirectories() {
         BufferedReader bufReader = null;
         ArrayList<String> list = new ArrayList<String>();
-        list.add(Environment.getExternalStorageDirectory().getPath());
+        list.add(EXTERNAL_PUBLIC_DIRECTORY);
 
-        List<String> typeWL = Arrays.asList("vfat", "exfat", "sdcardfs", "fuse", "ntfs", "fat32", "ext3", "ext4");
+        List<String> typeWL = Arrays.asList("vfat", "exfat", "sdcardfs", "fuse", "ntfs", "fat32", "ext3", "ext4", "esdfs");
         List<String> typeBL = Arrays.asList("tmpfs");
-        String[] mountWL = { "/mnt", "/Removable" };
+        String[] mountWL = {"/mnt", "/Removable", "/storage"};
         String[] mountBL = {
                 "/mnt/secure",
                 "/mnt/shell",
@@ -103,16 +104,16 @@ public class AndroidDevices {
                 "/mnt/obb",
                 "/mnt/media_rw/extSdCard",
                 "/mnt/media_rw/sdcard",
-                "/storage/emulated" };
+                "/storage/emulated"};
         String[] deviceWL = {
                 "/dev/block/vold",
                 "/dev/fuse",
-                "/mnt/media_rw/extSdCard" };
+                "/mnt/media_rw"};
 
         try {
             bufReader = new BufferedReader(new FileReader("/proc/mounts"));
             String line;
-            while((line = bufReader.readLine()) != null) {
+            while ((line = bufReader.readLine()) != null) {
 
                 StringTokenizer tokens = new StringTokenizer(line, " ");
                 String device = tokens.nextToken();
@@ -120,23 +121,21 @@ public class AndroidDevices {
                 String type = tokens.nextToken();
 
                 // skip if already in list or if type/mountpoint is blacklisted
-                if (list.contains(mountpoint) || typeBL.contains(type) || Strings.StartsWith(mountBL, mountpoint))
+                if (list.contains(mountpoint) || typeBL.contains(type) || Strings.startsWith(mountBL, mountpoint))
                     continue;
 
                 // check that device is in whitelist, and either type or mountpoint is in a whitelist
-                if (Strings.StartsWith(deviceWL, device) && (typeWL.contains(type) || Strings.StartsWith(mountWL, mountpoint)))
+                if (Strings.startsWith(deviceWL, device) && (typeWL.contains(type) || Strings.startsWith(mountWL, mountpoint))) {
+                    int position = Strings.containsName(list, FileUtils.getFileNameFromPath(mountpoint));
+                    if (position > -1)
+                        list.remove(position);
                     list.add(mountpoint);
-            }
-        }
-        catch (FileNotFoundException e) {}
-        catch (IOException e) {}
-        finally {
-            if (bufReader != null) {
-                try {
-                    bufReader.close();
                 }
-                catch (IOException e) {}
             }
+        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
+        } finally {
+            Util.close(bufReader);
         }
         return list;
     }
@@ -148,8 +147,9 @@ public class AndroidDevices {
         return list.toArray(new String[list.size()]);
     }
 
+    @TargetApi(VERSION_CODES.HONEYCOMB_MR1)
     public static float getCenteredAxis(MotionEvent event,
-            InputDevice device, int axis) {
+                                        InputDevice device, int axis) {
         final InputDevice.MotionRange range =
                 device.getMotionRange(axis, event.getSource());
 
@@ -167,5 +167,18 @@ public class AndroidDevices {
             }
         }
         return 0;
+    }
+
+    public static boolean hasLANConnection() {
+        boolean networkEnabled = false;
+        ConnectivityManager connectivity = (ConnectivityManager) (VLCApplication.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE));
+        if (connectivity != null) {
+            NetworkInfo networkInfo = connectivity.getActiveNetworkInfo();
+            if (networkInfo != null && networkInfo.isConnected() &&
+                    (networkInfo.getType() != ConnectivityManager.TYPE_MOBILE)) {
+                networkEnabled = true;
+            }
+        }
+        return networkEnabled;
     }
 }

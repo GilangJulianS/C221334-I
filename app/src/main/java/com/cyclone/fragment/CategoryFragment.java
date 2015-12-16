@@ -56,6 +56,16 @@ public class CategoryFragment extends RecyclerFragment {
 
 	}
 
+	@Override
+	public int getSlidingLayoutId() {
+		return 0;
+	}
+
+	@Override
+	public void prepareSlidingMenu(View v) {
+
+	}
+
 	public List<Object> parse(String json){
 		Contents contents;
 		List<Object> datas = new ArrayList<>();
@@ -63,39 +73,39 @@ public class CategoryFragment extends RecyclerFragment {
 
 		datas.add(new Section("News", "news"));
 		contentList = new ArrayList<>();
-		contentList.add(new Content("", "Dua Aturan Pemerintah", "Prambors FM Jakarta", "17 Sept 2015 - 10:05"));
-		contentList.add(new Content("", "Hampir 30 film", "Prambors FM Jakarta", "17 Sept 2015 - 10:05"));
-		contentList.add(new Content("", "Melawan Asap", "Prambors FM Jakarta", "17 Sept 2015 - 10:05"));
+		contentList.add(new Content("", "News", "Dua Aturan Pemerintah", "Prambors FM Jakarta", "17 Sept 2015 - 10:05"));
+		contentList.add(new Content("", "News", "Hampir 30 film", "Prambors FM Jakarta", "17 Sept 2015 - 10:05"));
+		contentList.add(new Content("", "News", "Melawan Asap", "Prambors FM Jakarta", "17 Sept 2015 - 10:05"));
 		contents = new Contents(contentList);
 		datas.add(contents);
 
 		datas.add(new Section("Talk", "talk"));
 		contentList = new ArrayList<>();
-		contentList.add(new Content("", "Talkshow GOWASDSA", "Prambors FM Jakarta", null));
-		contentList.add(new Content("", "Hampir 30 film", "Prambors FM Jakarta", null));
+		contentList.add(new Content("", "Talk", "Talkshow GOWASDSA", "Prambors FM Jakarta", null));
+		contentList.add(new Content("", "Talk", "Hampir 30 film", "Prambors FM Jakarta", null));
 		contents = new Contents(contentList);
 		datas.add(contents);
 
 		datas.add(new Section("Music", "music"));
 		contentList = new ArrayList<>();
-		contentList.add(new Content("", "Love never feel", "Michael Jackson", null));
-		contentList.add(new Content("", "Demons", "Imagine Dragons", null));
-		contentList.add(new Content("", "Smells like te", "Nirvana", null));
+		contentList.add(new Content("", "Music", "Love never feel", "Michael Jackson", null));
+		contentList.add(new Content("", "Music", "Demons", "Imagine Dragons", null));
+		contentList.add(new Content("", "Music", "Smells like te", "Nirvana", null));
 		contents = new Contents(contentList);
 		datas.add(contents);
 
 		datas.add(new Section("Travel", "travel"));
 		contentList = new ArrayList<>();
-		contentList.add(new Content("", "Its My Life", "Bon Jovi", null));
-		contentList.add(new Content("", "Don't Look Back", "Oasis", null));
+		contentList.add(new Content("", "Travel", "Its My Life", "Bon Jovi", null));
+		contentList.add(new Content("", "Travel", "Don't Look Back", "Oasis", null));
 		contents = new Contents(contentList);
 		datas.add(contents);
 
 		datas.add(new Section("Advertisement", "ads"));
 		contentList = new ArrayList<>();
-		contentList.add(new Content("", "Morning Sunshine", "Dimas Danang", null));
-		contentList.add(new Content("", "Rock Yeah", "Imam Darto", null));
-		contentList.add(new Content("", "HipHopYo!", "Desta", null));
+		contentList.add(new Content("", "Advertisement", "Morning Sunshine", "Dimas Danang", null));
+		contentList.add(new Content("", "Advertisement", "Rock Yeah", "Imam Darto", null));
+		contentList.add(new Content("", "Advertisement", "HipHopYo!", "Desta", null));
 		contents = new Contents(contentList);
 		datas.add(contents);
 

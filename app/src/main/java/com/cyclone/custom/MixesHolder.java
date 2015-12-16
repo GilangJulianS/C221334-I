@@ -27,7 +27,13 @@ public class MixesHolder extends UniversalHolder {
 		bind((Mixes)object);
 	}
 
+	/*@Override
+	public void bind(Object object, Activity activity, int position) {
+		bind((Mixes)object);
+	}*/
+
 	public void bind(Mixes mixes){
+		int counter = 0;
 		container.removeAllViews();
 		for(Mix m : mixes.list){
 			View v = activity.getLayoutInflater().inflate(R.layout.card_mix, container, false);
@@ -38,6 +44,13 @@ public class MixesHolder extends UniversalHolder {
 			txtTitle.setText(m.text);
 
 			container.addView(v);
+
+			counter++;
+		}
+		while(counter < 3){
+			View v = activity.getLayoutInflater().inflate(R.layout.view_filler_horizontal_full, container, false);
+			container.addView(v);
+			counter++;
 		}
 	}
 

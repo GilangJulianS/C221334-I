@@ -31,7 +31,7 @@
 				android:transitionName="picture"
 				android:layout_height="match_parent"
 				android:scaleType="centerCrop"
-				android:src="@drawable/aaa_darto"/>
+				android:src="@drawable/background_login"/>
 
 			<RelativeLayout
 				android:layout_width="0dp"

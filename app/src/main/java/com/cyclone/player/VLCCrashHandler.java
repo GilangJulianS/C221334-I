@@ -24,7 +24,9 @@ import android.os.Environment;
 import android.text.format.DateFormat;
 import android.util.Log;
 
+import com.cyclone.player.util.AndroidDevices;
 import com.cyclone.player.util.Logcat;
+import com.cyclone.player.util.Util;
 
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -35,6 +37,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
+
+/*import org.videolan.vlc.util.AndroidDevices;
+import org.videolan.vlc.util.Logcat;
+import org.videolan.vlc.util.Util;*/
 
 public class VLCCrashHandler implements UncaughtExceptionHandler {
 
@@ -68,9 +74,8 @@ public class VLCCrashHandler implements UncaughtExceptionHandler {
 
         // Save the log on SD card if available
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            String sdcardPath = Environment.getExternalStorageDirectory().getPath();
-            writeLog(stacktrace, sdcardPath + "/vlc_crash");
-            writeLogcat(sdcardPath + "/vlc_logcat");
+            writeLog(stacktrace, AndroidDevices.EXTERNAL_PUBLIC_DIRECTORY + "/vlc_crash");
+            writeLogcat(AndroidDevices.EXTERNAL_PUBLIC_DIRECTORY + "/vlc_logcat");
         }
 
         defaultUEH.uncaughtException(thread, ex);
@@ -97,12 +102,8 @@ public class VLCCrashHandler implements UncaughtExceptionHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }finally {
-            try {
-                bw.close();
-                output.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Util.close(bw);
+            Util.close(output);
         }
     }
 

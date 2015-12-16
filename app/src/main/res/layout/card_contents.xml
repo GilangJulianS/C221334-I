@@ -6,5 +6,8 @@
   	android:layout_height="match_parent"
 	android:orientation="horizontal">
 
+	<include layout="@layout/card_thumbnail"/>
+
+	<include layout="@layout/card_thumbnail"/>
 
 </LinearLayout>

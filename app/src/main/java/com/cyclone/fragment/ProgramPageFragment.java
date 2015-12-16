@@ -2,15 +2,19 @@ package com.cyclone.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.cyclone.DrawerActivity;
 import com.cyclone.R;
+import com.cyclone.custom.SnapGestureListener;
 
 
 /**
@@ -22,12 +26,10 @@ public class ProgramPageFragment extends Fragment {
 	private DrawerActivity activity;
 	private GestureDetectorCompat gd;
 
-
 	public ProgramPageFragment(){}
 
 	public static ProgramPageFragment newInstance(){
 		ProgramPageFragment fragment = new ProgramPageFragment();
-
 		return fragment;
 	}
 

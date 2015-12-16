@@ -76,6 +76,16 @@ public class AlbumFragment extends RecyclerFragment {
 		setupHeader(v, json);
 	}
 
+	@Override
+	public int getSlidingLayoutId() {
+		return 0;
+	}
+
+	@Override
+	public void prepareSlidingMenu(View v) {
+
+	}
+
 	public void setupHeader(View v, String json){
 		ImageButton btnMenu = (ImageButton) v.findViewById(R.id.btn_menu);
 

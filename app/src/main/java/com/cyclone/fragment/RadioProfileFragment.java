@@ -31,9 +31,6 @@ public class RadioProfileFragment extends Fragment {
 	private CardView cardProgram1, cardProgram2;
 	private CardView cardDj1, cardDj2, cardDj3;
 
-
-	ImageView cover1, cover2, imgDj1,imgDj2,imgDj3;
-
 	public RadioProfileFragment(){}
 
 	public static RadioProfileFragment newInstance(){
@@ -65,8 +62,7 @@ public class RadioProfileFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(getContext(), DrawerActivity.class);
-				i.putExtra("layout", DrawerActivity.LAYOUT_PROGRAMS);
-				i.putExtra("activity", R.layout.activity_drawer_standard);
+				i.putExtra("fragmentType", DrawerActivity.FRAGMENT_PROGRAMS);
 				i.putExtra("title", "Programs");
 				startActivity(i);
 			}
@@ -76,8 +72,7 @@ public class RadioProfileFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(getContext(), DrawerActivity.class);
-				i.putExtra("layout", DrawerActivity.LAYOUT_ANNOUNCERS);
-				i.putExtra("activity", R.layout.activity_drawer_standard);
+				i.putExtra("fragmentType", DrawerActivity.FRAGMENT_ANNOUNCERS);
 				i.putExtra("title", "DJs and Announcers");
 				startActivity(i);
 			}
@@ -96,32 +91,14 @@ public class RadioProfileFragment extends Fragment {
 		cardDj2 = (CardView) v.findViewById(R.id.card_featured_announcer_2);
 		cardDj3 = (CardView) v.findViewById(R.id.card_featured_announcer_3);
 
-		cover1 = (ImageView) v.findViewById(R.id.img_cover);
-		cover2 = (ImageView) v.findViewById(R.id.img_cover2);
-		imgDj1 = (ImageView) v.findViewById(R.id.img_announcer);
-		imgDj2 = (ImageView) v.findViewById(R.id.img_announcer2);
-		imgDj3 = (ImageView) v.findViewById(R.id.img_announcer3);
-
-
-		cover1.setImageResource(R.drawable.aa_the_dandless);
-		cover2.setImageResource(R.drawable.aa_desta_gina);
-
-		imgDj1.setImageResource(R.drawable.aaa_dimas_danang);
-		imgDj2.setImageResource(R.drawable.aaa_darto);
-		imgDj3.setImageResource(R.drawable.aaa_desta);
-
-
-
 		cardProgram1.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(activity, DrawerActivity.class);
-				i.putExtra("layout", DrawerActivity.LAYOUT_PROGRAM_PAGE);
-				i.putExtra("activity", R.layout.activity_drawer);
+				i.putExtra("fragmentType", DrawerActivity.FRAGMENT_PROGRAM_PAGE);
 				i.putExtra("title", "Hit the Beat");
 				if(Build.VERSION.SDK_INT >= 16) {
 					ImageView imageView = (ImageView) cardProgram1.findViewById(R.id.img_cover);
-					imageView.setImageDrawable(cover1.getDrawable());
 					ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation
 							(activity, imageView, "program");
 					activity.startActivity(i, options.toBundle());
@@ -135,12 +112,10 @@ public class RadioProfileFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(activity, DrawerActivity.class);
-				i.putExtra("layout", DrawerActivity.LAYOUT_PROGRAM_PAGE);
-				i.putExtra("activity", R.layout.activity_drawer);
+				i.putExtra("fragmentType", DrawerActivity.FRAGMENT_PROGRAM_PAGE);
 				i.putExtra("title", "Hit the Beat");
 				if(Build.VERSION.SDK_INT >= 16) {
-					ImageView imageView = (ImageView) cardProgram2.findViewById(R.id.img_cover2);
-					imageView.setImageDrawable(cover2.getDrawable());
+					ImageView imageView = (ImageView) cardProgram2.findViewById(R.id.img_cover);
 					ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation
 							(activity, imageView, "program");
 					activity.startActivity(i, options.toBundle());

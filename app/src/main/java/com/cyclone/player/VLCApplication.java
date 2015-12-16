@@ -19,7 +19,6 @@
  *****************************************************************************/
 package com.cyclone.player;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -28,20 +27,33 @@ import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.cyclone.player.util.AudioUtil;
-import com.cyclone.player.util.BitmapCache;
+import com.cyclone.player.helpers.AudioUtil;
+import com.cyclone.player.helpers.BitmapCache;
+import com.cyclone.player.media.MediaDatabase;
+import com.cyclone.player.util.Strings;
 
+import java.util.Calendar;
 import java.util.Locale;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+/*
+import org.videolan.vlc.gui.helpers.AudioUtil;
+import org.videolan.vlc.gui.helpers.BitmapCache;
+import org.videolan.vlc.media.MediaDatabase;
+import org.videolan.vlc.util.Strings;*/
 
 public class VLCApplication extends Application {
     public final static String TAG = "VLC/VLCApplication";
     private static VLCApplication instance;
-    private static Activity activity;
 
-    public final static String SLEEP_INTENT = "com.cyclone.player.SleepIntent";
-    public final static String INCOMING_CALL_INTENT = "com.cyclone.player.IncomingCallIntent";
-    public final static String CALL_ENDED_INTENT = "com.cyclone.player.CallEndedIntent";
+    public final static String SLEEP_INTENT = Strings.buildPkgString("SleepIntent");
 
+    public static Calendar sPlayerSleepTime = null;
+    /* Up to 2 threads maximum, inactive threads are killed after 2 seconds */
+    private ThreadPoolExecutor mThreadPool = new ThreadPoolExecutor(0, 2, 2, TimeUnit.SECONDS,
+                                                                    new LinkedBlockingQueue<Runnable>());
     @Override
     public void onCreate() {
         super.onCreate();
@@ -49,7 +61,7 @@ public class VLCApplication extends Application {
         // Are we using advanced debugging - locale?
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         String p = pref.getString("set_locale", "");
-        if (p != null && !p.equals("")) {
+        if (!p.equals("")) {
             Locale locale;
             // workaround due to region code
             if(p.equals("zh-TW")) {
@@ -78,8 +90,6 @@ public class VLCApplication extends Application {
         }
 
         instance = this;
-
-        activity = getActivity();
 
         // Initialize the database soon enough to avoid any race condition and crash
         MediaDatabase.getInstance();
@@ -114,7 +124,7 @@ public class VLCApplication extends Application {
         return instance.getResources();
     }
 
-    public static Activity getActivity(){
-        return activity;
+    public static void runBackground(Runnable runnable) {
+        instance.mThreadPool.execute(runnable);
     }
 }

@@ -30,11 +30,16 @@ public class ProgramPagerHolder extends UniversalHolder {
 		bind((ProgramPager) object, (AppCompatActivity)activity);
 	}
 
+	/*@Override
+	public void bind(Object object, Activity activity, int position) {
+		bind((ProgramPager) object, (AppCompatActivity)activity);
+	}*/
+
 	public void bind(ProgramPager p, AppCompatActivity activity){
 
 		adapter = new CustomPagerAdapter(activity.getSupportFragmentManager());
-		for(int imgInt : p.imgInt) {
-			adapter.add(SimpleImageFragment.newInstance(imgInt));
+		for(String imgUrl : p.imgUrls) {
+			adapter.add(SimpleImageFragment.newInstance(imgUrl));
 		}
 		viewPager.setAdapter(adapter);
 		viewPager.setCurrentItem(1);

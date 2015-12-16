@@ -53,6 +53,16 @@ public class SubcategoryFragment extends RecyclerFragment {
 
 	}
 
+	@Override
+	public int getSlidingLayoutId() {
+		return 0;
+	}
+
+	@Override
+	public void prepareSlidingMenu(View v) {
+
+	}
+
 
 	public List<Object> parse(String json){
 		List<Object> datas = new ArrayList<>();

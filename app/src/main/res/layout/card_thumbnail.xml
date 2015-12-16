@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
-	android:id="@+id/card_program"
+	android:id="@+id/card"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:layout_margin="5dp"
@@ -19,13 +19,32 @@
 		android:background="#fff"
 		android:orientation="vertical">
 
-		<com.cyclone.custom.SquareImageView
-			android:id="@+id/img_cover"
+
+		<RelativeLayout
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:transitionName="thumbnail"
-			android:scaleType="centerCrop"
-			android:src="@drawable/wallpaper"/>
+			android:layout_height="wrap_content">
+
+			<com.cyclone.custom.SquareImageView
+				android:id="@+id/img_cover"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:transitionName="thumbnail"
+				android:scaleType="centerCrop"
+				android:src="@drawable/wallpaper"/>
+
+			<com.cyclone.custom.SquareImageView
+				android:id="@+id/img_heart"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:padding="40dp"
+				android:src="@drawable/ic_favorite_white_48dp"
+				android:scaleType="centerCrop"
+				android:layout_centerHorizontal="true"
+				android:layout_centerVertical="true"
+				android:visibility="gone"
+				android:tint="#9F00"/>
+
+		</RelativeLayout>
 
 		<LinearLayout
 			android:layout_width="match_parent"
@@ -80,8 +99,9 @@
 				android:layout_width="wrap_content"
 				android:layout_weight="1"
 				android:layout_height="wrap_content"
+				android:padding="10dp"
 				android:src="@drawable/ic_more_vert_black_24dp"
-				android:background="@drawable/btn_flat_transparent"/>
+				android:background="@drawable/btn_flat_transparent_oval"/>
 
 		</LinearLayout>
 

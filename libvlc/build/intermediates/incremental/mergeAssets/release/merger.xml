@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/libvlc/src/main/assets"/></dataSet><dataSet config="release"><source path="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/libvlc/src/release/assets"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="/media/solusi247/Hinata/Cyclone/cyclone-integreted/14-desember/cyclone-frontend/libvlc/assets"/></dataSet><dataSet config="release"><source path="/media/solusi247/Hinata/Cyclone/cyclone-integreted/14-desember/cyclone-frontend/libvlc/src/release/assets"/></dataSet></merger>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="280dp"
+	android:layout_height="match_parent"
+	android:gravity="center_horizontal"
+	android:layout_gravity="right"
+	android:background="#fff"
+	android:paddingTop="30dp"
+	android:orientation="vertical">
+
+	<LinearLayout
+		android:id="@+id/btn_edit"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_vertical"
+		android:paddingLeft="20dp"
+		android:paddingRight="20dp"
+		android:paddingTop="10dp"
+		android:paddingBottom="10dp"
+		android:orientation="horizontal">
+
+		<ImageView
+			android:layout_width="30dp"
+			android:layout_height="30dp"
+			android:src="@drawable/ic_create_black_24dp"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="15dp"
+			android:textSize="16sp"
+			android:text="Edit Playlist"/>
+
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/btn_shuffle"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_vertical"
+		android:paddingLeft="20dp"
+		android:paddingRight="20dp"
+		android:paddingTop="10dp"
+		android:paddingBottom="10dp"
+		android:orientation="horizontal">
+
+		<ImageView
+			android:layout_width="30dp"
+			android:layout_height="30dp"
+			android:src="@drawable/ic_shuffle_black_24dp"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="15dp"
+			android:textSize="16sp"
+			android:text="Shuffle Playlist"/>
+
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/btn_add"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_vertical"
+		android:paddingLeft="20dp"
+		android:paddingRight="20dp"
+		android:paddingTop="10dp"
+		android:paddingBottom="10dp"
+		android:orientation="horizontal">
+
+		<ImageView
+			android:layout_width="30dp"
+			android:layout_height="30dp"
+			android:src="@drawable/ic_add_to_photos_black_24dp"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="15dp"
+			android:textSize="16sp"
+			android:text="Add to Queue"/>
+
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/btn_play"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_vertical"
+		android:paddingLeft="20dp"
+		android:paddingRight="20dp"
+		android:paddingTop="10dp"
+		android:paddingBottom="10dp"
+		android:orientation="horizontal">
+
+		<ImageView
+			android:layout_width="30dp"
+			android:layout_height="30dp"
+			android:src="@drawable/ic_library_music_black_24dp"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="15dp"
+			android:textSize="16sp"
+			android:text="Play Music from this Playlist"/>
+
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/btn_share"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_vertical"
+		android:paddingLeft="20dp"
+		android:paddingRight="20dp"
+		android:paddingTop="10dp"
+		android:paddingBottom="10dp"
+		android:orientation="horizontal">
+
+		<ImageView
+			android:layout_width="30dp"
+			android:layout_height="30dp"
+			android:src="@drawable/ic_share_black_24dp"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="15dp"
+			android:textSize="16sp"
+			android:text="Share Playlist"/>
+
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/btn_lock"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_vertical"
+		android:paddingLeft="20dp"
+		android:paddingRight="20dp"
+		android:paddingTop="10dp"
+		android:paddingBottom="10dp"
+		android:orientation="horizontal">
+
+		<ImageView
+			android:layout_width="30dp"
+			android:layout_height="30dp"
+			android:src="@drawable/ic_lock_black_24dp"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="15dp"
+			android:textSize="16sp"
+			android:text="Make Private"/>
+
+	</LinearLayout>
+
+</LinearLayout>

@@ -52,6 +52,16 @@ public class CommentFragment extends RecyclerFragment {
 
 	}
 
+	@Override
+	public int getSlidingLayoutId() {
+		return 0;
+	}
+
+	@Override
+	public void prepareSlidingMenu(View v) {
+
+	}
+
 	public List<Object> parse(String json){
 		List<Object> datas = new ArrayList<>();
 		datas.add(new Comment("", "Imam Darto", "Lagunya top top markotob", "18:30"));

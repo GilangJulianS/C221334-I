@@ -25,12 +25,6 @@ import android.content.Intent;
 import android.os.SystemClock;
 import android.view.KeyEvent;
 
-import com.cyclone.player.audio.AudioService;
-import com.cyclone.player.util.VLCInstance;
-
-import org.videolan.libvlc.LibVLC;
-import org.videolan.libvlc.LibVlcException;
-
 /**
  * Small class to receive events passed out by the remote controls (wired, bluetooth, lock screen, ...)
  */
@@ -45,24 +39,16 @@ public class RemoteControlClientReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        LibVLC mLibVLC;
-        try {
-            mLibVLC = VLCInstance.getLibVlcInstance();
-        } catch (LibVlcException e) {
-            return;
-        }
-        if(mLibVLC == null)
-            return;
 
         if(action.equalsIgnoreCase(Intent.ACTION_MEDIA_BUTTON)) {
 
-            KeyEvent event = (KeyEvent) intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+            KeyEvent event = intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
             if (event == null)
                 return;
 
             if (event.getKeyCode() != KeyEvent.KEYCODE_HEADSETHOOK &&
-                event.getKeyCode() != KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE &&
-                event.getAction() != KeyEvent.ACTION_DOWN)
+                    event.getKeyCode() != KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE &&
+                    event.getAction() != KeyEvent.ACTION_DOWN)
                 return;
 
             Intent i = null;
@@ -78,51 +64,42 @@ public class RemoteControlClientReceiver extends BroadcastReceiver {
                     long time = SystemClock.uptimeMillis();
                     switch (event.getAction()) {
                         case KeyEvent.ACTION_DOWN:
-                            if (event.getRepeatCount() > 0)
-                                break;
-                            mHeadsetDownTime = time;
+                            if (event.getRepeatCount() <= 0)
+                                mHeadsetDownTime = time;
                             break;
                         case KeyEvent.ACTION_UP:
-                            // long click
-                            if (time - mHeadsetDownTime >= 1000) {
-                                i = new Intent(AudioService.ACTION_REMOTE_BACKWARD);
-                                time = 0;
-                                // double click
-                            } else if (time - mHeadsetUpTime <= 500) {
-                                i = new Intent(AudioService.ACTION_REMOTE_FORWARD);
-                            }
-                            // one click
-                            else {
-                                if (mLibVLC.isPlaying())
-                                    i = new Intent(AudioService.ACTION_REMOTE_PAUSE);
-                                else {
-                                    i = new Intent(context, AudioService.class);
-                                    i.setAction(AudioService.ACTION_REMOTE_PLAY);
-                                    context.startService(i);
-                                    mHeadsetUpTime = time;
-                                    return;
+                           // if (!BuildConfig.tv) { //no backward/forward on TV
+                                if (time - mHeadsetDownTime >= 1000) { // long click
+                                    i = new Intent(PlaybackService.ACTION_REMOTE_BACKWARD);
+                                    time = 0;
+                                    break;
+                                } else if (time - mHeadsetUpTime <= 500) { // double click
+                                    i = new Intent(PlaybackService.ACTION_REMOTE_FORWARD);
+                                    break;
                                 }
-                            }
+                           // }
+                            // one click
+                            i = new Intent(PlaybackService.ACTION_REMOTE_PLAYPAUSE);
                             mHeadsetUpTime = time;
                             break;
                     }
                     break;
                 case KeyEvent.KEYCODE_MEDIA_PLAY:
-                    i = new Intent(context, AudioService.class);
-                    i.setAction(AudioService.ACTION_REMOTE_PLAY);
+                    i = new Intent(context, PlaybackService.class);
+                    i.setAction(PlaybackService.ACTION_REMOTE_PLAY);
                     context.startService(i);
                     return;
                 case KeyEvent.KEYCODE_MEDIA_PAUSE:
-                    i = new Intent(AudioService.ACTION_REMOTE_PAUSE);
+                    i = new Intent(PlaybackService.ACTION_REMOTE_PAUSE);
                     break;
                 case KeyEvent.KEYCODE_MEDIA_STOP:
-                    i = new Intent(AudioService.ACTION_REMOTE_STOP);
+                    i = new Intent(PlaybackService.ACTION_REMOTE_STOP);
                     break;
                 case KeyEvent.KEYCODE_MEDIA_NEXT:
-                    i = new Intent(AudioService.ACTION_REMOTE_FORWARD);
+                    i = new Intent(PlaybackService.ACTION_REMOTE_FORWARD);
                     break;
                 case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-                    i = new Intent(AudioService.ACTION_REMOTE_BACKWARD);
+                    i = new Intent(PlaybackService.ACTION_REMOTE_BACKWARD);
                     break;
             }
 
@@ -130,9 +107,9 @@ public class RemoteControlClientReceiver extends BroadcastReceiver {
                 abortBroadcast();
             if(i != null)
                 context.sendBroadcast(i);
-        } else if (action.equals(AudioService.ACTION_REMOTE_PLAYPAUSE)){
-            intent = new Intent(context, AudioService.class);
-            intent.setAction(AudioService.ACTION_REMOTE_PLAYPAUSE);
+        } else if (action.equals(PlaybackService.ACTION_REMOTE_PLAYPAUSE)){
+            intent = new Intent(context, PlaybackService.class);
+            intent.setAction(PlaybackService.ACTION_REMOTE_PLAYPAUSE);
             context.startService(intent);
         }
     }

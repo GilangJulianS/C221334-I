@@ -1,54 +1,52 @@
 package com.cyclone;
 
-import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.database.Cursor;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageButton;
+import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
-import android.widget.TextView;
 
+import com.cyclone.fragment.AboutFragment;
 import com.cyclone.fragment.AccountSettingFragment;
+import com.cyclone.fragment.AddMixFormFragment;
 import com.cyclone.fragment.AddMixFragment;
+import com.cyclone.fragment.AddPlaylistFormFragment;
+import com.cyclone.fragment.AddPlaylistFragment;
 import com.cyclone.fragment.AlbumFragment;
 import com.cyclone.fragment.AnnouncersFragment;
+import com.cyclone.fragment.AppSettingFragment;
 import com.cyclone.fragment.ArtistFragment;
 import com.cyclone.fragment.CategoryFragment;
 import com.cyclone.fragment.ClubRadioFragment;
 import com.cyclone.fragment.CommentFragment;
+import com.cyclone.fragment.FavoritesFragment;
 import com.cyclone.fragment.GridMixFragment;
 import com.cyclone.fragment.HomeFragment;
 import com.cyclone.fragment.LiveStreamFragment;
 import com.cyclone.fragment.MixFragment;
 import com.cyclone.fragment.NotificationFragment;
+import com.cyclone.fragment.NotificationSettingFragment;
 import com.cyclone.fragment.PersonListFragment;
 import com.cyclone.fragment.PersonProfileFragment;
 import com.cyclone.fragment.PlayerFragment;
+import com.cyclone.fragment.PlaylistFragment;
 import com.cyclone.fragment.ProgramPageFragment;
 import com.cyclone.fragment.ProgramsFragment;
 import com.cyclone.fragment.RadioProfileFragment;
@@ -56,67 +54,37 @@ import com.cyclone.fragment.RequestFragment;
 import com.cyclone.fragment.SettingsFragment;
 import com.cyclone.fragment.StreamPlayerFragment;
 import com.cyclone.fragment.SubcategoryFragment;
+import com.cyclone.fragment.TrackListFragment;
+import com.cyclone.fragment.UploadFinishedFragment;
+import com.cyclone.fragment.UploadFragment;
 import com.cyclone.fragment.VirtualCardFragment;
-import com.cyclone.player.CompatErrorActivity;
-import com.cyclone.player.MediaDatabase;
-import com.cyclone.player.MediaLibrary;
-import com.cyclone.player.VLCApplication;
-import com.cyclone.player.audio.AudioService;
-import com.cyclone.player.audio.AudioServiceController;
-import com.cyclone.player.audio.ServiceQueueJson;
+import com.cyclone.player.media.MediaDatabase;
+import com.cyclone.player.media.MediaLibrary;
+import com.cyclone.player.preferences.PreferencesActivity;
+import com.cyclone.player.util.Permissions;
+import com.cyclone.player.util.Util;
 import com.cyclone.player.util.VLCInstance;
 import com.cyclone.player.util.WeakHandler;
-import com.facebook.FacebookSdk;
-import com.facebook.Profile;
-import com.facebook.appevents.AppEventsLogger;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.videolan.libvlc.LibVLC;
-import org.videolan.libvlc.LibVlcException;
-import org.videolan.libvlc.LibVlcUtil;
-import org.videolan.libvlc.Media;
-import org.videolan.libvlc.MediaList;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DrawerActivity extends MasterActivity
-		implements NavigationView.OnNavigationItemSelectedListener {
+		implements NavigationView.OnNavigationItemSelectedListener,FilterQueryProvider {
 
-	public final static String TAG = "VLC/DrawerActivity";
-
-	protected static final String ACTION_SHOW_PROGRESSBAR = "com.cyclone.ShowProgressBar";
-	protected static final String ACTION_HIDE_PROGRESSBAR = "com.cyclone.HideProgressBar";
-	protected static final String ACTION_SHOW_TEXTINFO = "com.cyclone.ShowTextInfo";
-	public static final String ACTION_SHOW_PLAYER = "com.cyclone.ShowPlayer";
+	public final static String TAG = "VLC/MainActivity";
 
 	private static final String PREF_FIRST_RUN = "first_run";
-
-
 	private static final int ACTIVITY_RESULT_PREFERENCES = 1;
+	private static final int ACTIVITY_RESULT_OPEN = 2;
 	private static final int ACTIVITY_SHOW_INFOLAYOUT = 2;
+	private static final int ACTIVITY_SHOW_PROGRESSBAR = 3;
+	private static final int ACTIVITY_HIDE_PROGRESSBAR = 4;
+	private static final int ACTIVITY_SHOW_TEXTINFO = 5;
 
-	public static final String PREF_GOOGLE = "google_login";
-	public static final String PREF_GOOGLE_USR = "google_username";
-	public static final String PREF_GOOGLE_EMAIL = "google_email";
-	public static final String PREF_USER = "used_user";
 
-	private Context mContext;
-	private ActionBar mActionBar;
-	private PlayerFragment mAudioPlayer;
-	private AudioServiceController mAudioController;
-
-	private ServiceConnection mAudioServiceConnection;
-
-	private SharedPreferences mSettings;
-
-	int layout;
+	MediaLibrary mMediaLibrary;
 
 	private int mVersionNumber = -1;
 	private boolean mFirstRun = false;
-	private boolean mScanNeeded = true;
+	private boolean mScanNeeded = false;
 
 	private Handler mHandler = new MainActivityHandler(this);
 	private int mFocusedPrior = 0;
@@ -125,141 +93,96 @@ public class DrawerActivity extends MasterActivity
 	private boolean isParentView = false;
 	private boolean isCollapseLayout = false;
 	private ActionBarDrawerToggle toggle;
-	CollapsingToolbarLayout toolbarLayout;
-	public static boolean showMiniPlayer = true;
-	private ProgressDialog pDialog;
-
-	private String mFilePath = "http://stream.suararadio.com/bloom-mae.mp3";
-	private String mFilePath2 = "http://stream.suararadio.com/the-ballad-of-distant-love.mp3";
-	private String mFilePath3 = "http://stream.suararadio.com/the-balloonist.mp3";
-	private String mFilePath4 = "http://stream.suararadio.com/the-knife.mp3";
-	private String mFilePath5 = "http://stream.suararadio.com/this-bed.mp3";
-	private String mFilePath6 = "http://stream.suararadio.com/took-my-soul.mp3";
-
-	// try for add
-	private MediaLibrary mMediaLibrary;
-
-	List<Media> mAudioList;
-	public final static int MSG_LOADING = 0;
-
-	LibVLC mlibVLC;
-	private View miniPlayer;
-
-	private int CheckUsrFacebook = 0;
-
+	private CollapsingToolbarLayout toolbarLayout;
+	public CoordinatorLayout coordinatorLayout;
+	private boolean showMiniPlayer = true;
+	private boolean hasExtras;
+	private String title;
+	private int fragmentType;
+	private int mode;
+	private int menuId;
+	private String transitionId;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		if (!LibVlcUtil.hasCompatibleCPU(this)) {
-			Log.e(TAG, LibVlcUtil.getErrorMsg());
-			Intent i = new Intent(this, CompatErrorActivity.class);
-			startActivity(i);
+		super.onCreate(savedInstanceState);
+
+		if (!VLCInstance.testCompatibleCPU(this)) {
 			finish();
-			super.onCreate(savedInstanceState);
 			return;
 		}
-		AudioServiceController.getInstance().bindAudioService(this);
-		mContext = this;
+
+		/*RestAdapter restAdapter = new RestAdapter(getBaseContext(), "http://192.168.1.12:3000/api/");
+
+		UserRepository userRepo = restAdapter.createRepository(UserRepository.class);
+		//User user = userRepo.createUser("username", "password");
+
+		userRepo.loginUser("username","password", new UserRepository.LoginCallback() {
+			@Override
+			public void onSuccess(AccessToken token, User currentUser) {
+				System.out.println(token +" : "+currentUser);
+			}
+
+			@Override
+			public void onError(Throwable t) {
+				System.out.println("login failed");
+			}
+		});
+
+		userRepo.findCurrentUser(new ObjectCallback<User>() {
+			@Override
+			public void onSuccess(User user) {
+				if (user != null) {
+					// logged in
+					System.out.println("sLogin :"+ user);
+				} else {
+					// anonymous user
+					System.out.println("not login");
+				}
+			}
+
+			@Override
+			public void onError(Throwable t) {
+
+			}
+		});*/
+		 /* Enable the indeterminate progress feature */
+		supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
         /* Get the current version from package */
-		PackageInfo pinfo = null;
-		try {
-			pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-		} catch (PackageManager.NameNotFoundException e) {
-			Log.e(TAG, "package info not found.");
-		}
-		if (pinfo != null)
-			mVersionNumber = pinfo.versionCode;
-
-		//Facebook check user
-		AppEventsLogger
-				.activateApp(mContext);
-		FacebookSdk.sdkInitialize(mContext);
-		Profile profile = Profile.getCurrentProfile();
-
-		try{
-			System.out.println("facebook name :" +profile.getName());
-			CheckUsrFacebook = 1;
-		}catch (Exception e){
-			System.out.println("logoutttttttttttt facebook");
-			CheckUsrFacebook = 0;
-		}
-        /* Get settings */
-		mSettings = PreferenceManager.getDefaultSharedPreferences(this);
-
-		if(!mSettings.getBoolean(PREF_GOOGLE, false) && CheckUsrFacebook == 0){
-			Intent intent = new Intent(this, EmptyActivity.class);
-			intent.putExtra("title", "Login");
-			startActivity(intent);
-		}
-
-		else if(mSettings.getBoolean(PREF_GOOGLE, false)){
-			SharedPreferences.Editor editor = mSettings.edit();
-			editor.putString(PREF_USER, mSettings.getString(PREF_GOOGLE_USR, "Unamed"));
-			editor.commit();
-			System.out.println("masuk di state google ");
-		}
-		else if(CheckUsrFacebook == 1){
-			SharedPreferences.Editor editor = mSettings.edit();
-			editor.putString(PREF_USER, profile.getName());
-			editor.commit();
-			System.out.println("masuk di state faebook dengan nama :" +profile.getName());
-
-		}
-		else{
-			Intent intent = new Intent(this, EmptyActivity.class);
-			intent.putExtra("title", "Login");
-			startActivity(intent);
-		}
-
-
+		mVersionNumber = BuildConfig.VERSION_CODE;
 
         /* Check if it's the first run */
 		mFirstRun = mSettings.getInt(PREF_FIRST_RUN, -1) != mVersionNumber;
 		if (mFirstRun) {
 			SharedPreferences.Editor editor = mSettings.edit();
 			editor.putInt(PREF_FIRST_RUN, mVersionNumber);
-			editor.commit();
-
-			SharedPreferences.Editor editor2 = mSettings.edit();
-			editor2.putInt("state", PlayerFragment.STATE_STOP);
-			editor2.commit();
+			Util.commitPreferences(editor);
 		}
 
+		Permissions.checkReadStoragePermission(this, false);
 
-
-
-
-		try {
-			// Start LibVLC
-			mlibVLC = VLCInstance.getLibVlcInstance();
-		} catch (LibVlcException e) {
-			e.printStackTrace();
-			Intent i = new Intent(this, CompatErrorActivity.class);
-			i.putExtra("runtimeError", true);
-			i.putExtra("message", "LibVLC failed to initialize (LibVlcException)");
-			startActivity(i);
-			finish();
-			super.onCreate(savedInstanceState);
-			return;
+		mMediaLibrary = MediaLibrary.getInstance();
+		if (mMediaLibrary.getMediaItems().isEmpty()) {
+			if (mSettings.getBoolean(PreferencesActivity.AUTO_RESCAN, true))
+				mMediaLibrary.scanMediaItems();
+			else
+				mMediaLibrary.loadMedaItems();
 		}
 
-        /* Load media items from database and storage */
-		if (mScanNeeded)
-			MediaLibrary.getInstance().loadMediaItems();
-
-		super.onCreate(savedInstanceState);
-
-		/*** Start initializing the UI ***/
-
-
-
-
-
-		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 
 		Intent caller = getIntent();
 		if(caller != null && caller.getExtras() != null) {
-			int rootLayout = caller.getExtras().getInt("activity", R.layout.activity_drawer);
+			hasExtras = true;
+			isParentView = caller.getExtras().getBoolean("parent", false);
+			title = caller.getExtras().getString("title", "");
+			fragmentType = caller.getExtras().getInt("fragmentType", FRAGMENT_RADIO_PROFILE);
+			mode = caller.getExtras().getInt("mode", -1);
+			menuId = caller.getExtras().getInt("menuId", 0);
+			transitionId = caller.getExtras().getString("transition", "profile");
+
+			int rootLayout = getBaseLayout(fragmentType);
+
 			setContentView(rootLayout);
 			if(rootLayout == R.layout.activity_drawer)
 				isCollapseLayout = true;
@@ -274,20 +197,16 @@ public class DrawerActivity extends MasterActivity
 		setupAppbarLayout();
 		setupGestureListener();
 
-		miniPlayer = findViewById(R.id.minimized_player);
-
 		NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-		navigationView.getMenu().getItem(3).setTitle(mSettings.getString(PREF_USER, "Unamed"));
 		View headerView = getLayoutInflater().inflate(R.layout.nav_header_main, navigationView, false);
 		ImageView radioLogo = (ImageView) headerView.findViewById(R.id.img_drawer_logo);
 		radioLogo.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(getApplicationContext(), DrawerActivity.class);
-				i.putExtra("activity", R.layout.activity_drawer);
-				i.putExtra("layout", MasterActivity.LAYOUT_RADIO_PROFILE);
+				i.putExtra("fragmentType", MasterActivity.FRAGMENT_RADIO_PROFILE);
 				i.putExtra("parent", true);
-				i.putExtra("title", "Prambors FM Jakarta");
+				i.putExtra("title", "K-Lite FM Bandung");
 				startActivity(i);
 				finish();
 			}
@@ -295,21 +214,16 @@ public class DrawerActivity extends MasterActivity
 		navigationView.addHeaderView(headerView);
 		navigationView.setNavigationItemSelectedListener(this);
 
+		coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
 
 		if(isCollapseLayout) {
 			toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id
 					.collapsing_toolbar_layout);
 			toolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
-			toolbarLayout.setTitle("Prambors FM Jakarta");
+			toolbarLayout.setTitle("K-Lite FM Bandung");
 		}
 
-		if(caller != null && caller.getExtras() != null) {
-			isParentView = caller.getExtras().getBoolean("parent", false);
-			String title = caller.getExtras().getString("title", "");
-			int layout = caller.getExtras().getInt("layout", LAYOUT_HOME);
-			int mode = caller.getExtras().getInt("mode", -1);
-			int menuId = caller.getExtras().getInt("menuId", 0);
-			String transitionId = caller.getExtras().getString("transition", "profile");
+		if(hasExtras) {
 			FragmentManager manager = getSupportFragmentManager();
 			if(title != null && !title.equals("")) {
 				if(toolbarLayout != null)
@@ -317,98 +231,141 @@ public class DrawerActivity extends MasterActivity
 				else
 					getSupportActionBar().setTitle(title);
 			}
-
-			showMiniPlayer = true;
-			if(layout == LAYOUT_RADIO_PROFILE){
+			if(fragmentType == FRAGMENT_RADIO_PROFILE){
 				manager.beginTransaction().replace(R.id.container, RadioProfileFragment.newInstance()).commit();
-			}else if(layout == LAYOUT_HOME){
+			}else if(fragmentType == FRAGMENT_HOME){
 				manager.beginTransaction().replace(R.id.container, HomeFragment.newInstance("")).commit();
-			}else if(layout == LAYOUT_VIRTUAL_CARD){
+			}else if(fragmentType == FRAGMENT_VIRTUAL_CARD){
 				manager.beginTransaction().replace(R.id.container, VirtualCardFragment.newInstance()).commit();
-			}else if(layout == LAYOUT_CLUB){
+			}else if(fragmentType == FRAGMENT_CLUB){
 				manager.beginTransaction().replace(R.id.container, ClubRadioFragment.newInstance("")).commit();
-			}else if(layout == LAYOUT_NOTIFICATION){
+			}else if(fragmentType == FRAGMENT_NOTIFICATION){
 				manager.beginTransaction().replace(R.id.container, NotificationFragment.newInstance("")).commit();
-			}else if(layout == LAYOUT_SETTINGS){
+			}else if(fragmentType == FRAGMENT_SETTINGS){
 				manager.beginTransaction().replace(R.id.container, SettingsFragment.newInstance()).commit();
-			}else if(layout == LAYOUT_LIVE){
+			}else if(fragmentType == FRAGMENT_LIVE){
 				manager.beginTransaction().replace(R.id.container, LiveStreamFragment.newInstance("")).commit();
-			}else if (layout == LAYOUT_PROGRAM_PAGE) {
+			}else if (fragmentType == FRAGMENT_PROGRAM_PAGE) {
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, ProgramPageFragment
 						.newInstance()).commit();
-			} else if (layout == LAYOUT_PERSON_PROFILE) {
+			} else if (fragmentType == FRAGMENT_PERSON_PROFILE) {
 				PersonProfileFragment fragment = PersonProfileFragment.newInstance(mode,
 						transitionId, "");
 				callback = fragment;
 				manager.beginTransaction().replace(R.id.container, fragment).commit();
-			} else if (layout == LAYOUT_PLAYER) {
+			} else if (fragmentType == FRAGMENT_PLAYER) {
 				callback = null;
 				showMiniPlayer = false;
 				manager.beginTransaction().replace(R.id.container, PlayerFragment.newInstance(""))
 						.commit();
-			} else if (layout == LAYOUT_ALBUM) {
+			} else if (fragmentType == FRAGMENT_ALBUM) {
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, AlbumFragment.newInstance(""))
 						.commit();
-			} else if (layout == LAYOUT_ARTIST) {
+			} else if (fragmentType == FRAGMENT_ARTIST) {
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, ArtistFragment.newInstance(""))
 						.commit();
-			} else if (layout == LAYOUT_PROGRAMS){
+			} else if (fragmentType == FRAGMENT_PROGRAMS){
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, ProgramsFragment.newInstance("")).commit();
-			}else if (layout == LAYOUT_ANNOUNCERS){
+			}else if (fragmentType == FRAGMENT_ANNOUNCERS){
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, AnnouncersFragment.newInstance("")).commit();
-			}else if (layout == LAYOUT_FEED){
+			}else if (fragmentType == FRAGMENT_FEED){
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, ClubRadioFragment.newInstance("")).commit();
-			}else if (layout == LAYOUT_PEOPLE){
+			}else if (fragmentType == FRAGMENT_PEOPLE){
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, PersonListFragment.newInstance("")).commit();
-			}else if (layout == LAYOUT_ACCOUNT_SETTINGS){
+			}else if (fragmentType == FRAGMENT_ACCOUNT_SETTINGS){
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, AccountSettingFragment.newInstance()).commit();
-			}else if(layout == LAYOUT_STREAM_PLAYER){
+			}else if(fragmentType == FRAGMENT_STREAM_PLAYER){
 				callback = null;
 				showMiniPlayer = false;
 				manager.beginTransaction().replace(R.id.container, StreamPlayerFragment
 						.newInstance()).commit();
-			}else if(layout == LAYOUT_REQUEST){
+			}else if(fragmentType == FRAGMENT_REQUEST){
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, RequestFragment.newInstance(""))
 						.commit();
-			}else if(layout == LAYOUT_CATEGORY){
+			}else if(fragmentType == FRAGMENT_CATEGORY){
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, CategoryFragment.newInstance(""))
 						.commit();
-			}else if(layout == LAYOUT_SUBCATEGORY){
+			}else if(fragmentType == FRAGMENT_SUBCATEGORY){
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, SubcategoryFragment.newInstance(""))
 						.commit();
-			}else if(layout == LAYOUT_ADD_MIX){
+			}else if(fragmentType == FRAGMENT_ADD_MIX){
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, AddMixFragment.newInstance(""))
 						.commit();
-			}else if(layout == LAYOUT_GRID_MIX){
+			}else if(fragmentType == FRAGMENT_ADD_PLAYLIST){
+				callback = null;
+
+				manager.beginTransaction().replace(R.id.container, AddPlaylistFragment.newInstance(""))
+						.commit();
+			}else if(fragmentType == FRAGMENT_ADD_MIX_FORM){
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, AddMixFormFragment.newInstance())
+						.commit();
+			}else if(fragmentType == FRAGMENT_ADD_PLAYLIST_FORM){
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, AddPlaylistFormFragment.newInstance())
+						.commit();
+			}else if(fragmentType == FRAGMENT_GRID_MIX){
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, GridMixFragment.newInstance(""))
 						.commit();
-			}else if(layout == LAYOUT_COMMENT){
+			}else if(fragmentType == FRAGMENT_COMMENT){
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, CommentFragment.newInstance(""))
 						.commit();
-			}else if(layout == LAYOUT_MIX){
+			}else if(fragmentType == FRAGMENT_MIX){
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, MixFragment.newInstance(""))
+						.commit();
+			}else if(fragmentType == FRAGMENT_FAVORITES){
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, FavoritesFragment.newInstance(""))
+						.commit();
+			}else if(fragmentType == FRAGMENT_APP_SETTINGS){
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, AppSettingFragment.newInstance(""))
+						.commit();
+			}else if(fragmentType == FRAGMENT_NOTIFICATION_SETTINGS){
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, NotificationSettingFragment.newInstance(""))
+						.commit();
+			}else if(fragmentType == FRAGMENT_ABOUT){
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, AboutFragment.newInstance(""))
+						.commit();
+			}else if(fragmentType == FRAGMENT_TRACK_LIST){
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, TrackListFragment.newInstance(""))
+						.commit();
+			}else if(fragmentType == FRAGMENT_PLAYLIST){
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, PlaylistFragment.newInstance(""))
+						.commit();
+			}else if(fragmentType == FRAGMENT_UPLOAD){
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, UploadFragment.newInstance())
+						.commit();
+			}else if(fragmentType == FRAGMENT_UPLOAD_FINISHED){
+				callback = null;
+				manager.beginTransaction().replace(R.id.container, UploadFinishedFragment.newInstance())
 						.commit();
 			}
 			navigationView.getMenu().getItem(menuId).setChecked(true);
 		}else{
 			isParentView = true;
 			FragmentManager manager = getSupportFragmentManager();
-			manager.beginTransaction().replace(R.id.container, HomeFragment.newInstance("")).commit();
+			manager.beginTransaction().replace(R.id.container, RadioProfileFragment.newInstance()).commit();
 			navigationView.getMenu().getItem(0).setChecked(true);
 		}
 
@@ -426,158 +383,65 @@ public class DrawerActivity extends MasterActivity
 			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		}
 
-		/* Set up the audio player */
-		//mAudioPlayer = new PlayerFragment();
-		mAudioController = AudioServiceController.getInstance();
-		mAudioController.bindAudioService(this);
-		mMediaLibrary = MediaLibrary.getInstance();
-
-		/* Prepare the progressBar */
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(ACTION_SHOW_PROGRESSBAR);
-		filter.addAction(ACTION_HIDE_PROGRESSBAR);
-		filter.addAction(ACTION_SHOW_TEXTINFO);
-		filter.addAction(ACTION_SHOW_PLAYER);
-		registerReceiver(messageReceiver, filter);
+		if (mFirstRun) {
+            /*
+             * The sliding menu is automatically opened when the user closes
+             * the info dialog. If (for any reason) the dialog is not shown,
+             * open the menu after a short delay.
+             */
+			mHandler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					//mDrawerLayout.openDrawer(mNavigationView);
+				}
+			}, 500);
+		}
 
         /* Reload the latest preferences */
 		reloadPreferences();
-
-		imgCoverMini = (ImageView)findViewById(R.id.imgCoverMini);
-
-		txtJudul = (TextView) findViewById(R.id.txtTitleMini);
-		txtArtist = (TextView)findViewById(R.id.txtArtstMini);
-
-		btnPlay = (ImageButton) findViewById(R.id.btnPlayMini);
-		btnNext = (ImageButton) findViewById(R.id.btnNextMini);
-
-		btnPlay.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (mAudioController.isPlaying()) {
-					mAudioController.pause();
-					//btnPlay.setBackgroundResource(R.drawable.ic_pause_white_48dp);
-					btnPlay.setImageResource(R.drawable.ic_play_arrow_white_36dp);
-				} else {
-					mAudioController.play();
-					//btnPlay.setBackgroundResource(R.drawable.ic_play_arrow_white_48dp);
-					btnPlay.setImageResource(R.drawable.ic_pause_white_36dp);
-				}
-			}
-		});
-
-		btnNext.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				mAudioController.next();
-			}
-		});
-
-		miniPlayer.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(mContext, DrawerActivity.class);
-				intent.putExtra("parent", true);
-				intent.putExtra("title", "Player");
-				intent.putExtra("layout", MasterActivity.LAYOUT_PLAYER);
-				intent.putExtra("activity", R.layout.activity_drawer);
-				startActivity(intent);
-				finish();
-			}
-		});
-
-		setupHandler();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		setupMiniPlayer();
-		setupHandler();
-		//mAudioController.addAudioPlayer(mAudioPlayer);
-		AudioServiceController.getInstance().bindAudioService(this);
-
-        /* FIXME: this is used to avoid having MainActivity twice in the backstack */
-		if (getIntent().hasExtra(AudioService.START_FROM_NOTIFICATION))
-			getIntent().removeExtra(AudioService.START_FROM_NOTIFICATION);
-
-		if (mMediaLibrary.isWorking())
-			mHandler.sendEmptyMessageDelayed(MSG_LOADING, 300);
-		updateLists();
-		mMediaLibrary.addUpdateHandler(mHandler1);
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-		mMediaLibrary.removeUpdateHandler(mHandler1);
-		handler.removeCallbacks(sendToUi);
+		SharedPreferences pref = getSharedPreferences(getString(R.string.preference_key), Context
+				.MODE_PRIVATE);
+		if(!showMiniPlayer && pref.getInt("state", PlayerFragment.STATE_STOP) == PlayerFragment
+				.STATE_STOP){
+			miniPlayer.setVisibility(View.GONE);
+		}else if(showMiniPlayer){
+			miniPlayer.setVisibility(View.VISIBLE);
+		}
+        /* Load media items from database and storage */
+		if (mScanNeeded)
+			mMediaLibrary.scanMediaItems();
 	}
 
 	/**
-	 * Handle changes on the list
+	 * Stop audio player and save opened tab
 	 */
-	private Handler mHandler1 = new AudioBrowserHandler(this);
-	private static class AudioBrowserHandler extends WeakHandler<DrawerActivity> {
-		public AudioBrowserHandler(DrawerActivity owner) {
-			super(owner);
-		}
+	@Override
+	protected void onPause() {
+		super.onPause();
+        /* Check for an ongoing scan that needs to be resumed during onResume */
+		mScanNeeded = mMediaLibrary.isWorking();
+        /* Stop scanning for files */
+		mMediaLibrary.stop();
+        /* Save the tab status in pref *//*
+		SharedPreferences.Editor editor = mSettings.edit();
+		editor.putInt("fragment_id", mCurrentFragment);
+		Util.commitPreferences(editor);*/
 
-		@Override
-		public void handleMessage(Message msg) {
-			DrawerActivity fragment = getOwner();
-			if(fragment == null) return;
-
-			switch (msg.what) {
-				case MediaLibrary.MEDIA_ITEMS_UPDATED:
-					fragment.updateLists();
-					break;
-				case MSG_LOADING:
-					/*if (fragment.mArtistsAdapter.isEmpty() && fragment.mAlbumsAdapter.isEmpty() &&
-							fragment.mSongsAdapter.isEmpty() && fragment.mGenresAdapter.isEmpty())
-						fragment.mSwipeRefreshLayout.setRefreshing(true);*/
-			}
-		}
-	};
-	private void updateLists() {
-
-		mAudioList = MediaLibrary.getInstance().getAudioItems();
-		if (mAudioList.isEmpty()){
-
-		} else {
-
-			/*mHandler1.sendEmptyMessageDelayed(MSG_LOADING, 300);
-
-			ExecutorService tpe = Executors.newSingleThreadExecutor();
-			ArrayList<Runnable> tasks = new ArrayList<Runnable>();
-			tasks.add(updateArtists);
-			tasks.add(updateAlbums);
-			tasks.add(updateSongs);
-			tasks.add(updateGenres);
-			//process the visible list first
-			tasks.add(0, tasks.remove(mFlingViewPosition));
-			tasks.add(new Runnable() {
-				@Override
-				public void run() {
-					synchronized (mAdaptersToNotify) {
-						if (!mAdaptersToNotify.isEmpty())
-							display();
-					}
-				}
-			});
-			for (Runnable task : tasks)
-				tpe.submit(task);*/
-		}
+		mFocusedPrior = 0;
 	}
 
 	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		try {
-			unregisterReceiver(messageReceiver);
-		} catch (IllegalArgumentException e) {}
-		handler.removeCallbacks(sendToUi);
+	protected void onRestart() {
+		super.onRestart();
+        /* Reload the latest preferences */
+		reloadPreferences();
 	}
+
 
 	@Override
 	public void onBackPressed() {
@@ -625,15 +489,13 @@ public class DrawerActivity extends MasterActivity
 		intent.putExtra("parent", true);
 		switch (id){
 			case R.id.nav_home:
-				intent.putExtra("layout", MasterActivity.LAYOUT_HOME);
-				intent.putExtra("activity", R.layout.activity_drawer);
+				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_HOME);
 				intent.putExtra("menuId", 0);
 				startActivity(intent);
 				finish();
 				break;
 			case R.id.nav_live:
-				intent.putExtra("layout", MasterActivity.LAYOUT_LIVE);
-				intent.putExtra("activity", R.layout.activity_drawer_standard);
+				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_LIVE);
 				intent.putExtra("title", "Live Stream");
 				intent.putExtra("menuId", 1);
 				startActivity(intent);
@@ -641,57 +503,52 @@ public class DrawerActivity extends MasterActivity
 				break;
 			case R.id.nav_klub:
 				intent.putExtra("title", "Klub Radio");
-				intent.putExtra("layout", MasterActivity.LAYOUT_CLUB);
-				intent.putExtra("activity", R.layout.activity_drawer_standard);
+				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_CLUB);
 				intent.putExtra("menuId", 2);
 				startActivity(intent);
 				finish();
 				break;
 			case R.id.nav_profile:
-				intent.putExtra("layout", MasterActivity.LAYOUT_PERSON_PROFILE);
-				intent.putExtra("title", mSettings.getString(PREF_USER, "Unamed"));
-				intent.putExtra("activity", R.layout.activity_drawer);
+				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_PERSON_PROFILE);
+				intent.putExtra("title", "Dimas Danang");
 				intent.putExtra("menuId", 3);
+				startActivity(intent);
+				finish();
+				break;
+			case R.id.nav_favorite:
+				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_FAVORITES);
+				intent.putExtra("title", "Favorites");
+				intent.putExtra("menuId", 4);
 				startActivity(intent);
 				finish();
 				break;
 			case R.id.nav_notification:
 				intent.putExtra("title", "Notifications");
-				intent.putExtra("layout", MasterActivity.LAYOUT_NOTIFICATION);
-				intent.putExtra("activity", R.layout.activity_drawer_standard);
+				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_NOTIFICATION);
 				intent.putExtra("menuId", 5);
 				startActivity(intent);
 				finish();
 				break;
 			case R.id.nav_virtual_card:
 				intent.putExtra("title", "Virtual Card");
-				intent.putExtra("layout", MasterActivity.LAYOUT_VIRTUAL_CARD);
-				intent.putExtra("activity", R.layout.activity_drawer);
+				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_VIRTUAL_CARD);
 				intent.putExtra("menuId", 6);
 				startActivity(intent);
 				finish();
 				break;
 			case R.id.nav_setting:
 				intent.putExtra("title", "Settings");
-				intent.putExtra("layout", MasterActivity.LAYOUT_SETTINGS);
-				intent.putExtra("activity", R.layout.activity_drawer_standard);
+				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_SETTINGS);
 				intent.putExtra("menuId", 7);
 				startActivity(intent);
 				finish();
 				break;
 			case R.id.nav_player:
-				/*intent.putExtra("title", "Player");
-				intent.putExtra("layout", MasterActivity.LAYOUT_PLAYER);
-				intent.putExtra("activity", R.layout.activity_drawer);
+				intent.putExtra("title", "Player");
+				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_PLAYER);
 				intent.putExtra("menuId", 8);
 				startActivity(intent);
-				finish();*/
-				loadMediaQueue();
-				break;
-			case R.id.nav_user:
-				Intent in = new Intent(this, EmptyActivity.class);
-				in.putExtra("title", "Login");
-				startActivity(in);
+				finish();
 				break;
 		}
 		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -699,53 +556,56 @@ public class DrawerActivity extends MasterActivity
 		return true;
 	}
 
-	private void reloadPreferences() {
-		SharedPreferences sharedPrefs = getSharedPreferences("MainActivity", MODE_PRIVATE);
-		//mCurrentFragment = sharedPrefs.getString("fragment", "video");
+	public int getBaseLayout(int fragmentType){
+		switch (fragmentType){
+			case MasterActivity.FRAGMENT_PROGRAM_PAGE : return R.layout.activity_drawer;
+			case MasterActivity.FRAGMENT_PERSON_PROFILE : return R.layout.activity_drawer;
+			case MasterActivity.FRAGMENT_PLAYER : return R.layout.activity_drawer;
+			case MasterActivity.FRAGMENT_ALBUM : return R.layout.activity_drawer;
+			case MasterActivity.FRAGMENT_ARTIST : return R.layout.activity_drawer;
+			case MasterActivity.FRAGMENT_RADIO_PROFILE : return R.layout.activity_drawer;
+			case MasterActivity.FRAGMENT_VIRTUAL_CARD : return R.layout.activity_drawer;
+			case MasterActivity.FRAGMENT_CLUB : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_NOTIFICATION : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_SETTINGS : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_LIVE : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_PROGRAMS : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_ANNOUNCERS : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_FEED : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_PEOPLE : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_ACCOUNT_SETTINGS : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_STREAM_PLAYER : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_REQUEST : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_HOME : return R.layout.activity_drawer;
+			case MasterActivity.FRAGMENT_CATEGORY : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_SUBCATEGORY : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_GRID_MIX : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_ADD_MIX : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_COMMENT : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_MIX : return R.layout.activity_drawer;
+			case MasterActivity.FRAGMENT_FAVORITES : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_APP_SETTINGS : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_NOTIFICATION_SETTINGS : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_ABOUT : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_ADD_PLAYLIST : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_ADD_MIX_FORM : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_ADD_PLAYLIST_FORM : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_TRACK_LIST : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_PLAYLIST : return R.layout.activity_drawer;
+			case MasterActivity.FRAGMENT_UPLOAD : return R.layout.activity_drawer_standard;
+			case MasterActivity.FRAGMENT_UPLOAD_FINISHED : return R.layout.activity_drawer_standard;
+			default : return R.layout.activity_drawer_standard;
+		}
 	}
 
-	private final BroadcastReceiver messageReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			String action = intent.getAction();
+	private void reloadPreferences() {
+		//mCurrentFragment = mSettings.getInt("fragment_id", R.id.nav_video);
+	}
 
-
-			if (action.equalsIgnoreCase(ACTION_SHOW_PROGRESSBAR)) {
-				setSupportProgressBarIndeterminateVisibility(true);
-				getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-			} else if (action.equalsIgnoreCase(ACTION_HIDE_PROGRESSBAR)) {
-				setSupportProgressBarIndeterminateVisibility(false);
-				getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-			} else if (action.equalsIgnoreCase(ACTION_SHOW_TEXTINFO)) {
-				String info = intent.getStringExtra("info");
-				int max = intent.getIntExtra("max", 0);
-				int progress = intent.getIntExtra("progress", 100);
-				//mInfoText.setText(info);
-				//mInfoProgress.setMax(max);
-				//mInfoProgress.setProgress(progress);
-
-				if (info == null) {
-                    /* Cancel any upcoming visibility change */
-					mHandler.removeMessages(ACTIVITY_SHOW_INFOLAYOUT);
-					//mInfoLayout.setVisibility(View.GONE);
-				}
-				else {
-                    /* Slightly delay the appearance of the progress bar to avoid unnecessary flickering */
-					if (!mHandler.hasMessages(ACTIVITY_SHOW_INFOLAYOUT)) {
-						Message m = new Message();
-						m.what = ACTIVITY_SHOW_INFOLAYOUT;
-						mHandler.sendMessageDelayed(m, 300);
-					}
-				}
-			} else if (action.equalsIgnoreCase(ACTION_SHOW_PLAYER)) {
-				showAudioPlayer();
-			}
-			if (action.equalsIgnoreCase(AudioService.ACTION_SHOW_HIDE_MINI_PLAYER)) {
-				setupMiniPlayer();
-			}
-
-		}
-	};
+	@Override
+	public Cursor runQuery(CharSequence constraint) {
+		return MediaDatabase.getInstance().queryMedia(constraint.toString());
+	}
 
 	private static class MainActivityHandler extends WeakHandler<DrawerActivity> {
 		public MainActivityHandler(DrawerActivity owner) {
@@ -761,485 +621,49 @@ public class DrawerActivity extends MasterActivity
 				case ACTIVITY_SHOW_INFOLAYOUT:
 					//ma.mInfoLayout.setVisibility(View.VISIBLE);
 					break;
-			}
-		}
-	};
-
-	public static void showProgressBar() {
-		Intent intent = new Intent();
-		intent.setAction(ACTION_SHOW_PROGRESSBAR);
-		VLCApplication.getAppContext().sendBroadcast(intent);
-	}
-
-	public static void hideProgressBar() {
-		Intent intent = new Intent();
-		intent.setAction(ACTION_HIDE_PROGRESSBAR);
-		VLCApplication.getAppContext().sendBroadcast(intent);
-	}
-
-	public static void sendTextInfo(String info, int progress, int max) {
-		Intent intent = new Intent();
-		intent.setAction(ACTION_SHOW_TEXTINFO);
-		intent.putExtra("info", info);
-		intent.putExtra("progress", progress);
-		intent.putExtra("max", max);
-		VLCApplication.getAppContext().sendBroadcast(intent);
-	}
-
-	public static void clearTextInfo() {
-		sendTextInfo(null, 0, 100);
-	}
-
-	/**
-	 * Show the audio player.
-	 */
-	public void showAudioPlayer() {
-		// Open the pane only if is entirely opened.
-		/*if (mSlidingPane.getState() == mSlidingPane.STATE_OPENED_ENTIRELY)
-			mSlidingPane.openPane();
-		mAudioPlayerFilling.setVisibility(View.VISIBLE);*/
-		/*Intent intent = new Intent(this, DrawerActivity.class);
-		intent.putExtra("parent", true);
-		intent.putExtra("title", "Player");
-		intent.putExtra("layout", MasterActivity.LAYOUT_PLAYER);
-		intent.putExtra("activity", R.layout.activity_drawer);
-		startActivity(intent);*/
-	}
-
-	public void hideAudioPlayer() {
-		/*mSlidingPane.openPaneEntirely();
-		mAudioPlayerFilling.setVisibility(View.GONE);*/
-	}
-
-	public void addMediaToDB(){
-		String location;
-		long time;
-		long length;
-		int type;
-		Bitmap picture;
-		String title;
-		String artist;
-		String genre;
-		String album;
-		String albumArtist;
-		int width;
-		int height;
-		String artworkURL;
-		int audio;
-		int spu;
-		int trackNumber;
-
-		List <Media> alMedia = new ArrayList<Media>();
-
-		MediaList mediaList = null;
-
-		mediaList = mlibVLC.getMediaList();
-
-		Media m;
-
-		MediaDatabase mDB = MediaDatabase.getInstance();
-
-
-		location = mFilePath;
-		time = 0;
-		length = 0;
-		type = -1;
-		picture = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.background_login);
-		title = "JUDULLLLLL";
-		artist = "ARTISSSS";
-		genre = "";
-		album = "ALBUUUM";
-		albumArtist = "ALBUM ARTISSSS";
-		width = 0;
-		height = 0;
-		artworkURL = "";
-		audio = 0;
-		spu = 0;
-		trackNumber = 0;
-
-		m = new Media(location, time, length, type,
-				picture, title, artist, genre, album, albumArtist,
-				width, height, artworkURL, audio, spu, trackNumber);
-
-
-		mDB.addMedia(m);
-
-		location = mFilePath2;
-		time = 0;
-		length = 0;
-		type = -1;
-		picture = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.wallpaper);
-		title = "JUD 222";
-		artist = "ART222";
-		genre = "";
-		album = "ALBU222";
-		albumArtist = "ALBUM ARTISS2222";
-		width = 0;
-		height = 0;
-		artworkURL = "";
-		audio = 0;
-		spu = 0;
-		trackNumber = 0;
-
-		m = new Media(location, time, length, type,
-				picture, title, artist, genre, album, albumArtist,
-				width, height, artworkURL, audio, spu, trackNumber);
-
-
-		mDB.addMedia(m);
-
-
-
-	}
-
-	public void loadMediaQueue(){
-		/*String location;
-		long time;
-		long length;
-		int type;
-		Bitmap picture;
-		String title;
-		String artist;
-		String genre;
-		String album;
-		String albumArtist;
-		int width;
-		int height;
-		String artworkURL;
-		int audio;
-		int spu;
-		int trackNumber;
-
-		List <Media> alMedia = new ArrayList<Media>();
-
-		//MediaList mediaList = null;
-
-		//mediaList = mlibVLC.getMediaList();
-
-		Media m;
-
-		MediaDatabase mDB = MediaDatabase.getInstance();
-
-
-		location = mFilePath;
-		time = 0;
-		length = 0;
-		type = -1;
-		picture = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.background_login);
-		title = "JUDULLLLLL";
-		artist = "ARTISSSS";
-		genre = "";
-		album = "ALBUUUM";
-		albumArtist = "ALBUM ARTISSSS";
-		width = 0;
-		height = 0;
-		artworkURL = "http://ecx.images-amazon.com/images/I/61RKZnb8kBL.jpg";
-		audio = 0;
-		spu = 0;
-		trackNumber = 0;
-
-		m = new Media(location, time, length, type,
-				picture, title, artist, genre, album, albumArtist,
-				width, height, artworkURL, audio, spu, trackNumber);
-
-
-		mDB.addMedia(m);
-		alMedia.add(m);
-
-		location = mFilePath2;
-		time = 0;
-		length = 0;
-		type = -1;
-		picture = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.wallpaper);
-		title = "JUD 222";
-		artist = "ART222";
-		genre = "";
-		album = "ALBU222";
-		albumArtist = "ALBUM ARTISS2222";
-		width = 0;
-		height = 0;
-		artworkURL = "http://static.asiawebdirect.com/m/phuket/portals/thaiwave-com/homepage/mae-hong-son/pagePropertiesImage/mae-hong-son.jpg";
-		audio = 0;
-		spu = 0;
-		trackNumber = 0;
-
-		m = new Media(location, time, length, type,
-				picture, title, artist, genre, album, albumArtist,
-				width, height, artworkURL, audio, spu, trackNumber);
-
-
-		mDB.addMedia(m);
-
-		alMedia.add(m);
-		System.out.println("]]]]]]]]]]]]]]]]]]]]]load media");
-		mAudioController.loadMedia(alMedia);
-
-		*//**//*System.out.println("]]]]]]]]]]]]]]]]]]]]]]]reload ueue");
-		mAudioController.reloadQueue();*//**//*
-
-		List<String> mediaLocation = new ArrayList<String>();
-		for (int i =0; i< alMedia.size();i++){
-			mediaLocation.add(alMedia.get(i).getLocation());
-		}
-
-		mAudioController.load(mediaLocation,0);*/
-		new getQueueArray().execute();
-
-	}
-
-	private class getQueueArray extends AsyncTask<Void, Void, Void> {
-		String location;
-		long time;
-		long length;
-		int type;
-		Bitmap picture;
-		String title;
-		String artist;
-		String genre;
-		String album;
-		String albumArtist;
-		int width;
-		int height;
-		String artworkURL;
-		int audio;
-		int spu;
-		int trackNumber;
-
-		List <Media> alMedia = new ArrayList<Media>();
-
-		//MediaList mediaList = null;
-
-		//mediaList = mlibVLC.getMediaList();
-
-		Media m;
-
-		MediaDatabase mDB = MediaDatabase.getInstance();
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			// Showing progress dialog
-			pDialog = new ProgressDialog(mContext);
-			pDialog.setMessage("Please wait...");
-			pDialog.setCancelable(false);
-			pDialog.show();
-
-		}
-
-		@Override
-		protected Void doInBackground(Void... arg0) {
-			// Creating service handler class instance
-
-
-			ServiceQueueJson sh = new ServiceQueueJson();
-
-			String url = "http://www.1071klitefm.com/apis/data/lists/pop-indonesia";
-
-			// Making a request to url and getting response
-			String jsonStr = sh.makeServiceCall(url, ServiceQueueJson.GET);
-
-			Log.d("Response: ", "> " + jsonStr);
-
-			if (jsonStr != null) {
-				try {
-					//JSONObject jsonObj = new JSONObject(jsonStr);
-					JSONArray mJsonArray = new JSONArray(jsonStr);
-
-					// looping through All Contacts
-					for (int i = 0; i < mJsonArray.length(); i++) {
-						//JSONObject mJsonObjectProperty = mJsonArray.getJSONObject(i);
-						JSONObject mJsonObject = mJsonArray.getJSONObject(i);
-						/*String id = mJsonObject.getString("id");
-						String title = mJsonObject.getString("title");
-						String album = mJsonObject.getString("post_date");
-						String file = mJsonObject.getString("file");
-						String cover = mJsonObject.getString("attachment");
-
-						// adding contact to contact list
-						playlists.add(new Playlist(title, album,id,cover,file, id ));*/
-
-						location = mJsonObject.getString("file");
-						time = 0;
-						length = 0;
-						type = -1;
-						picture = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.background_login);
-						title = mJsonObject.getString("title");
-						artist = mJsonObject.getString("title");
-						genre = "";
-						album = mJsonObject.getString("title");
-						albumArtist = mJsonObject.getString("title");
-						width = 0;
-						height = 0;
-						artworkURL = mJsonObject.getString("attachment");
-						audio = 0;
-						spu = 0;
-						trackNumber = 0;
-
-						m = new Media(location, time, length, type,
-								picture, title, artist, genre, album, albumArtist,
-								width, height, artworkURL, audio, spu, trackNumber);
-
-						mDB.addMedia(m);
-						alMedia.add(m);
-
+				case ACTIVITY_SHOW_PROGRESSBAR:
+					ma.setSupportProgressBarIndeterminateVisibility(true);
+					ma.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+					break;
+				case ACTIVITY_HIDE_PROGRESSBAR:
+					ma.setSupportProgressBarIndeterminateVisibility(false);
+					ma.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+					break;
+				case ACTIVITY_SHOW_TEXTINFO:
+					String info = (String) msg.obj;
+					int max = msg.arg1;
+					int progress = msg.arg2;
+					//ma.mInfoText.setText(info);
+					//ma.mInfoProgress.setMax(max);
+					//ma.mInfoProgress.setProgress(progress);
+
+					if (info == null) {
+                    /* Cancel any upcoming visibility change */
+						removeMessages(ACTIVITY_SHOW_INFOLAYOUT);
+						//ma.mInfoLayout.setVisibility(View.GONE);
 					}
-
-					location = "-rtmp_playpath \"melon\" -rtmp_tcurl \"rtmp://stm.melon.co.id/prelisten\" -rtmp_app \"prelisten\" -rtmp_swfurl \"http://www.melon.co.id/flash/player.swf?songId=114407172&contentType=M&channelCd=CH0001\" -o";
-					time = 0;
-					length = 0;
-					type = -1;
-					picture = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.background_login);
-					title = "title";
-					artist = "artis";
-					genre = "";
-					album = "album";
-					albumArtist = "alar";
-					width = 0;
-					height = 0;
-					artworkURL = "";
-					audio = 0;
-					spu = 0;
-					trackNumber = 0;
-
-					m = new Media(location, time, length, type,
-							picture, title, artist, genre, album, albumArtist,
-							width, height, artworkURL, audio, spu, trackNumber);
-
-					mDB.addMedia(m);
-					alMedia.add(0,m);
-
-					mAudioController.loadMedia(alMedia);
-
-
-					List<String> mediaLocation = new ArrayList<String>();
-					for (int i =0; i< alMedia.size();i++){
-						mediaLocation.add(alMedia.get(i).getLocation());
+					else {
+                    /* Slightly delay the appearance of the progress bar to avoid unnecessary flickering */
+						if (!hasMessages(ACTIVITY_SHOW_INFOLAYOUT)) {
+							Message m = new Message();
+							m.what = ACTIVITY_SHOW_INFOLAYOUT;
+							sendMessageDelayed(m, 300);
+						}
 					}
-					mAudioController.load(mediaLocation, 0);
-
-
-
-
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			} else {
-				Log.e("ServiceHandler", "Couldn't get any data from the url");
+					break;
 			}
-
-			return null;
 		}
-
-		@Override
-		protected void onPostExecute(Void result) {
-			super.onPostExecute(result);
-			// Dismiss the progress dialog
-			if (pDialog.isShowing())
-				pDialog.dismiss();
-			/**
-			 * Updating parsed JSON data into ListView
-			 * */
-			Intent intent = new Intent(mContext, DrawerActivity.class);
-			intent.putExtra("parent", true);
-			intent.putExtra("title", "Player");
-			intent.putExtra("layout", MasterActivity.LAYOUT_PLAYER);
-			intent.putExtra("activity", R.layout.activity_drawer);
-			startActivity(intent);
-			finish();
-
-
-		}
-
 	}
 
-	private final Handler handler = new Handler();
-	private void setupHandler() {
-		handler.removeCallbacks(sendToUi);
-		handler.postDelayed(sendToUi, 1000); // 1 second
+	public static class User extends com.strongloop.android.loopback.User {
 	}
-
-
-	private Runnable sendToUi = new Runnable() {
-		public void run() {
-
-			//setupMiniPlayer();
-			txtJudul.setText(mAudioController.getTitle());
-			txtArtist.setText(mAudioController.getArtist());
-
-			imgCoverMini.setImageBitmap(mAudioController.getCover());
-
-			if(!mAudioController.hasNext()){
-				btnNext.setVisibility(View.INVISIBLE);
-			}
-			else{
-				btnNext.setVisibility(View.VISIBLE);
-			}
-
-			if(mAudioController.isPlaying()){
-				btnPlay.setImageResource(R.drawable.ic_pause_white_36dp);
-			}
-			else{
-				btnPlay.setImageResource(R.drawable.ic_play_arrow_white_36dp);
-			}
-
-			if(mAudioController.isPlaying() && showMiniPlayer){
-				miniPlayer.setVisibility(View.VISIBLE);
-			}
-
-			if(!showMiniPlayer){
-				miniPlayer.setVisibility(View.GONE);
-			}
-
-			if(txtJudul.getText().equals("")){
-				miniPlayer.setVisibility(View.GONE);
-			}
-
-			handler.postDelayed(this, 1000); // 2 seconds
+	public static class UserRepository
+			extends com.strongloop.android.loopback.UserRepository<User> {
+		public interface LoginCallback
+		extends com.strongloop.android.loopback.UserRepository.LoginCallback<User> {
 		}
-	};
-
-	public void coba(){
-
-		/*System.out.println("masuk coba");
-		MediaPlayer mp = new MediaPlayer();
-
-		HashMap<String , String> map = new HashMap<String, String>();
-		map.put("rtmp_swfurl",
-				"http://www.melon.co.id/flash/player.swf?songId=114407172&contentType=M&channelCd=CH0001");
-		map.put("rtmp_playpath", "melon");
-		map.put("rtmp_app", "prelisten");
-		map.put("rtmp_tcurl", "rtmp://stm.melon.co.id/prelisten");
-
-		try {
-			mp.setDataSource(mContext, Uri.parse("rtmp://stm.melon.co.id/prelisten"), map);
-			mp.prepare();
-			mp.start();
-
-			System.out.println("started");
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.out.println("not started");
+		public UserRepository() {
+			super("accounts", null, User.class);
 		}
-		CustomUrlStreamHandlerFactory cushf = new CustomUrlStreamHandlerFactory();
-		cushf.createURLStreamHandler(CustomUrlStreamHandlerFactory.URL_PROTOCOL_RTMP);
-
-
-		try {
-			url = new URL("rtmp://stm.melon.co.id/prelisten");
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-
-		//new RtmpUrlConnection()
-		RtmpUrlConnection rtmpUrt = new RtmpUrlConnection(url, map);
-
-		try {
-			rtmpUrt.connect();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		System.out.println(rtmpUrt.getCommandLineParameter());*/
-
-
 	}
 }

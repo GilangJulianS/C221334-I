@@ -1,12 +1,10 @@
 package com.cyclone.custom;
 
 import android.app.Activity;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.cyclone.DrawerActivity;
 import com.cyclone.R;
 import com.cyclone.model.Announcer;
 
@@ -28,6 +26,11 @@ public class AnnouncerHolder extends UniversalHolder{
 	public void bind(Object object, Activity activity, int position) {
 		bind((Announcer)object);
 	}
+
+/*	@Override
+	public void bind(Object object, Activity activity, int position) {
+		bind((Announcer)object);
+	}*/
 
 	public void bind(Announcer announcer){
 		image.setImageResource(R.drawable.background_login);

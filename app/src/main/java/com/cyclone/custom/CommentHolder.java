@@ -29,6 +29,11 @@ public class CommentHolder extends UniversalHolder{
 		bind((Comment)object);
 	}
 
+	/*@Override
+	public void bind(Object object, Activity activity, int position) {
+		bind((Comment)object);
+	}*/
+
 	public void bind(Comment comment){
 		imgUser.setImageResource(R.drawable.background_login);
 		txtUsername.setText(comment.username);

@@ -52,48 +52,58 @@ public class GridMixFragment extends RecyclerFragment {
 
 	}
 
+	@Override
+	public int getSlidingLayoutId() {
+		return 0;
+	}
+
+	@Override
+	public void prepareSlidingMenu(View v) {
+
+	}
+
 	public List<Object> parse(String json){
 		List<Object> datas = new ArrayList<>();
-		datas.add(new Mix("", "Raisa"));
-		datas.add(new Mix("", "Daft Punk"));
-		datas.add(new Mix("", "Maroon 5"));
-		datas.add(new Mix("", "Noah"));
-		datas.add(new Mix("", "Coldplay"));
-		datas.add(new Mix("", "Oasis"));
-		datas.add(new Mix("", "Taylor Swift"));
-		datas.add(new Mix("", "Green Day"));
-		datas.add(new Mix("", "Iwan Fals"));
-		datas.add(new Mix("", "Zedd"));
-		datas.add(new Mix("", "Raisa"));
-		datas.add(new Mix("", "Daft Punk"));
-		datas.add(new Mix("", "Maroon 5"));
-		datas.add(new Mix("", "Noah"));
-		datas.add(new Mix("", "Coldplay"));
-		datas.add(new Mix("", "Oasis"));
-		datas.add(new Mix("", "Taylor Swift"));
-		datas.add(new Mix("", "Green Day"));
-		datas.add(new Mix("", "Iwan Fals"));
-		datas.add(new Mix("", "Zedd"));
-		datas.add(new Mix("", "Raisa"));
-		datas.add(new Mix("", "Daft Punk"));
-		datas.add(new Mix("", "Maroon 5"));
-		datas.add(new Mix("", "Noah"));
-		datas.add(new Mix("", "Coldplay"));
-		datas.add(new Mix("", "Oasis"));
-		datas.add(new Mix("", "Taylor Swift"));
-		datas.add(new Mix("", "Green Day"));
-		datas.add(new Mix("", "Iwan Fals"));
-		datas.add(new Mix("", "Zedd"));
-		datas.add(new Mix("", "Raisa"));
-		datas.add(new Mix("", "Daft Punk"));
-		datas.add(new Mix("", "Maroon 5"));
-		datas.add(new Mix("", "Noah"));
-		datas.add(new Mix("", "Coldplay"));
-		datas.add(new Mix("", "Oasis"));
-		datas.add(new Mix("", "Taylor Swift"));
-		datas.add(new Mix("", "Green Day"));
-		datas.add(new Mix("", "Iwan Fals"));
-		datas.add(new Mix("", "Zedd"));
+		datas.add(new Mix("", "Raisa", "Artist"));
+		datas.add(new Mix("", "Daft Punk", "Artist"));
+		datas.add(new Mix("", "Maroon 5", "Artist"));
+		datas.add(new Mix("", "Noah", "Artist"));
+		datas.add(new Mix("", "Coldplay", "Artist"));
+		datas.add(new Mix("", "Oasis", "Artist"));
+		datas.add(new Mix("", "Taylor Swift", "Artist"));
+		datas.add(new Mix("", "Green Day", "Artist"));
+		datas.add(new Mix("", "Iwan Fals", "Artist"));
+		datas.add(new Mix("", "Zedd", "Artist"));
+		datas.add(new Mix("", "Raisa", "Artist"));
+		datas.add(new Mix("", "Daft Punk", "Artist"));
+		datas.add(new Mix("", "Maroon 5", "Artist"));
+		datas.add(new Mix("", "Noah", "Artist"));
+		datas.add(new Mix("", "Coldplay", "Artist"));
+		datas.add(new Mix("", "Oasis", "Artist"));
+		datas.add(new Mix("", "Taylor Swift", "Artist"));
+		datas.add(new Mix("", "Green Day", "Artist"));
+		datas.add(new Mix("", "Iwan Fals", "Artist"));
+		datas.add(new Mix("", "Zedd", "Artist"));
+		datas.add(new Mix("", "Raisa", "Artist"));
+		datas.add(new Mix("", "Daft Punk", "Artist"));
+		datas.add(new Mix("", "Maroon 5", "Artist"));
+		datas.add(new Mix("", "Noah", "Artist"));
+		datas.add(new Mix("", "Coldplay", "Artist"));
+		datas.add(new Mix("", "Oasis", "Artist"));
+		datas.add(new Mix("", "Taylor Swift", "Artist"));
+		datas.add(new Mix("", "Green Day", "Artist"));
+		datas.add(new Mix("", "Iwan Fals", "Artist"));
+		datas.add(new Mix("", "Zedd", "Artist"));
+		datas.add(new Mix("", "Raisa", "Artist"));
+		datas.add(new Mix("", "Daft Punk", "Artist"));
+		datas.add(new Mix("", "Maroon 5", "Artist"));
+		datas.add(new Mix("", "Noah", "Artist"));
+		datas.add(new Mix("", "Coldplay", "Artist"));
+		datas.add(new Mix("", "Oasis", "Artist"));
+		datas.add(new Mix("", "Taylor Swift", "Artist"));
+		datas.add(new Mix("", "Green Day", "Artist"));
+		datas.add(new Mix("", "Iwan Fals", "Artist"));
+		datas.add(new Mix("", "Zedd", "Artist"));
 		return datas;
 	}
 

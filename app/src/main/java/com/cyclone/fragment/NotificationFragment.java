@@ -64,6 +64,16 @@ public class NotificationFragment extends RecyclerFragment {
 
 	}
 
+	@Override
+	public int getSlidingLayoutId() {
+		return 0;
+	}
+
+	@Override
+	public void prepareSlidingMenu(View v) {
+
+	}
+
 	public List<Object> parse(String json){
 		List<Object> datas = new ArrayList<>();
 		datas.add(new Notification("", "<b>Ivan</b>: checkout the <b>playlist</b>! Morning SunShine <b>Play</b>", "32 " +

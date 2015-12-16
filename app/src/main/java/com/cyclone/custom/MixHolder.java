@@ -1,7 +1,6 @@
 package com.cyclone.custom;
 
 import android.app.Activity;
-import android.media.Image;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,6 +28,11 @@ public class MixHolder extends UniversalHolder {
 	public void bind(Object object, Activity activity, int position) {
 		bind((Mix) object);
 	}
+
+	/*@Override
+	public void bind(Object object, Activity activity, int position) {
+		bind((Mix) object);
+	}*/
 
 	public void bind(final Mix mix){
 		imgCover.setImageResource(R.drawable.wallpaper);
@@ -63,9 +67,9 @@ public class MixHolder extends UniversalHolder {
 	}
 
 	public void addRecommend(int curPosition){
-		adapter.datas.add(curPosition + 1, new Mix("", "Test"));
-		adapter.datas.add(curPosition + 2, new Mix("", "Test2"));
-		adapter.datas.add(curPosition + 3, new Mix("", "Test3"));
+		adapter.datas.add(curPosition + 1, new Mix("", "Test", ""));
+		adapter.datas.add(curPosition + 2, new Mix("", "Test2", ""));
+		adapter.datas.add(curPosition + 3, new Mix("", "Test3", ""));
 		adapter.notifyItemInserted(curPosition + 1);
 		adapter.notifyItemInserted(curPosition + 2);
 		adapter.notifyItemInserted(curPosition + 3);

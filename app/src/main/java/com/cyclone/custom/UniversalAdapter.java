@@ -2,6 +2,7 @@ package com.cyclone.custom;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView.Adapter;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +19,12 @@ import com.cyclone.model.Notification;
 import com.cyclone.model.Person;
 import com.cyclone.model.Post;
 import com.cyclone.model.Program;
-import com.cyclone.model.Queue;
 import com.cyclone.model.ProgramContent;
 import com.cyclone.model.ProgramPager;
+import com.cyclone.model.Queue;
 import com.cyclone.model.Request;
 import com.cyclone.model.RunningProgram;
 import com.cyclone.model.Section;
-import com.cyclone.model.Section2;
 import com.cyclone.model.Song;
 import com.cyclone.model.SubcategoryItem;
 
@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * Created by gilang on 01/11/2015.
  */
-public class UniversalAdapter extends Adapter<UniversalHolder> {
+public class UniversalAdapter extends Adapter<UniversalHolder>{
 
 	public static final int TYPE_ANNOUNCER = 101;
 	public static final int TYPE_CLUB_FEED = 102;
@@ -54,15 +54,17 @@ public class UniversalAdapter extends Adapter<UniversalHolder> {
 	public static final int TYPE_SUBCATEGORY_ITEM = 116;
 	public static final int TYPE_MIXES = 117;
 	public static final int TYPE_MIX = 118;
-	public static final int TYPE_SECTION_2 = 119;
-	public static final int TYPE_COMMENT = 120;
+	public static final int TYPE_COMMENT = 119;
 
 	public List<Object> datas;
+	private SparseBooleanArray selectedItems;
 	private Activity activity;
+
 
 	public UniversalAdapter(Activity activity){
 		datas = new ArrayList<>();
 		this.activity = activity;
+		selectedItems = new SparseBooleanArray();
 	}
 
 	public void add(Object o){
@@ -82,6 +84,7 @@ public class UniversalAdapter extends Adapter<UniversalHolder> {
 	@Override
 	public void onBindViewHolder(UniversalHolder holder, int position) {
 		holder.bind(datas.get(position), activity, position);
+		holder.setSelected(isSelected(position));
 	}
 
 	@Override
@@ -110,7 +113,6 @@ public class UniversalAdapter extends Adapter<UniversalHolder> {
 		else if(o instanceof SubcategoryItem) return TYPE_SUBCATEGORY_ITEM;
 		else if(o instanceof Mixes) return TYPE_MIXES;
 		else if(o instanceof Mix) return TYPE_MIX;
-		else if(o instanceof Section2) return TYPE_SECTION_2;
 		else if(o instanceof Comment) return TYPE_COMMENT;
 		return -1;
 	}
@@ -135,7 +137,6 @@ public class UniversalAdapter extends Adapter<UniversalHolder> {
 			case TYPE_SUBCATEGORY_ITEM: return R.layout.card_subcategory_item;
 			case TYPE_MIXES: return R.layout.card_contents;
 			case TYPE_MIX: return R.layout.card_mix;
-			case TYPE_SECTION_2: return R.layout.card_section_2;
 			case TYPE_COMMENT: return R.layout.card_comment;
 			default: return -1;
 		}
@@ -162,9 +163,42 @@ public class UniversalAdapter extends Adapter<UniversalHolder> {
 			case TYPE_SUBCATEGORY_ITEM: holder = new SubcategoryHolder(v, activity, this); break;
 			case TYPE_MIXES: holder = new MixesHolder(v, activity, this); break;
 			case TYPE_MIX: holder = new MixHolder(v, activity, this); break;
-			case TYPE_SECTION_2: holder = new Section2Holder(v, activity, this); break;
 			case TYPE_COMMENT: holder = new CommentHolder(v, activity, this); break;
 		}
 		return holder;
 	}
+
+	public boolean isSelected(int position){
+		return getSelectedItems().contains(position);
+	}
+
+	public List<Integer> getSelectedItems(){
+		List<Integer> items = new ArrayList<>(selectedItems.size());
+		for (int i = 0; i < selectedItems.size(); ++i) {
+			items.add(selectedItems.keyAt(i));
+		}
+		return items;
+	}
+
+	public void toggleSelect(int position){
+		if(selectedItems.get(position, false)){
+			selectedItems.delete(position);
+		}else{
+			selectedItems.put(position, true);
+		}
+		notifyItemChanged(position);
+	}
+
+	public void clearSelection() {
+		List<Integer> selection = getSelectedItems();
+		selectedItems.clear();
+		for (Integer i : selection) {
+			notifyItemChanged(i);
+		}
+	}
+
+	public int getSelectedItemCount() {
+		return selectedItems.size();
+	}
+
 }

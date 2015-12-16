@@ -75,15 +75,36 @@ public class PersonProfileFragment extends RecyclerFragment{
 		setupHeader(v, "");
 	}
 
+	@Override
+	public int getSlidingLayoutId() {
+		return 0;
+	}
+
+	@Override
+	public void prepareSlidingMenu(View v) {
+
+	}
+
 	public List<Object> parse(String json){
 		List<Object> datas = new ArrayList<>();
-		datas.add(new Post(R.drawable.aaa_darto, "<b>Imam Darto</b> created new <b>Mix</b>", "1 Hour ago", "Mix",
-				R.drawable.aaa_klub_funky, "Funky Sunshine", "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST, false));
-		datas.add(new Post(R.drawable.aaa_desta, "<b>Desta</b> liked a Playlist", "2 Hour ago", "Playlist",
-				R.drawable.aaa_klub_funky, "Mix Max", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST, false));
-		datas.add(new Post(R.drawable.aaa_dimas_danang, "<b>Dimas Danang</b> created new <b>Playlist</b>", "4 Hour ago",
-				"Playlist", R.drawable.aaa_klub_cover_hey, "Cover - Hey", "2015 top hits", "20 tracks", 1024, 56, Post
+		datas.add(new Post("", "<b>Imam Darto</b> created new <b>Mix</b>", "1 Hour ago", "Mix",
+				"", "Funky Sunshine", "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST, false));
+		datas.add(new Post("", "<b>Desta</b> liked a Playlist", "2 Hour ago", "Playlist",
+				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST, false));
+		datas.add(new Post("", "<b>Desta</b> created new <b>Playlist</b>", "4 Hour ago",
+				"Playlist", "", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post
 				.TYPE_POST, false));
+		datas.add(new Post("", "<b>Desta</b> shared a <b>Playlist</b>", "4 Hour ago", "Playlist",
+				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST, false));
+		datas.add(new Post("", "<b>Imam Darto</b> created new <b>Mix</b>", "1 Hour ago", "Mix",
+				"", "Funky Sunshine", "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST, false));
+		datas.add(new Post("", "<b>Desta</b> liked a Playlist", "2 Hour ago", "Playlist",
+				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST, false));
+		datas.add(new Post("", "<b>Desta</b> created new <b>Playlist</b>", "4 Hour ago",
+				"Playlist", "", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post
+				.TYPE_POST, false));
+		datas.add(new Post("", "<b>Desta</b> shared a <b>Playlist</b>", "4 Hour ago", "Playlist",
+				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST, false));
 		return datas;
 	}
 
@@ -124,8 +145,7 @@ public class PersonProfileFragment extends RecyclerFragment{
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(getContext(), DrawerActivity.class);
-				i.putExtra("layout", DrawerActivity.LAYOUT_FEED);
-				i.putExtra("activity", R.layout.activity_drawer_standard);
+				i.putExtra("fragmentType", DrawerActivity.FRAGMENT_FEED);
 				i.putExtra("title", "Showlist");
 				startActivity(i);
 			}
@@ -134,8 +154,7 @@ public class PersonProfileFragment extends RecyclerFragment{
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(getContext(), DrawerActivity.class);
-				i.putExtra("layout", DrawerActivity.LAYOUT_FEED);
-				i.putExtra("activity", R.layout.activity_drawer_standard);
+				i.putExtra("fragmentType", DrawerActivity.FRAGMENT_FEED);
 				i.putExtra("title", "Content");
 				startActivity(i);
 			}
@@ -144,8 +163,7 @@ public class PersonProfileFragment extends RecyclerFragment{
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(getContext(), DrawerActivity.class);
-				i.putExtra("layout", DrawerActivity.LAYOUT_PEOPLE);
-				i.putExtra("activity", R.layout.activity_drawer_standard);
+				i.putExtra("fragmentType", DrawerActivity.FRAGMENT_PEOPLE);
 				i.putExtra("title", "Follower");
 				startActivity(i);
 			}
@@ -154,8 +172,7 @@ public class PersonProfileFragment extends RecyclerFragment{
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(getContext(), DrawerActivity.class);
-				i.putExtra("layout", DrawerActivity.LAYOUT_PEOPLE);
-				i.putExtra("activity", R.layout.activity_drawer_standard);
+				i.putExtra("fragmentType", DrawerActivity.FRAGMENT_PEOPLE);
 				i.putExtra("title", "Following");
 				startActivity(i);
 			}
@@ -171,16 +188,18 @@ public class PersonProfileFragment extends RecyclerFragment{
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
 								Intent i = new Intent(activity, DrawerActivity.class);
-								i.putExtra("title", "Add a mix");
-								i.putExtra("activity", R.layout.activity_drawer_standard);
-								i.putExtra("layout", MasterActivity.LAYOUT_ADD_MIX);
+								i.putExtra("title", "Create New Mix");
+								i.putExtra("fragmentType", MasterActivity.FRAGMENT_ADD_MIX_FORM);
 								activity.startActivity(i);
 							}
 						})
 						.setNegativeButton("Add a playlist", new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
-
+								Intent i = new Intent(activity, DrawerActivity.class);
+								i.putExtra("title", "Create New Playlist");
+								i.putExtra("fragmentType", MasterActivity.FRAGMENT_ADD_PLAYLIST_FORM);
+								activity.startActivity(i);
 							}
 						});
 				builder.create().show();
@@ -190,7 +209,10 @@ public class PersonProfileFragment extends RecyclerFragment{
 		btnUpload.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(activity, "Upload button pressed", Toast.LENGTH_SHORT).show();
+				Intent i = new Intent(activity, DrawerActivity.class);
+				i.putExtra("fragmentType", MasterActivity.FRAGMENT_UPLOAD);
+				i.putExtra("title", "Upload New Content");
+				startActivity(i);
 			}
 		});
 
@@ -200,7 +222,6 @@ public class PersonProfileFragment extends RecyclerFragment{
 				Toast.makeText(activity, "Follow button pressed", Toast.LENGTH_SHORT).show();
 			}
 		});
-
 
 //		txtContent.setText("");
 //		txtShowlist.setText("");

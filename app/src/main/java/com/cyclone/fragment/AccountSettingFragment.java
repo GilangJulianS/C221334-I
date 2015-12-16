@@ -22,7 +22,7 @@ public class AccountSettingFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
-		View v = inflater.inflate(R.layout.fragment_account_settings, parent, false);
+		View v = inflater.inflate(R.layout.fragment_setting_account, parent, false);
 		return v;
 	}
 

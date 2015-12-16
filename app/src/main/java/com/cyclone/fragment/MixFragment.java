@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.cyclone.DrawerActivity;
@@ -12,7 +11,7 @@ import com.cyclone.MasterActivity;
 import com.cyclone.R;
 import com.cyclone.model.Mix;
 import com.cyclone.model.Mixes;
-import com.cyclone.model.Section2;
+import com.cyclone.model.Section;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +59,16 @@ public class MixFragment extends RecyclerFragment {
 		bindHeader(v);
 	}
 
+	@Override
+	public int getSlidingLayoutId() {
+		return R.layout.menu_mix;
+	}
+
+	@Override
+	public void prepareSlidingMenu(View v) {
+
+	}
+
 	public void bindHeader(View v){
 		ViewGroup groupLikes = (ViewGroup) v.findViewById(R.id.group_likes);
 		ViewGroup groupComments = (ViewGroup) v.findViewById(R.id.group_comments);
@@ -69,8 +78,7 @@ public class MixFragment extends RecyclerFragment {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(activity, DrawerActivity.class);
-				i.putExtra("activity", R.layout.activity_drawer_standard);
-				i.putExtra("layout", MasterActivity.LAYOUT_PEOPLE);
+				i.putExtra("fragmentType", MasterActivity.FRAGMENT_PEOPLE);
 				i.putExtra("title", "Likes");
 				startActivity(i);
 			}
@@ -80,8 +88,7 @@ public class MixFragment extends RecyclerFragment {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(activity, DrawerActivity.class);
-				i.putExtra("activity", R.layout.activity_drawer_standard);
-				i.putExtra("layout", MasterActivity.LAYOUT_COMMENT);
+				i.putExtra("fragmentType", MasterActivity.FRAGMENT_COMMENT);
 				i.putExtra("title", "Comments");
 				startActivity(i);
 			}
@@ -91,7 +98,7 @@ public class MixFragment extends RecyclerFragment {
 		btnMenu.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-
+				slidingLayer.openLayer(true);
 			}
 		});
 	}
@@ -101,24 +108,24 @@ public class MixFragment extends RecyclerFragment {
 		List<Mix> mixList;
 		Mixes mixes;
 
-		datas.add(new Section2("Genre", "genre"));
+		datas.add(new Section("Genre", "genre", Section.TYPE_TRANSPARENT, MasterActivity.FRAGMENT_GRID_MIX));
 		mixList = new ArrayList<>();
-		mixList.add(new Mix("", "Pop"));
-		mixList.add(new Mix("", "Electronic"));
+		mixList.add(new Mix("", "Pop", "Genre"));
+		mixList.add(new Mix("", "Electronic", "Genre"));
 		mixes = new Mixes(mixList);
 		datas.add(mixes);
 
-		datas.add(new Section2("Artist", "artist"));
+		datas.add(new Section("Artist", "artist", Section.TYPE_TRANSPARENT, MasterActivity.FRAGMENT_GRID_MIX));
 		mixList = new ArrayList<>();
-		mixList.add(new Mix("", "Raisa"));
-		mixList.add(new Mix("", "Daft Punk"));
-		mixList.add(new Mix("", "Maroon 5"));
+		mixList.add(new Mix("", "Raisa", "Artist"));
+		mixList.add(new Mix("", "Daft Punk", "Artist"));
+		mixList.add(new Mix("", "Maroon 5", "Artist"));
 		mixes = new Mixes(mixList);
 		datas.add(mixes);
 
-		datas.add(new Section2("Radio Content", "content"));
+		datas.add(new Section("Radio Content", "content", Section.TYPE_TRANSPARENT, MasterActivity.FRAGMENT_GRID_MIX));
 		mixList = new ArrayList<>();
-		mixList.add(new Mix("", "News"));
+		mixList.add(new Mix("", "News", "Radio Content"));
 		mixes = new Mixes(mixList);
 		datas.add(mixes);
 

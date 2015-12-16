@@ -54,15 +54,15 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
 
 	@Override
 	public void onBindViewHolder(ViewHolder holder, int position) {
+		final int pos = position;
 		holder.imgIcon.setImageResource(icons.get(position));
 		holder.txtMenu.setText(menus.get(position));
 		holder.card.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(context, DrawerActivity.class);
-				i.putExtra("title", "Account Settings");
-				i.putExtra("activity", R.layout.activity_drawer_standard);
-				i.putExtra("layout", DrawerActivity.LAYOUT_ACCOUNT_SETTINGS);
+				i.putExtra("title", getTitle(pos));
+				i.putExtra("fragmentType", getLayout(pos));
 				activity.startActivity(i);
 			}
 		});
@@ -71,6 +71,26 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
 	@Override
 	public int getItemCount() {
 		return menus.size();
+	}
+
+	public int getLayout(int position){
+		switch (position){
+			case 0: return DrawerActivity.FRAGMENT_APP_SETTINGS;
+			case 1: return DrawerActivity.FRAGMENT_ACCOUNT_SETTINGS;
+			case 2: return DrawerActivity.FRAGMENT_NOTIFICATION_SETTINGS;
+			case 5: return DrawerActivity.FRAGMENT_ABOUT;
+		}
+		return DrawerActivity.FRAGMENT_ACCOUNT_SETTINGS;
+	}
+
+	public String getTitle(int position){
+		switch (position){
+			case 0: return "App Settings";
+			case 1: return "Account Settings";
+			case 2: return "Notification Settings";
+			case 5: return "About";
+		}
+		return "Account Settings";
 	}
 
 	public class ViewHolder extends RecyclerView.ViewHolder{

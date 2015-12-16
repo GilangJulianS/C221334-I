@@ -22,4 +22,5 @@ package com.cyclone.player.interfaces;
 
 public interface ISortable {
     public void sortBy(int sortby);
+    public int sortDirection(int sortby);
 }

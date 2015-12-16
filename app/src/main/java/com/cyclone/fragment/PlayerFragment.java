@@ -1,26 +1,26 @@
 package com.cyclone.fragment;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.RequiresPermission;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.graphics.Palette;
-import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
@@ -32,34 +32,24 @@ import android.widget.TextView;
 import com.cyclone.DrawerActivity;
 import com.cyclone.R;
 import com.cyclone.model.Queue;
-import com.cyclone.player.MediaDatabase;
-import com.cyclone.player.audio.AudioServiceController;
-import com.cyclone.player.audio.RepeatType;
-import com.cyclone.player.interfaces.IAudioPlayer;
+import com.cyclone.player.PlaybackService;
+import com.cyclone.player.VLCApplication;
+import com.cyclone.player.gui.PlaybackServiceRecyclerFragment;
+import com.cyclone.player.interfaces.updateCoverFromUrl;
+import com.cyclone.player.media.MediaWrapper;
+import com.cyclone.player.media.MediaWrapperList;
 import com.cyclone.player.util.Strings;
-import com.cyclone.player.util.VLCInstance;
-import com.wunderlist.slidinglayer.SlidingLayer;
 
-import org.videolan.libvlc.LibVlcException;
 import org.videolan.libvlc.Media;
-import org.videolan.libvlc.MediaList;
+import org.videolan.libvlc.MediaPlayer;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by gilang on 29/10/2015.
  */
-public class PlayerFragment extends RecyclerFragment implements IAudioPlayer {
-
-	private String mFilePath = "http://stream.suararadio.com/bloom-mae.mp3";
-	private String mFilePath2 = "http://stream.suararadio.com/the-ballad-of-distant-love.mp3";
-	private String mFilePath3 = "http://stream.suararadio.com/the-balloonist.mp3";
-	private String mFilePath4 = "http://stream.suararadio.com/the-knife.mp3";
-	private String mFilePath5 = "http://stream.suararadio.com/this-bed.mp3";
-	private String mFilePath6 = "http://stream.suararadio.com/took-my-soul.mp3";
+public class PlayerFragment extends PlaybackServiceRecyclerFragment implements PlaybackService.Callback, updateCoverFromUrl {
 
 	public static final int STATE_PLAYING = 100;
 	public static final int STATE_STOP = 101;
@@ -70,18 +60,10 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer {
 	private ViewGroup btnArtist, btnAlbum;
 	private ImageView imgCover, imgTemp;
 	private View minimizedPlayer;
-	private TextView txtTitle, txtArtist, txtTotalTime, txtCurTimePlaying;
-	private SlidingLayer slidingLayer;
-	private SwipeRefreshLayout swipeLayout;
-	private SeekBar seekBar;
-
-	private RecyclerView recyclerView;
-	private Activity mactivity;
-
-	private AudioServiceController mAudioController;
-	private boolean mShowRemainingTime = false;
-
-
+	private TextView txtTitle, txtArtist, txtTotalTime, txtCurTime;
+	private SeekBar seekbar;
+	private boolean mPreviewingSeek = false;
+	public static PlayerFragment playerFragment = null;
 	public PlayerFragment(){}
 
 	public static PlayerFragment newInstance(String json){
@@ -98,33 +80,7 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer {
 	@Override
 	public void onCreateView(View v, ViewGroup parent, Bundle savedInstanceState) {
 		setHasOptionsMenu(true);
-	}
-
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		mAudioController = AudioServiceController.getInstance();
-		mAudioController.bindAudioService(getContext());
-
-		mactivity = getActivity();
-
-		getActivity().setVolumeControlStream(AudioManager.STREAM_MUSIC);
-		/*try {
-			mLibVLC = VLCInstance.getLibVlcInstance();
-		} catch (LibVlcException e) {
-			e.printStackTrace();
-		}*/
-
-
-
-		//List<String> mediaLocation = new ArrayList<String>();
-		//mediaLocation.add(mFilePath);
-		//mAudioController.load(mediaLocation, 0);
-
-		//MediaDatabase mdb = MediaDatabase.getInstance();
-		//System.out.println(""+mdb.getMedia(mFilePath).getTitle());
-		//loadFromDB();
-		setupHandler();
+		 playerFragment = new PlayerFragment();
 	}
 
 	@Override
@@ -152,9 +108,39 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer {
 		persistentDatas = parse(json);
 		minimizedPlayer = activity.findViewById(R.id.minimized_player);
 		minimizedPlayer.setVisibility(View.GONE);
-		setPlayerColor();
-		update();
 
+		if (mService != null)
+			changeImage();
+	}
+
+	@Override
+	public int getSlidingLayoutId() {
+		return R.layout.menu_song;
+	}
+
+	@Override
+	public void prepareSlidingMenu(View v) {
+		btnArtist = (ViewGroup) v.findViewById(R.id.btn_artist);
+		btnAlbum = (ViewGroup) v.findViewById(R.id.btn_album);
+		btnArtist.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(activity, DrawerActivity.class);
+				i.putExtra("fragmentType", DrawerActivity.FRAGMENT_ARTIST);
+				i.putExtra("title", "Artist Name");
+				activity.startActivity(i);
+			}
+		});
+
+		btnAlbum.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(activity, DrawerActivity.class);
+				i.putExtra("fragmentType", DrawerActivity.FRAGMENT_ALBUM);
+				i.putExtra("title", "Album Name");
+				activity.startActivity(i);
+			}
+		});
 	}
 
 	@Override
@@ -162,26 +148,6 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer {
 		inflater.inflate(R.menu.player, menu);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
-
-	@Override
-	public void onPause() {
-		super.onPause();
-		handler.removeCallbacks(sendToUi);
-	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		handler.removeCallbacks(sendToUi);
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
-		update();
-		setupHandler();
-	}
-
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -201,21 +167,18 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer {
 		txtTitle = (TextView) v.findViewById(R.id.txt_title);
 		txtArtist = (TextView) v.findViewById(R.id.txt_artist);
 		txtTotalTime = (TextView) v.findViewById(R.id.txt_total_time);
+		txtCurTime = (TextView) v.findViewById(R.id.txt_elapsed_time);
 		groupInfo = (ViewGroup) v.findViewById(R.id.group_player_info);
 		groupControl = (ViewGroup) v.findViewById(R.id.group_player_control);
 		imgCover = (ImageView) v.findViewById(R.id.img_cover);
 		imgTemp = (ImageView) v.findViewById(R.id.img_temp);
-		slidingLayer = (SlidingLayer) v.findViewById(R.id.sliding_layer);
 		btnMenu = (ImageButton) v.findViewById(R.id.btn_menu);
-		btnArtist = (ViewGroup) v.findViewById(R.id.btn_artist);
-		btnAlbum = (ViewGroup) v.findViewById(R.id.btn_album);
-		seekBar = (SeekBar) v.findViewById(R.id.seekbar);
-		txtCurTimePlaying = (TextView) v.findViewById(R.id.txt_elapsed_time);
+		seekbar = (SeekBar) v.findViewById(R.id.seekbar);
 
 		if(state == STATE_PLAYING)
 			btnPlay.setImageResource(R.drawable.ic_pause_white_48dp);
 
-		seekBar.setPadding(0, 0, 0, 0);
+		seekbar.setPadding(0, 0, 0, 0);
 
 		btnPlay.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -233,6 +196,16 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer {
 				editor.putInt("state", state);
 				editor.commit();*/
 				onPlayPauseClick(v);
+
+
+			}
+		});
+
+		btnPlay.setOnLongClickListener(new View.OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				onStopClick(v);
+				return true;
 			}
 		});
 
@@ -293,6 +266,7 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer {
 				txtArtist.setText(p.artist);
 				txtTotalTime.setText(p.duration);
 				counter++;*/
+
 				onNextClick(v);
 			}
 		});
@@ -316,6 +290,7 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer {
 				txtArtist.setText(p.artist);
 				txtTotalTime.setText(p.duration);
 				counter++;*/
+
 				onPreviousClick(v);
 			}
 		});
@@ -337,7 +312,7 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(activity, DrawerActivity.class);
-				i.putExtra("layout", DrawerActivity.LAYOUT_ARTIST);
+				i.putExtra("fragmentType", DrawerActivity.FRAGMENT_ARTIST);
 				i.putExtra("title", "Artist Name");
 				activity.startActivity(i);
 			}
@@ -347,7 +322,7 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(activity, DrawerActivity.class);
-				i.putExtra("layout", DrawerActivity.LAYOUT_ALBUM);
+				i.putExtra("fragmentType", DrawerActivity.FRAGMENT_ALBUM);
 				i.putExtra("title", "Album Name");
 				activity.startActivity(i);
 			}
@@ -355,218 +330,288 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer {
 	}
 
 	public void setPlayerColor(){
-		Bitmap bitmap = ((BitmapDrawable)imgCover.getDrawable()).getBitmap();
-		Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+		try{
+			Bitmap bitmap = ((BitmapDrawable)imgCover.getDrawable()).getBitmap();
+			Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
 
-			@Override
-			public void onGenerated(Palette palette) {
-				int color = ContextCompat.getColor(getContext(), R.color.colorPrimaryDark);
-				color = palette.getDarkVibrantColor(color);
-				int r = (color >> 16) & 0xFF;
-				int g = (color >> 8) & 0xFF;
-				int b = (color >> 0) & 0xFF;
-				System.out.println("RGB : " + r + " " + g + " " + b);
-				r += 50;
-				g += 50;
-				b += 50;
-				System.out.println("RGB : " + r + " " + g + " " + b);
-				if (r > 255)
-					r = 255;
-				if (g > 255)
-					g = 255;
-				if (b > 255)
-					b = 255;
-				int lightColor = Color.rgb(r, g, b);
-				groupInfo.setBackgroundColor(color);
-				groupControl.setBackgroundColor(lightColor);
-			}
-		});
+				@Override
+				public void onGenerated(Palette palette) {
+					int color = ContextCompat.getColor(getContext(), R.color.colorPrimaryDark);
+					color = palette.getDarkVibrantColor(color);
+					int r = (color >> 16) & 0xFF;
+					int g = (color >> 8) & 0xFF;
+					int b = (color >> 0) & 0xFF;
+					System.out.println("RGB : " + r + " " + g + " " + b);
+					r += 50;
+					g += 50;
+					b += 50;
+					System.out.println("RGB : " + r + " " + g + " " + b);
+					if (r > 255)
+						r = 255;
+					if (g > 255)
+						g = 255;
+					if (b > 255)
+						b = 255;
+					int lightColor = Color.rgb(r, g, b);
+					groupInfo.setBackgroundColor(color);
+					groupControl.setBackgroundColor(lightColor);
+				}
+			});
+		}catch (Exception e){}
+
 	}
 
 	public List<Object> parse(String json){
 		List<Object> playlists = new ArrayList<>();
-		/*playlists.add(new Queue("The Celestials", "The Smashing Pumpkins", "03:20"));
-		playlists.add(new Queue("Track 5 of 30 Playlist", "Morning Songs", "1:08:20"));
-		playlists.add(new Queue("Drones", "Muse", "05:45"));
-		playlists.add(new Queue("Extraordinary", "Clean Bandit", "04:48"));
-		playlists.add(new Queue("Heart Like Yours", "Willamette Willamette Willamette", "03:15"));
-		playlists.add(new Queue("The Celestials", "The Smashing Pumpkins", "03:20"));
-		playlists.add(new Queue("Track 5 of 30 Playlist", "Morning Songs", "1:08:20"));
-		playlists.add(new Queue("Drones", "Muse", "05:45"));
-		playlists.add(new Queue("Extraordinary", "Clean Bandit", "04:48"));
-		playlists.add(new Queue("Heart Like Yours", "Willamette Willamette Willamette", "03:15"));
-		playlists.add(new Queue("The Celestials", "The Smashing Pumpkins", "03:20"));
-		playlists.add(new Queue("Track 5 of 30 Playlist", "Morning Songs", "1:08:20"));
-		playlists.add(new Queue("Drones", "Muse", "05:45"));
-		playlists.add(new Queue("Extraordinary", "Clean Bandit", "04:48"));
-		playlists.add(new Queue("Heart Like Yours", "Willamette Willamette Willamette", "03:15"));
-		playlists.add(new Queue("The Celestials", "The Smashing Pumpkins", "03:20"));
-		playlists.add(new Queue("Track 5 of 30 Playlist", "Morning Songs", "1:08:20"));
-		playlists.add(new Queue("Drones", "Muse", "05:45"));
-		playlists.add(new Queue("Extraordinary", "Clean Bandit", "04:48"));
-		playlists.add(new Queue("Heart Like Yours", "Willamette Willamette Willamette", "03:15"));
-		playlists.add(new Queue("The Celestials", "The Smashing Pumpkins", "03:20"));
-		playlists.add(new Queue("Track 5 of 30 Playlist", "Morning Songs", "1:08:20"));
-		playlists.add(new Queue("Drones", "Muse", "05:45"));
-		playlists.add(new Queue("Extraordinary", "Clean Bandit", "04:48"));
-		playlists.add(new Queue("Heart Like Yours", "Willamette Willamette Willamette", "03:15"));*/
+		/*playlists.add(new Queue("The Celestials", "The Smashing Pumpkins", "03:20",0));
+		playlists.add(new Queue("Track 5 of 30 Playlist", "Morning Songs", "1:08:20",1));
+		playlists.add(new Queue("Drones", "Muse", "05:45",2));
+		playlists.add(new Queue("Extraordinary", "Clean Bandit", "04:48",3));
+		playlists.add(new Queue("Heart Like Yours", "Willamette Willamette Willamette", "03:15",4));
+		playlists.add(new Queue("The Celestials", "The Smashing Pumpkins", "03:20",5));
+		playlists.add(new Queue("Track 5 of 30 Playlist", "Morning Songs", "1:08:20",6));
+		playlists.add(new Queue("Drones", "Muse", "05:45",7));
+		playlists.add(new Queue("Extraordinary", "Clean Bandit", "04:48",8));
+		playlists.add(new Queue("Heart Like Yours", "Willamette Willamette Willamette", "03:15",9));
+		playlists.add(new Queue("The Celestials", "The Smashing Pumpkins", "03:20",10));
+		playlists.add(new Queue("Track 5 of 30 Playlist", "Morning Songs", "1:08:20",11));
+		playlists.add(new Queue("Drones", "Muse", "05:45",12));
+		playlists.add(new Queue("Extraordinary", "Clean Bandit", "04:48",13));
+		playlists.add(new Queue("Heart Like Yours", "Willamette Willamette Willamette", "03:15",14));
+		playlists.add(new Queue("The Celestials", "The Smashing Pumpkins", "03:20",15));
+		playlists.add(new Queue("Track 5 of 30 Playlist", "Morning Songs", "1:08:20",16));
+		playlists.add(new Queue("Drones", "Muse", "05:45",17));
+		playlists.add(new Queue("Extraordinary", "Clean Bandit", "04:48",18));
+		playlists.add(new Queue("Heart Like Yours", "Willamette Willamette Willamette", "03:15",19));
+		playlists.add(new Queue("The Celestials", "The Smashing Pumpkins", "03:20",20));
+		playlists.add(new Queue("Track 5 of 30 Playlist", "Morning Songs", "1:08:20",21));
+		playlists.add(new Queue("Drones", "Muse", "05:45",22));
+		playlists.add(new Queue("Extraordinary", "Clean Bandit", "04:48",23));
+		playlists.add(new Queue("Heart Like Yours", "Willamette Willamette Willamette", "03:15",24));*/
+		MediaWrapperList mediaWrapperList;
 
+		MediaWrapper mediaWrapper;
+		if(mService != null){
+			mediaWrapperList = mService.getMediaList();
 
-		MediaList mList = null;
-		try {
-			mList = VLCInstance.getLibVlcInstance().getMediaList();
-		} catch (LibVlcException e) {
-			e.printStackTrace();
+			for(int i = 0; i< mediaWrapperList.size(); i++){
+				mediaWrapper = mediaWrapperList.getMedia(i);
+				playlists.add(new Queue(mediaWrapper.getTitle(), mediaWrapper.getArtist(), Strings.millisToString(mediaWrapper.getLength()), i));
+				System.out.println("tampil di queue : "+mediaWrapper.getTitle());
+			}
 		}
-
-		for (int i = 0 ; i < mList.size(); i++){
-			Media md = mList.getMedia(i);
-			playlists.add(new Queue(md.getArtist(), md.getTitle(),""+md.getLength()));
-		}
-
 		return playlists;
 	}
 
 	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 	public void showImage(final View v){
 
-		// get the center for the clipping circle
-		int cx = v.getWidth() / 2;
-		int cy = v.getHeight() / 2;
-		// get the final radius for the clipping circle
-		int finalRadius = Math.max(v.getWidth(), v.getHeight());
 		try{
+			int cx = v.getWidth() / 2;
+			int cy = v.getHeight() / 2;
+
+			// get the final radius for the clipping circle
+			int finalRadius = Math.max(v.getWidth(), v.getHeight());
+
 			// create the animator for this view (the start radius is zero)
-			Animator anim = ViewAnimationUtils.createCircularReveal(v, cx, cy, 0, finalRadius);
+			Animator anim =
+					ViewAnimationUtils.createCircularReveal(v, cx, cy, 0, finalRadius);
 
 			// make the view visible and start the animation
 			v.setVisibility(View.VISIBLE);
 			anim.start();
-		}catch (Exception e){}
-	}
+		}
+		catch (Exception e){
 
-	public static void klikItem(String title){
-		System.out.println("kliked :" + title);
+		}
+
+		// get the center for the clipping circle
+
 	}
 
 	@Override
-	public synchronized void update() {
-
-		if (mAudioController == null)
+	public void update() {
+		if (mService == null || getActivity() == null)
 			return;
 
-		if (mAudioController.hasMedia()) {
-			show();
+		/*if (mService.hasMedia() && !mService.isVideoPlaying()) {
+			SharedPreferences mSettings= PreferenceManager.getDefaultSharedPreferences(getActivity());
+			if (mSettings.getBoolean(PreferencesActivity.VIDEO_RESTORE, false)){
+				Util.commitPreferences(mSettings.edit().putBoolean(PreferencesActivity.VIDEO_RESTORE, false));
+				mService.switchToVideo();
+				return;
+			} else
+				show();
 		} else {
 			hide();
 			return;
 		}
-		changeCover();
-		//mHeaderMediaSwitcher.updateMedia();
-		//mCoverMediaSwitcher.updateMedia();
+
+		mHeaderMediaSwitcher.updateMedia(mService);
+		mCoverMediaSwitcher.updateMedia(mService);*/
 
 		FragmentActivity act = getActivity();
+		//mResumeToVideo.setVisibility(mService.getVideoTracksCount() > 0 ? View.VISIBLE : View.GONE);
 
-		if (mAudioController.isPlaying()) {
+		if (mService.isPlaying()) {
+			//btnPlay.setImageResource(UiTools.getResourceFromAttribute(act, R.attr.ic_pause));
 			btnPlay.setImageResource(R.drawable.ic_pause_white_48dp);
 			btnPlay.setContentDescription(getString(R.string.pause));
-
+			//mHeaderPlayPause.setImageResource(UiTools.getResourceFromAttribute(act, R.attr.ic_pause));
+			//mHeaderPlayPause.setContentDescription(getString(R.string.pause));
 		} else {
+			//btnPlay.setImageResource(UiTools.getResourceFromAttribute(act, R.attr.ic_play));
 			btnPlay.setImageResource(R.drawable.ic_play_arrow_white_48dp);
 			btnPlay.setContentDescription(getString(R.string.play));
-
+			//mHeaderPlayPause.setImageResource(UiTools.getResourceFromAttribute(act, R.attr.ic_play));
+			//mHeaderPlayPause.setContentDescription(getString(R.string.play));
 		}
-		if (mAudioController.isShuffling()) {
+		if (mService.isShuffling()) {
+			//btnShuffle.setImageResource(UiTools.getResourceFromAttribute(act, R.attr.ic_shuffle_on));
 			btnShuffle.setImageResource(R.drawable.ic_shuffle_white_48dp);
 			btnShuffle.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorAccent));
+
+			//btnShuffle.setContentDescription(getResources().getString(R.string.shuffle_on));
 		} else {
+			//btnShuffle.setImageResource(UiTools.getResourceFromAttribute(act, R.attr.ic_shuffle));
 			btnShuffle.setImageResource(R.drawable.ic_shuffle_white_48dp);
-			btnShuffle.setColorFilter(ContextCompat.getColor(getContext(), R.color.white));
+			btnShuffle.setColorFilter(Color.WHITE);
+			//btnShuffle.setContentDescription(getResources().getString(R.string.shuffle));
 		}
-		switch(mAudioController.getRepeatType()) {
-			case None:
+		switch(mService.getRepeatType()) {
+			case PlaybackService.REPEAT_NONE:
+				//btnRepeat.setImageResource(UiTools.getResourceFromAttribute(act, R.attr.ic_repeat));
 				btnRepeat.setImageResource(R.drawable.ic_repeat_white_48dp);
-				btnRepeat.setColorFilter(ContextCompat.getColor(getContext(), R.color.white));
+				btnRepeat.setColorFilter(Color.WHITE);
+				//btnRepeat.setContentDescription(getResources().getString(R.string.repeat));
 				break;
-			case Once:
+			case PlaybackService.REPEAT_ONE:
+				//btnRepeat.setImageResource(UiTools.getResourceFromAttribute(act, R.attr.ic_repeat_one));
 				btnRepeat.setImageResource(R.drawable.ic_repeat_one_white_48dp);
 				btnRepeat.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorAccent));
+				//btnRepeat.setContentDescription(getResources().getString(R.string.repeat_single));
 				break;
 			default:
-			case All:
+			case PlaybackService.REPEAT_ALL:
+				//btnRepeat.setImageResource(UiTools.getResourceFromAttribute(act, R.attr.ic_repeat_on));
 				btnRepeat.setImageResource(R.drawable.ic_repeat_white_48dp);
 				btnRepeat.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorAccent));
+				//btnRepeat.setContentDescription(getResources().getString(R.string.repeat_all));
 				break;
 		}
-		if (mAudioController.hasNext())
-			btnNext.setVisibility(ImageButton.VISIBLE);
-		else
-			btnNext.setVisibility(ImageButton.INVISIBLE);
-		if (mAudioController.hasPrevious())
-			btnPrevious.setVisibility(ImageButton.VISIBLE);
-		else
-			btnPrevious.setVisibility(ImageButton.INVISIBLE);
 
-
-		try{
-			txtTitle.setText(mAudioController.getTitle());
-			txtArtist.setText(mAudioController.getArtist());
-		}
-		catch (Exception e){}
-
+		final List<String> mediaLocations = mService.getMediaLocations();
+		//mShuffle.setVisibility(mediaLocations != null && mediaLocations.size() > 2 ? View.VISIBLE : View.INVISIBLE);
+		seekbar.setOnSeekBarChangeListener(mTimelineListner);
 
 		updateList();
+
+		txtTitle.setText(mService.getTitle());
+		txtArtist.setText(mService.getArtist() + " - " + mService.getAlbum());
+
+		System.out.println("PLAYER UPDATE //////////////");
+
+
+
+	}
+
+	public void changeImage(){
+		try{
+			imgTemp.setImageDrawable(imgCover.getDrawable());
+			imgCover.setImageBitmap(mService.getCover());
+
+			setPlayerColor();
+			if(Build.VERSION.SDK_INT >= 21) {
+				showImage(imgCover);
+			}
+		}catch (Exception e){}
+
+
 	}
 
 	@Override
-	public synchronized void updateProgress() {
+	public void updateProgress() {
+		if (mService == null)
+			return;
+		int time = (int) mService.getTime();
+		int length = (int) mService.getLength();
 
-			/*int time = (int) mLibVLC.getTime();
-			int length = (int) mLibVLC.getLength();
+		txtCurTime.setText(Strings.millisToString(time));
+		txtTotalTime.setText(Strings.millisToString(length));
+		seekbar.setProgress(time);
+		seekbar.setMax(length);
 
-			txtCurTimePlaying.setText(Strings.millisToString(time));
-			txtTotalTime.setText(Strings.millisToString(length));
-			seekBar.setMax(length);
-			seekBar.setMax(length);*/
-
-		update();
-
-
+		/*if(!mPreviewingSeek) {
+			mTime.setText(Strings.millisToString(mShowRemainingTime ? time-length : time));
+			mTimeline.setProgress(time);
+			mProgressBar.setProgress(time);
+		}*/
 
 	}
 
-	private void updateList() {
-		/*ArrayList<Media> audioList = new ArrayList<Media>();
-		String currentItem = null;
-		int currentIndex = -1;
+	@Override
+	public void onMediaEvent(Media.Event event) {
 
-		LibVLC libVLC = LibVLC.getExistingInstance();
-		for (int i = 0; i < libVLC.getMediaList().size(); i++) {
-			audioList.add(libVLC.getMediaList().getMedia(i));
+	}
+
+	@Override
+	public void onMediaPlayerEvent(MediaPlayer.Event event) {
+		switch (event.type) {
+			case MediaPlayer.Event.Opening:
+				changeImage();
+				break;
+			case MediaPlayer.Event.Stopped:
+				//hide();
+				break;
 		}
-		currentItem = mAudioController.getCurrentMediaLocation();
+	}
 
-		//mSongsListAdapter.clear();
 
-		for (int i = 0; i < audioList.size(); i++) {
-			Media media = audioList.get(i);
-			if (currentItem != null && currentItem.equals(media.getLocation()))
-				currentIndex = i;
-			//mSongsListAdapter.add(media);
-		}*/
-		//mSongsListAdapter.setCurrentIndex(currentIndex);
-		//mSongsList.setSelection(currentIndex);
+	public void updateList() {
+		if (mService == null)
+			return;
 
-		//mSongsListAdapter.notifyDataSetChanged();
+		/*int currentIndex = -1, oldCount = mPlaylistAdapter.getItemCount();
+		if (mService == null)
+			return;
+
+		final List<MediaWrapper> previousAudioList = mPlaylistAdapter.getMedias();
+		mPlaylistAdapter.clear();
+
+		final List<MediaWrapper> audioList = mService.getMedias();
+		final String currentItem = mService.getCurrentMediaLocation();
+
+		if (audioList != null) {
+			for (int i = 0; i < audioList.size(); i++) {
+				final MediaWrapper media = audioList.get(i);
+				if (currentItem != null && currentItem.equals(media.getLocation()))
+					currentIndex = i;
+				mPlaylistAdapter.add(media);
+			}
+		}
+		mPlaylistAdapter.setCurrentIndex(currentIndex);
+		int count = mPlaylistAdapter.getItemCount();
+		if (oldCount != count)
+			mPlaylistAdapter.notifyDataSetChanged();
+		else
+			mPlaylistAdapter.notifyItemRangeChanged(0, count);
+
+		final int selectionIndex = currentIndex;
+		if (!previousAudioList.equals(audioList))
+			mSongsList.post(new Runnable() {
+				@Override
+				public void run() {
+					mPlaylistAdapter.setCurrentIndex(selectionIndex);
+				}
+			});*/
 	}
 
 	SeekBar.OnSeekBarChangeListener mTimelineListner = new SeekBar.OnSeekBarChangeListener() {
-		int pros = 0;
+
 		@Override
 		public void onStopTrackingTouch(SeekBar arg0) {
 			// TODO Auto-generated method stub
-			mAudioController.setTime(pros);
-			txtCurTimePlaying.setText(Strings.millisToString(mShowRemainingTime ? pros - mAudioController.getLength() : pros));
+
 		}
 
 		@Override
@@ -577,232 +622,239 @@ public class PlayerFragment extends RecyclerFragment implements IAudioPlayer {
 
 		@Override
 		public void onProgressChanged(SeekBar sb, int prog, boolean fromUser) {
-			if (fromUser) {
-				pros = prog;
-				txtCurTimePlaying.setText(Strings.millisToString(prog));
+			if (fromUser && mService != null) {
+				mService.setTime(prog);
+				txtCurTime.setText(Strings.millisToString(prog));
+				//mHeaderTime.setText(Strings.millisToString(prog));
 			}
 		}
 	};
 
-	public void onTimeLabelClick(View view) {
-		mShowRemainingTime = !mShowRemainingTime;
-		update();
-	}
-
 	public void onPlayPauseClick(View view) {
-		if (mAudioController.isPlaying()) {
-			mAudioController.pause();
+		if (mService == null)
+			return;
+		if (mService.isPlaying()) {
+			mService.pause();
 		} else {
-			mAudioController.play();
-
+			mService.play();
 		}
-		update();
 	}
 
 	public void onStopClick(View view) {
-		mAudioController.stop();
+		if (mService != null)
+			mService.stop();
 	}
 
 	public void onNextClick(View view) {
-		mAudioController.next();
-		/*imgTemp.setImageDrawable(imgCover.getDrawable());
-		imgCover.setImageBitmap(mAudioController.getCover());*/
-		update();
+		if (mService == null)
+			return;
+		if (mService.hasNext())
+			mService.next();
+		else
+			Snackbar.make(getView(), R.string.lastsong, Snackbar.LENGTH_SHORT).show();
 	}
 
 	public void onPreviousClick(View view) {
-		mAudioController.previous();
-		/*imgTemp.setImageDrawable(imgCover.getDrawable());
-		imgCover.setImageBitmap(mAudioController.getCover());*/
-		update();
+		if (mService == null)
+			return;
+		if (mService.hasPrevious())
+			mService.previous();
+		else
+			Snackbar.make(getView(), R.string.firstsong, Snackbar.LENGTH_SHORT).show();
 	}
 
 	public void onRepeatClick(View view) {
-		switch (mAudioController.getRepeatType()) {
-			case None:
-				mAudioController.setRepeatType(RepeatType.All);
+		if (mService == null)
+			return;
+
+		switch (mService.getRepeatType()) {
+			case PlaybackService.REPEAT_NONE:
+				mService.setRepeatType(PlaybackService.REPEAT_ALL);
 				break;
-			case All:
-				mAudioController.setRepeatType(RepeatType.Once);
+			case PlaybackService.REPEAT_ALL:
+				mService.setRepeatType(PlaybackService.REPEAT_ONE);
 				break;
 			default:
-			case Once:
-				mAudioController.setRepeatType(RepeatType.None);
+			case PlaybackService.REPEAT_ONE:
+				mService.setRepeatType(PlaybackService.REPEAT_NONE);
 				break;
 		}
 		update();
 	}
 
 	public void onShuffleClick(View view) {
-		mAudioController.shuffle();
+		if (mService != null)
+			mService.shuffle();
 		update();
 	}
 
-	public void showAdvancedOptions(View v) {
-		//CommonDialogs.advancedOptions(getActivity(), v, MenuType.Audio);
-	}
-
-	public void show() {
-		DrawerActivity activity = (DrawerActivity)getActivity();
-		if (activity != null)
-			activity.showAudioPlayer();
-	}
-
-	public void hide() {
-		DrawerActivity activity = (DrawerActivity)getActivity();
-		if (activity != null)
-			activity.hideAudioPlayer();
-	}
+	@Override
+	public void onConnected(PlaybackService service) {
+		super.onConnected(service);
+		mService.addCallback(this);
+		//mPlaylistAdapter.setService(service);
 
 
-
-	public void addMusic(){
-		String location;
-		long time;
-		long length;
-		int type;
-		int picture;
-		String title;
-		String artist;
-		String genre;
-		String album;
-		String albumArtist;
-		int width;
-		int height;
-		String artworkURL;
-		int audio;
-		int spu;
-		int trackNumber;
-		List <Media> alMedia = new ArrayList<Media>();
-
-		MediaList mediaList = null;
-
-		//mediaList = mLibVLC.getMediaList();
-
-		Media m;
-
-		//MediaDatabase mDB = MediaDatabase.getInstance();
-
-
-		location = mFilePath;
-		time = 0;
-		length = 0;
-		type = -1;
-		picture =  R.drawable.background_login;
-		title = "JUDULLLLLL";
-		artist = "ARTISSSS";
-		genre = "";
-		album = "ALBUUUM";
-		albumArtist = "ALBUM ARTISSSS";
-		width = 0;
-		height = 0;
-		artworkURL = "";
-		audio = 0;
-		spu = 0;
-		trackNumber = 0;
-
-		/*m = new Media(location, time, length, type,
-		picture, title, artist, genre, album, albumArtist,
-		width, height, artworkURL, audio, spu, trackNumber);*/
-
-		//mDB.addMedia(m);
-
-	}
-
-	public void loadFromDB(){
-		MediaDatabase mDB = MediaDatabase.getInstance();
-
-		HashMap<String, Media> hashMapMediaList = mDB.getMedias();
-
-
-		Iterator mykey = hashMapMediaList.keySet().iterator();
-		//MediaList mediaList = mLibVLC.getMediaList();
-
-		while (mykey.hasNext()){
-			String key = (String)mykey.next();
-			//	mediaList.add(hashMapMediaList.get(key));
+		if(mService.hasMedia()){
+			changeImage();
+			setDataAfterService();
+			//persistentDatas = parse(json);
 		}
+
+		else {
+			mService.setVolume(0);
+			mService.loadLastPlaylist(PlaybackService.TYPE_AUDIO);
+			mService.pause();
+			mService.setVolume(100);
+
+			setDataAfterService();
+			//addWithoutAnimate();
+
+
+			//persistentDatas = parse(json);
+		}
+
+		update();
 	}
 
+	@Override
+	public void onStop() {
+        /* unregister before super.onStop() since mService is set to null from this call */
+		if (mService != null)
+			mService.removeCallback(this);
+		super.onStop();
+	}
 
-	private void changeCover(){
-
-		Bitmap bitmap = ((BitmapDrawable)imgCover.getDrawable()).getBitmap();
-		if(bitmap != mAudioController.getCover()){
-			try{
+	@Override
+	public void onComplateLoadCoverUrl(Bitmap cover) {
+		System.out.println("recived update cover");
+		if(cover != null){
+			/*try {
 				imgTemp.setImageDrawable(imgCover.getDrawable());
-				imgCover.setImageBitmap(mAudioController.getCover());
-				setPlayerColor();
-				if(Build.VERSION.SDK_INT >= 21) {
-					showImage(imgCover);
-				}
 			}catch (Exception e){
-				imgTemp.setImageDrawable(imgCover.getDrawable());
-				imgCover.setImageResource(R.drawable.radio_icon);
+				try{
+					imgTemp.setImageBitmap(mService.getCoverPrev());
+				}
+				catch (Exception q){
+					imgTemp.setImageBitmap(cover);
+
+				}
+			}
+				imgCover.setImageBitmap(cover);
+
 				setPlayerColor();
 				if(Build.VERSION.SDK_INT >= 21) {
 					showImage(imgCover);
 				}
-				imgTemp.setImageResource(R.drawable.wallpaper);
+			//}catch (Exception e){
+			//	System.out.println("bitmap gagal");
+			//}*/
+
+			//imgCover.setImageBitmap(cover);
+			if(mService != null){
+				mService.pause();
+				mService.play();
 			}
-
-
 		}
-
-
+		else{
+			System.out.println("cover null");
+		}
 
 	}
 
+	class LongSeekListener implements View.OnTouchListener {
+		boolean forward;
+		int normal, pressed;
+		long length;
 
-	private final Handler handler = new Handler();
-	private void setupHandler() {
-		handler.removeCallbacks(sendToUi);
-		handler.postDelayed(sendToUi, 1000); // 1 second
+		public LongSeekListener(boolean forwards, int normalRes, int pressedRes) {
+			this.forward = forwards;
+			this.normal = normalRes;
+			this.pressed = pressedRes;
+			this.length = -1;
+		}
+
+		int possibleSeek;
+		boolean vibrated;
+
+		@RequiresPermission(Manifest.permission.VIBRATE)
+		Runnable seekRunnable = new Runnable() {
+			@Override
+			public void run() {
+				if(!vibrated) {
+					((android.os.Vibrator) VLCApplication.getAppContext().getSystemService(Context.VIBRATOR_SERVICE))
+							.vibrate(80);
+					vibrated = true;
+				}
+
+				if(forward) {
+					if(length <= 0 || possibleSeek < length)
+						possibleSeek += 4000;
+				} else {
+					if(possibleSeek > 4000)
+						possibleSeek -= 4000;
+					else if (possibleSeek <= 4000)
+						possibleSeek = 0;
+				}
+
+				txtCurTime.setText(Strings.millisToString(possibleSeek-length));
+				seekbar.setProgress(possibleSeek);
+				//mProgressBar.setProgress(possibleSeek);
+				h.postDelayed(seekRunnable, 50);
+			}
+		};
+
+		Handler h = new Handler();
+
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			if (mService == null)
+				return false;
+			switch(event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					(forward ? btnNext : btnPrevious).setImageResource(this.pressed);
+
+					possibleSeek = (int) mService.getTime();
+
+					mPreviewingSeek = true;
+					vibrated = false;
+					length = mService.getLength();
+
+					h.postDelayed(seekRunnable, 1000);
+					return true;
+
+				case MotionEvent.ACTION_UP:
+					(forward ? btnNext : btnPrevious).setImageResource(this.normal);
+					h.removeCallbacks(seekRunnable);
+					mPreviewingSeek = false;
+
+					if(event.getEventTime()-event.getDownTime() < 1000) {
+						if(forward)
+							onNextClick(v);
+						else
+							onPreviousClick(v);
+					} else {
+						if(forward) {
+							if(possibleSeek < mService.getLength())
+								mService.setTime(possibleSeek);
+							else
+								onNextClick(v);
+						} else {
+							if(possibleSeek > 0)
+								mService.setTime(possibleSeek);
+							else
+								onPreviousClick(v);
+						}
+					}
+					return true;
+			}
+			return false;
+		}
 	}
 
-
-	private Runnable sendToUi = new Runnable() {
-		public void run() {
-			update();
-			int time = mAudioController.getTime();
-			int length = mAudioController.getLength();
-
-			txtCurTimePlaying.setText(Strings.millisToString(time));
-			txtTotalTime.setText(Strings.millisToString(length));
-			seekBar.setMax(length);
-			seekBar.setProgress(time);
-
-			if (mAudioController.isPlaying()) {
-				btnPlay.setImageResource(R.drawable.ic_pause_white_48dp);
-				btnPlay.setContentDescription(getString(R.string.pause));
-
-			} else {
-				btnPlay.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-				btnPlay.setContentDescription(getString(R.string.play));
-
-			}
-
-			if (mAudioController.hasNext())
-				btnNext.setVisibility(ImageButton.VISIBLE);
-			else
-				btnNext.setVisibility(ImageButton.INVISIBLE);
-			if (mAudioController.hasPrevious())
-				btnPrevious.setVisibility(ImageButton.VISIBLE);
-			else
-				btnPrevious.setVisibility(ImageButton.INVISIBLE);
-
-			if(mAudioController.hasMedia()){
-				txtArtist.setText(mAudioController.getArtist());
-				txtTitle.setText(mAudioController.getTitle());
-			}
-			else {
-				txtArtist.setText("Artist");
-				txtTitle.setText("Title");
-			}
-
-			handler.postDelayed(this, 1000); // 2 seconds
-		}
-	};
-
-
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		playerFragment = null;
+	}
 }

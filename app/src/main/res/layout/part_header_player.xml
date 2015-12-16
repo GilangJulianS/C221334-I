@@ -123,10 +123,10 @@
 				<SeekBar
 					android:id="@+id/seekbar"
 					android:layout_width="match_parent"
-					android:layout_height="7dp"
+					android:layout_height="15dp"
 					android:progress="50"
-					android:progressDrawable="@drawable/seekbar_progress"
-					android:thumb="@android:color/white"
+					android:progressDrawable="@drawable/seekbar_progress_player"
+					android:thumb="@drawable/seekbar_thumb_big_transparent"
 					android:layout_marginTop="10dp"/>
 
 
@@ -214,17 +214,5 @@
 		</LinearLayout>
 
 	</LinearLayout>
-
-	<com.wunderlist.slidinglayer.SlidingLayer
-		android:id="@+id/sliding_layer"
-		xmlns:slidingLayer="http://schemas.android.com/apk/res-auto"
-		android:layout_width="wrap_content"
-		android:layout_height="match_parent"
-		slidingLayer:stickTo="right">
-
-		<include layout="@layout/fragment_song_menu"/>
-
-	</com.wunderlist.slidinglayer.SlidingLayer>
-
 
 </RelativeLayout>

@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Util.java
+ * UiTools.java
  *****************************************************************************
  * Copyright © 2011-2014 VLC authors and VideoLAN
  *
@@ -22,6 +22,7 @@ package com.cyclone.player.util;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 
 import com.cyclone.player.VLCApplication;
 
@@ -44,7 +45,7 @@ public class CustomDirectories {
         }
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("custom_paths", builder.toString());
-        editor.commit();
+        Util.commitPreferences(editor);
     }
 
     public static void removeCustomDirectory(String path) {
@@ -69,7 +70,7 @@ public class CustomDirectories {
         }
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("custom_paths", custom_path);
-        editor.commit();
+        Util.commitPreferences(editor);
     }
 
     public static String[] getCustomDirectories() {
@@ -81,4 +82,13 @@ public class CustomDirectories {
             return custom_paths.split(":");
     }
 
+    public static boolean contains(String directory){
+        directory = directory.trim();
+        String[] directories = getCustomDirectories();
+        for (int i = 0 ; i < directories.length ; ++i){
+            if (TextUtils.equals(directory, directories[i]))
+                return true;
+        }
+        return false;
+    }
 }

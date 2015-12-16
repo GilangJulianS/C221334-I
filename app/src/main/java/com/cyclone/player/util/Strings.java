@@ -20,12 +20,16 @@
 
 package com.cyclone.player.util;
 
+
+import com.cyclone.BuildConfig;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Locale;
 
 public class Strings {
-    public final static String TAG = "VLC/Util/Strings";
+    public final static String TAG = "VLC/UiTools/Strings";
 
     public static String stripTrailingSlash(String s) {
         if( s.endsWith("/") && s.length() > 1 )
@@ -33,11 +37,18 @@ public class Strings {
         return s;
     }
 
-    static boolean StartsWith(String[] array, String text) {
+    static boolean startsWith(String[] array, String text) {
         for (String item : array)
             if (text.startsWith(item))
                 return true;
         return false;
+    }
+
+    static int containsName(List<String> array, String text) {
+        for (int i = array.size()-1 ; i >= 0 ; --i)
+            if (array.get(i).endsWith(text))
+                return i;
+        return -1;
     }
 
     /**
@@ -107,8 +118,21 @@ public class Strings {
 
     public static String readableFileSize(long size) {
         if(size <= 0) return "0";
-        final String[] units = new String[] { "B", "kB", "MB", "GB", "TB" };
+        final String[] units = new String[] { "B", "KiB", "MiB", "GiB", "TiB" };
         int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
-    return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
-}
+        return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+    }
+
+    public static String removeFileProtocole(String path){
+        if (path == null)
+            return null;
+        if (path.startsWith("file://"))
+            return path.substring(7);
+        else
+            return path;
+    }
+
+    public static String buildPkgString(String string) {
+        return BuildConfig.APPLICATION_ID + "." + string;
+    }
 }

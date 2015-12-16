@@ -1,19 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.cyclone" >
+    package="com.cyclone">
+
+    <!-- STORAGE -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- Internet -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- normal -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".player.VLCApplication"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+        android:theme="@style/AppTheme">
         <activity
             android:name=".DrawerActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar.Collapse" >
+            android:theme="@style/AppTheme.NoActionBar.Collapse">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,76 +42,86 @@
         <activity
             android:name=".StandardActivity"
             android:label="@string/title_activity_standard"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".CollapseActivity"
             android:label="@string/title_activity_collapse"
-            android:theme="@style/AppTheme.NoActionBar.Collapse" >
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar.Collapse" />
         <activity
             android:name=".DrawerStandardActivity"
-            android:label="@string/title_activity_drawer_standard" >
-        </activity>
+            android:label="@string/title_activity_drawer_standard" />
         <activity
             android:name=".SplashActivity"
-            android:label="@string/title_activity_splash" >
+            android:label="@string/title_activity_splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EmptyActivity" >
-        </activity>
-        <activity android:name=".player.CompatErrorActivity" />
-        <activity android:name=".player.PreferencesActivity" />
-
+        <activity android:name=".EmptyActivity" />
         <activity
-            android:name=".player.NativeCrashActivity"
+            android:name=".player.gui.DebugLogActivity"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".player.gui.NativeCrashActivity"
             android:process=":NativeCrashActivity"
             android:stateNotNeeded="true" />
 
-        <activity android:name="com.facebook.FacebookActivity"
-            android:configChanges=
-                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:label="@string/app_name" />
+        <service
+            android:name=".player.DebugLogService"
+            android:process=":logger" />
+        <service android:name=".player.PlaybackService" />
 
-        <service android:name=".player.audio.AudioService" />
-
-        <receiver android:name=".player.PhoneStateReceiver" >
+        <receiver
+            android:name=".player.widget.VLCAppWidgetProviderWhite"
+            android:exported="false"
+            android:label="@string/widget_name_w">
             <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="_PACKAGENAME_.widget.INIT" />
+                <action android:name="_PACKAGENAME_.widget.UPDATE" />
+                <action android:name="_PACKAGENAME_.widget.UPDATE_COVER" />
+                <action android:name="_PACKAGENAME_.widget.UPDATE_POSITION" />
             </intent-filter>
-        </receiver>
-        <!-- <receiver
-             android:name=".player.widget.VLCAppWidgetProvider"
-             android:exported="false"
-             android:label="VLC mini player" >
-             <intent-filter>
-                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-             </intent-filter>
 
-             <meta-data
-                 android:name="android.appwidget.provider"
-                 android:resource="@xml/vlcwidget" />
-         </receiver>-->
-        <receiver android:name=".player.RemoteControlClientReceiver" >
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_provider_w" />
+        </receiver>
+        <receiver
+            android:name=".player.widget.VLCAppWidgetProviderBlack"
+            android:exported="false"
+            android:label="@string/widget_name_b">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="_PACKAGENAME_.widget.INIT" />
+                <action android:name="_PACKAGENAME_.widget.UPDATE" />
+                <action android:name="_PACKAGENAME_.widget.UPDATE_COVER" />
+                <action android:name="_PACKAGENAME_.widget.UPDATE_POSITION" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_provider_b" />
+        </receiver>
+        <receiver android:name=".player.RemoteControlClientReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
-                <action android:name="org.videolan.vlc.remote.PlayPause" />
+                <action android:name="_PACKAGENAME_.remote.PlayPause" />
             </intent-filter>
         </receiver>
-    </application>
 
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.READ_LOGS" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+        <service
+            android:name=".service.ServiceGetData"
+            android:exported="false" />
+        <service
+            android:name=".service.MyService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".service.ServicePlayOnHolder"
+            android:exported="false" />
+    </application>
 
 </manifest>

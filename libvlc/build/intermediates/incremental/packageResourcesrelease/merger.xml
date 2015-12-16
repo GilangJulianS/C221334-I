@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/libvlc/src/main/res"/><source path="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/libvlc/build/generated/res/rs/release"/><source path="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/libvlc/build/generated/res/resValues/release"/></dataSet><dataSet config="release"><source path="/media/solusi247/Hinata/Cyclone/frontend/cyclone-frontend/libvlc/src/release/res"/></dataSet><mergedItems/></merger>

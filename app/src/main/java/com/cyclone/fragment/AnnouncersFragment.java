@@ -64,6 +64,16 @@ public class AnnouncersFragment extends RecyclerFragment {
 
 	}
 
+	@Override
+	public int getSlidingLayoutId() {
+		return 0;
+	}
+
+	@Override
+	public void prepareSlidingMenu(View v) {
+
+	}
+
 	public List<Object> parseData(String json){
 		List<Object> announcers = new ArrayList<>();
 

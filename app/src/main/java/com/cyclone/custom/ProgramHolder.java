@@ -6,7 +6,9 @@ import android.os.Build;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -24,6 +26,7 @@ public class ProgramHolder extends UniversalHolder{
 	public TextView txtSchedule;
 	public RatingBar ratingBar;
 	public ViewGroup card;
+	public ImageButton btnMenu;
 
 	public ProgramHolder(View v, Activity activity, UniversalAdapter adapter){
 		super(v, activity, adapter);
@@ -32,6 +35,7 @@ public class ProgramHolder extends UniversalHolder{
 		txtSchedule = (TextView) v.findViewById(R.id.txt_schedule);
 		ratingBar = (RatingBar) v.findViewById(R.id.ratingbar);
 		card = (ViewGroup) v.findViewById(R.id.card_program);
+		btnMenu = (ImageButton) v.findViewById(R.id.btn_menu);
 	}
 
 	@Override
@@ -39,11 +43,15 @@ public class ProgramHolder extends UniversalHolder{
 		bind((Program) object, activity);
 	}
 
+	/*@Override
+	public void bind(Object object, Activity activity, int position) {
+		bind((Program) object, activity);
+	}*/
+
 	public void bind(Program program, final Activity activity){
 		Program p = program;
-
 		final ImageView imageView = imgCover;
-		imgCover.setImageResource(p.imgInt);
+		imgCover.setImageResource(R.drawable.background_login);
 		txtTitle.setText(p.title);
 		txtSchedule.setText(p.schedule);
 		ratingBar.setRating(p.rating);
@@ -51,16 +59,24 @@ public class ProgramHolder extends UniversalHolder{
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(activity, DrawerActivity.class);
-				i.putExtra("layout", DrawerActivity.LAYOUT_PROGRAM_PAGE);
-				i.putExtra("activity", R.layout.activity_drawer);
-				i.putExtra("title", txtTitle.getText());
-				if(Build.VERSION.SDK_INT >= 16) {
+				i.putExtra("fragmentType", DrawerActivity.FRAGMENT_PROGRAM_PAGE);
+				i.putExtra("title", "Hit the Beat");
+				if (Build.VERSION.SDK_INT >= 16) {
 					ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation
 							(activity, imageView, "program");
 					activity.startActivity(i, options.toBundle());
-				}else{
+				} else {
 					activity.startActivity(i);
 				}
+			}
+		});
+		btnMenu.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				PopupMenu menu = new PopupMenu(activity, btnMenu);
+				menu.inflate(R.menu.popup_default);
+				menu.setOnMenuItemClickListener(new PopupMenuListener(activity));
+				menu.show();
 			}
 		});
 	}

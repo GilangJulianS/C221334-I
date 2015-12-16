@@ -16,7 +16,6 @@ public class SimpleImageFragment extends Fragment {
 
 	private ImageView image;
 	private String imgUrl;
-	private int imgInt;
 
 	public SimpleImageFragment(){}
 
@@ -25,18 +24,13 @@ public class SimpleImageFragment extends Fragment {
 		fragment.imgUrl = imgUrl;
 		return fragment;
 	}
-	public static SimpleImageFragment newInstance(int imgInt){
-		SimpleImageFragment fragment = new SimpleImageFragment();
-		fragment.imgInt = imgInt;
-		return fragment;
-	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
 		View v = inflater.inflate(R.layout.fragment_simple_image, parent, false);
 
 		image = (ImageView) v.findViewById(R.id.img);
-		image.setImageResource(imgInt);
+		image.setImageResource(R.drawable.wallpaper);
 
 		return v;
 	}

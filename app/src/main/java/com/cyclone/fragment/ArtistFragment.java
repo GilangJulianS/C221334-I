@@ -71,6 +71,16 @@ public class ArtistFragment extends RecyclerFragment {
 		setupHeader(v, json);
 	}
 
+	@Override
+	public int getSlidingLayoutId() {
+		return 0;
+	}
+
+	@Override
+	public void prepareSlidingMenu(View v) {
+
+	}
+
 	public void setupHeader(View v, String json){
 
 	}

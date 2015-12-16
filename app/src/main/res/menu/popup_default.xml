@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<item
+		android:id="@+id/menu_add_favorites"
+		app:showAsAction="ifRoom|withText"
+		android:title="Add to Favorites"
+		android:visible="true"/>
+
+	<item
+		android:id="@+id/menu_add_playlist"
+		app:showAsAction="ifRoom|withText"
+		android:title="Add to Playlist"
+		android:visible="true"/>
+
+	<item
+		android:id="@+id/menu_album_page"
+		app:showAsAction="ifRoom|withText"
+		android:title="Album Page"
+		android:visible="true"/>
+
+	<item
+		android:id="@+id/menu_share"
+		app:showAsAction="ifRoom|withText"
+		android:title="Share"
+		android:visible="true"/>
+
+</menu>

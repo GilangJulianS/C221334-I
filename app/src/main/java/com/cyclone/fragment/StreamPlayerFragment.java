@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -126,7 +125,7 @@ public class StreamPlayerFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(activity, DrawerActivity.class);
-				i.putExtra("layout", DrawerActivity.LAYOUT_ARTIST);
+				i.putExtra("fragmentType", DrawerActivity.FRAGMENT_ARTIST);
 				i.putExtra("title", "Artist Name");
 				activity.startActivity(i);
 			}
@@ -136,7 +135,7 @@ public class StreamPlayerFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(activity, DrawerActivity.class);
-				i.putExtra("layout", DrawerActivity.LAYOUT_ALBUM);
+				i.putExtra("fragmentType", DrawerActivity.FRAGMENT_ALBUM);
 				i.putExtra("title", "Album Name");
 				activity.startActivity(i);
 			}

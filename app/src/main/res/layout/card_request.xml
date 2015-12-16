@@ -16,7 +16,7 @@
 			android:id="@+id/img_user"
 			android:layout_width="60dp"
 			android:layout_height="60dp"
-			android:src="@drawable/aa_darto"/>
+			android:src="@drawable/background_login"/>
 
 		<ImageView
 			android:id="@+id/img_socmed"

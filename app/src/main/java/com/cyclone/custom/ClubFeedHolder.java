@@ -64,17 +64,20 @@ public class ClubFeedHolder extends UniversalHolder{
 		bind((Post)object, activity);
 	}
 
+	/*@Override
+	public void bind(Object object, Activity activity, int position) {
+		this.activity = activity;
+		bind((Post)object, activity);
+	}*/
+
 	public void bind(Post post, final Activity activity){
 		final Post p = post;
-		if(p.imgUrl == null)
-			imgUser.setImageResource(p.imgInt);
+		imgUser.setImageResource(R.drawable.background_login);
 		if(Build.VERSION.SDK_INT >= 21)
 			imgUser.setTransitionName("profile" + transitionId);
 		txtHeaderName.setText(Html.fromHtml(p.headerName));
 		txtHeaderInfo.setText(p.timestamp + " • " + p.playlistType);
-
-		if(p.postImgUrl == null)
-			imgPost.setImageResource(p.postImgInt);
+		imgPost.setImageResource(R.drawable.background_login);
 		txtPostTitle.setText(p.postTitle);
 		txtPostContent.setText(p.postContent);
 		txtPostInfo.setText(p.postInfo);
@@ -113,7 +116,7 @@ public class ClubFeedHolder extends UniversalHolder{
 				@Override
 				public void onClick(View v) {
 				Intent i = new Intent(activity, DrawerActivity.class);
-				i.putExtra("layout", DrawerActivity.LAYOUT_PERSON_PROFILE);
+				i.putExtra("fragmentType", DrawerActivity.FRAGMENT_PERSON_PROFILE);
 				i.putExtra("mode", PersonProfileFragment.MODE_OTHERS_PROFILE);
 				i.putExtra("transition", "profile" + transitionId);
 
@@ -134,9 +137,18 @@ public class ClubFeedHolder extends UniversalHolder{
 					@Override
 					public void onClick(View v) {
 						Intent i = new Intent(activity, DrawerActivity.class);
-						i.putExtra("activity", R.layout.activity_drawer);
-						i.putExtra("layout", MasterActivity.LAYOUT_MIX);
+						i.putExtra("fragmentType", MasterActivity.FRAGMENT_MIX);
 						i.putExtra("title", "Mix max");
+						activity.startActivity(i);
+					}
+				});
+			}else if(p.playlistType.equals("Playlist")){
+				container.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Intent i = new Intent(activity, DrawerActivity.class);
+						i.putExtra("fragmentType", MasterActivity.FRAGMENT_PLAYLIST);
+						i.putExtra("title", "Funky Sunshine");
 						activity.startActivity(i);
 					}
 				});
