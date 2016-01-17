@@ -7,6 +7,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.cyclone.R;
+import com.cyclone.model.Content;
 import com.cyclone.model.Song;
 
 /**
@@ -35,7 +36,7 @@ public class SongHolder extends UniversalHolder {
 		bind((Song) object);
 	}*/
 
-	public void bind(Song song){
+	public void bind(final Song song){
 		txtPrimary.setText(song.primary);
 		txtSecondary.setText(song.secondary);
 		btnMenu.setOnClickListener(new View.OnClickListener() {
@@ -43,7 +44,8 @@ public class SongHolder extends UniversalHolder {
 			public void onClick(View v) {
 				PopupMenu menu = new PopupMenu(activity, btnMenu);
 				menu.inflate(R.menu.popup_default);
-				menu.setOnMenuItemClickListener(new PopupMenuListener(activity));
+				final Content c = new Content("","","","","","");
+				menu.setOnMenuItemClickListener(new PopupMenuListener(activity, c, btnMenu, song.id));
 				menu.show();
 			}
 		});

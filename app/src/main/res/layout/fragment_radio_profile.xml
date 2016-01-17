@@ -51,7 +51,8 @@
 						android:layout_weight="1"
 						android:textSize="16sp"
 						android:textStyle="bold"
-						android:text="K-Lite FM Bandung"/>
+						android:text="K-Lite FM Bandung"
+						android:id="@+id/txtRadioName"/>
 
 					<LinearLayout
 						android:layout_width="wrap_content"
@@ -87,7 +88,8 @@
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
 							android:layout_marginLeft="10dp"
-							android:text="Bandung"/>
+							android:text="Bandung"
+							android:id="@+id/txtRegion"/>
 
 					</LinearLayout>
 
@@ -135,7 +137,8 @@
 					android:layout_weight="3"
 					android:layout_height="wrap_content"
 					android:layout_gravity="center_vertical"
-					android:text="Bandung's inspiring Sound - K-Lite FM, Bandung, a broadtcast radio stationed in Bandung Indonesia, Providing young..."/>
+					android:text="Bandung's inspiring Sound - K-Lite FM, Bandung, a broadtcast radio stationed in Bandung Indonesia, Providing young..."
+					android:id="@+id/txtAbout"/>
 
 			</LinearLayout>
 
@@ -300,7 +303,8 @@
 						android:layout_marginLeft="10dp"
 						android:textSize="12sp"
 						android:textStyle="bold"
-						android:text="Jl. Sumur Bandung No.12\nDago - Bandung"/>
+						android:text="Jl. Sumur Bandung No.12\nDago - Bandung"
+						android:id="@+id/txtAlamat"/>
 
 				</LinearLayout>
 
@@ -322,7 +326,8 @@
 						android:layout_marginLeft="10dp"
 						android:textSize="12sp"
 						android:textStyle="bold"
-						android:text="+6222 21 231231"/>
+						android:text="+6222 21 231231"
+						android:id="@+id/txtPhone"/>
 
 
 				</LinearLayout>
@@ -345,7 +350,8 @@
 						android:layout_marginLeft="10dp"
 						android:textSize="12sp"
 						android:textStyle="bold"
-						android:text="kllitefm@gmail.com"/>
+						android:text="kllitefm@gmail.com"
+						android:id="@+id/txtEmail"/>
 
 				</LinearLayout>
 
@@ -400,7 +406,8 @@
 						android:layout_marginLeft="10dp"
 						android:textSize="12sp"
 						android:textStyle="bold"
-						android:text="www.kllitefm.com"/>
+						android:text="www.kllitefm.com"
+						android:id="@+id/txtWebsite"/>
 
 				</LinearLayout>
 
@@ -421,7 +428,8 @@
 						android:layout_marginLeft="10dp"
 						android:textSize="12sp"
 						android:textStyle="bold"
-						android:text="RADIO K-LITE 107.1 FM BANDUNG"/>
+						android:text="RADIO K-LITE 107.1 FM BANDUNG"
+						android:id="@+id/txtFacebook"/>
 
 
 				</LinearLayout>
@@ -443,7 +451,8 @@
 						android:layout_marginLeft="10dp"
 						android:textSize="12sp"
 						android:textStyle="bold"
-						android:text="\@107klitefm"/>
+						android:text="\@107klitefm"
+						android:id="@+id/txtTwetter"/>
 
 				</LinearLayout>
 

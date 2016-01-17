@@ -9,11 +9,13 @@ public class Program {
 	public String title;
 	public String schedule;
 	public float rating;
+	public String id;
 
-	public Program(String imageUrl, String programTitle, String schedule, float programRating){
+	public Program(String imageUrl, String programTitle, String schedule, float programRating, String Id){
 		imgUrl = imageUrl;
 		title = programTitle;
 		this.schedule = schedule;
 		rating = programRating;
+		this.id = id;
 	}
 }

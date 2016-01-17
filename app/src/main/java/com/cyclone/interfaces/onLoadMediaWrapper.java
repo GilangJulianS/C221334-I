@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by solusi247 on 13/12/15.
  */
-public interface test {
+public interface onLoadMediaWrapper {
     void OnLoadComplite(List<MediaWrapper> mediaWrapperList);
     //void onLoadedPlayOnHolder(MediaWrapper media);
 }

@@ -8,6 +8,7 @@ import android.util.Log;
 import com.cyclone.player.interfaces.IgetCoverUrl;
 import com.cyclone.player.util.Util;
 import com.cyclone.service.ServiceGetData;
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 
 import org.videolan.libvlc.util.AndroidUtil;
 
@@ -49,6 +50,8 @@ public class GetCoverUrl extends AsyncTask<Void, Void, Bitmap> {
             connection.connect();
             InputStream input = connection.getInputStream();
             Bitmap myBitmap = BitmapFactory.decodeStream(input);
+
+
             return myBitmap;
         } catch (Exception e) {
             e.printStackTrace();

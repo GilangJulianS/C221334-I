@@ -8,12 +8,23 @@
 	android:gravity="center_vertical"
 	android:background="@color/colorPrimaryDefault"
 	android:orientation="horizontal">
+	<FrameLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+		<ImageView
+			android:id="@+id/coverMiniPlayer"
+			android:layout_width="40dp"
+			android:layout_height="40dp"
+			android:scaleType="centerCrop"
+			android:src="@drawable/background_login"/>
+		<ProgressBar
+			android:id="@+id/progressbar"
+			android:layout_width="40dp"
+			android:layout_height="40dp"
+			style="@android:style/Widget.Holo.Light.ProgressBar.Inverse"
+			android:visibility="visible"/>
+	</FrameLayout>
 
-	<ImageView
-		android:layout_width="40dp"
-		android:layout_height="40dp"
-		android:scaleType="centerCrop"
-		android:src="@drawable/background_login"/>
 
 	<LinearLayout
 		android:layout_width="wrap_content"
@@ -24,6 +35,7 @@
 		android:orientation="vertical">
 
 		<TextView
+			android:id="@+id/txtTitleMiniPlayer"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:textStyle="bold"
@@ -34,6 +46,7 @@
 			android:text="The Dandees"/>
 
 		<TextView
+			android:id="@+id/txt_artistMiniPlayer"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="5dp"
@@ -60,5 +73,7 @@
 		android:layout_marginLeft="5dp"
 		android:background="@drawable/btn_flat_transparent_oval"
 		android:src="@drawable/ic_skip_next_white_36dp"/>
+
+
 
 </LinearLayout>

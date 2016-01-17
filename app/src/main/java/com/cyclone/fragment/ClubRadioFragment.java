@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.cyclone.R;
+import com.cyclone.Utils.UtilArrayData;
+import com.cyclone.loopback.model.FeedTimeline;
 import com.cyclone.model.Post;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
@@ -61,6 +63,7 @@ public class ClubRadioFragment extends RecyclerFragment {
 			}
 		});
 		fabContainer.addView(fab);
+
 	}
 
 	@Override
@@ -95,24 +98,38 @@ public class ClubRadioFragment extends RecyclerFragment {
 
 	public List<Object> parse(String json){
 		List<Object> datas = new ArrayList<>();
-		datas.add(new Post("", "<b>Imam Darto</b> created new <b>Mix</b>", "1 Hour ago", "Mix",
-				"", "Funky Sunshine", "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST, false));
-		datas.add(new Post("", "<b>Desta</b> liked a Playlist", "2 Hour ago", "Playlist",
-				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST, false));
-		datas.add(new Post("", "<b>Desta</b> created new <b>Playlist</b>", "4 Hour ago",
-				"Playlist", "", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post
-				.TYPE_POST, false));
-		datas.add(new Post("", "<b>Desta</b> shared a <b>Playlist</b>", "4 Hour ago", "Playlist",
-				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST, false));
-		datas.add(new Post("", "<b>Imam Darto</b> created new <b>Mix</b>", "1 Hour ago", "Mix",
-				"", "Funky Sunshine", "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST, false));
-		datas.add(new Post("", "<b>Desta</b> liked a Playlist", "2 Hour ago", "Playlist",
-				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST, false));
-		datas.add(new Post("", "<b>Desta</b> created new <b>Playlist</b>", "4 Hour ago",
-				"Playlist", "", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post
-				.TYPE_POST, false));
-		datas.add(new Post("", "<b>Desta</b> shared a <b>Playlist</b>", "4 Hour ago", "Playlist",
-				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST, false));
+		if(UtilArrayData.feedTimelines.size() > 0){
+
+			for (int i = 0; i < UtilArrayData.feedTimelines.size(); i++){
+				FeedTimeline feedTimeline = UtilArrayData.feedTimelines.get(i);
+				System.out.println("name : " + feedTimeline.getTypePost().get("name"));
+				/*datas.add(new Post("", "<b>" + feedTimeline.getOwner().get("username") + "</b> " + feedTimeline.getTypePost().get("caption") + " <b>" + feedTimeline.getType() + "</b>", feedTimeline.getUpdated_at(), feedTimeline.getType(),
+						"", feedTimeline.getTypePost().get("name"), "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST, false));*/
+				datas.add(new Post("", "<b>"+feedTimeline.getOwner().get("username")+"</b> "+feedTimeline.getTypePost().get("caption")+" <b>"+feedTimeline.getType()+"</b>", feedTimeline.getCreated_at(), feedTimeline.getType(),
+						"", feedTimeline.getTypePost().get("name"), "New playlist by me", "40 tracks", feedTimeline.getLikesCount(), feedTimeline.getCommentsCount(), Post.TYPE_POST, feedTimeline.isLiked(), feedTimeline.getOwner().get("id"),feedTimeline.getOwner().get("username"), feedTimeline.getId()));
+
+			}
+		}else{
+			datas.add(new Post("", "<b>Imam Darto</b> created new <b>Mix</b>", "1 Hour ago", "Mix",
+					"", "Funky Sunshine", "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST, false, "0", "Username", ""));
+			datas.add(new Post("", "<b>Desta</b> liked a Playlist", "2 Hour ago", "Playlist",
+					"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST, false, "0", "Username", ""));
+			datas.add(new Post("", "<b>Desta</b> created new <b>Playlist</b>", "4 Hour ago",
+					"Playlist", "", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post
+					.TYPE_POST, false, "0", "Username", ""));
+			datas.add(new Post("", "<b>Desta</b> shared a <b>Playlist</b>", "4 Hour ago", "Playlist",
+					"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST, false, "0", "Username", ""));
+			datas.add(new Post("", "<b>Imam Darto</b> created new <b>Mix</b>", "1 Hour ago", "Mix",
+					"", "Funky Sunshine", "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST, false, "0", "Username", ""));
+			datas.add(new Post("", "<b>Desta</b> liked a Playlist", "2 Hour ago", "Playlist",
+					"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST, false, "0", "Username", ""));
+			datas.add(new Post("", "<b>Desta</b> created new <b>Playlist</b>", "4 Hour ago",
+					"Playlist", "", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post
+					.TYPE_POST, false, "0", "Username", ""));
+			datas.add(new Post("", "<b>Desta</b> shared a <b>Playlist</b>", "4 Hour ago", "Playlist",
+					"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST, false, "0", "Username", ""));
+		}
+
 		return datas;
 	}
 }

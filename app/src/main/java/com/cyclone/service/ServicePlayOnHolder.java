@@ -8,6 +8,7 @@ import com.cyclone.interfaces.PlayOnHolder;
 import com.cyclone.player.media.MediaWrapper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -22,12 +23,20 @@ public class ServicePlayOnHolder extends IntentService {
     private static final String ACTION_FOO = "com.cyclone.service.action.FOO";
     private static final String ACTION_BAZ = "com.cyclone.service.action.BAZ";
     private static final String ACTION_PLAY_ON_HOME = "com.cyclone.service.action.ACTION_PLAY_ON_HOME";
+    private static final String ACTION_PLAY_ON_QUEUE = "com.cyclone.service.action.ACTION_PLAY_ON_QUEUE";
 
     // TODO: Rename parameters
     private static final String EXTRA_PARAM1 = "com.cyclone.service.extra.PARAM1";
     private static final String EXTRA_PARAM2 = "com.cyclone.service.extra.PARAM2";
     private static final String MEDIA_WARPER = "com.cyclone.service.extra.MEDIA_WARPER";
+    private static final String MEDIA_POSITION = "com.cyclone.service.extra.MEDIA_POSITION";
+    private static final String MEDIA_CATEGORY = "com.cyclone.service.extra.MEDIA_CATEGORY";
     public static ArrayList<PlayOnHolder> mCallBackPlay = new ArrayList<PlayOnHolder>();
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 
     public ServicePlayOnHolder() {
         super("ServicePlayOnHolder");
@@ -71,7 +80,33 @@ public class ServicePlayOnHolder extends IntentService {
         System.out.println("si start on play home : " + mCallBackPlay.size());
         Intent intent = new Intent(context, ServicePlayOnHolder.class);
         intent.setAction(ACTION_PLAY_ON_HOME);
-        intent.putExtra(MEDIA_WARPER, media);
+        intent.putExtra(MEDIA_WARPER,  media);
+        context.startService(intent);
+    }
+
+    public static void startPlayOnFragment(Context context, PlayOnHolder client, String category, int position) {
+        if(mCallBackPlay != null)
+            mCallBackPlay.clear();
+        mCallBackPlay.add(client);
+
+        System.out.println("si start on play home : " + mCallBackPlay.size());
+        Intent intent = new Intent(context, ServicePlayOnHolder.class);
+        intent.setAction(ACTION_PLAY_ON_HOME);
+        intent.putExtra(MEDIA_POSITION , position);
+        intent.putExtra(MEDIA_CATEGORY, category);
+        context.startService(intent);
+    }
+
+
+    public static void startPlayOnQueue(Context context, int position, PlayOnHolder client) {
+        if(mCallBackPlay != null)
+            mCallBackPlay.clear();
+        mCallBackPlay.add(client);
+
+        System.out.println("si start on play queue : " + mCallBackPlay.size());
+        Intent intent = new Intent(context, ServicePlayOnHolder.class);
+        intent.setAction(ACTION_PLAY_ON_QUEUE);
+        intent.putExtra(MEDIA_POSITION , position);
         context.startService(intent);
     }
 
@@ -80,19 +115,37 @@ public class ServicePlayOnHolder extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
             if (ACTION_PLAY_ON_HOME.equals(action)) {
-                MediaWrapper media = intent.getParcelableExtra(MEDIA_WARPER);
-                handleActionPlayOnHome(media);
+               /* MediaWrapper mediaWrapper = intent.getParcelableExtra(MEDIA_WARPER);
+                List<MediaWrapper> media = new ArrayList<MediaWrapper>();
+                media.add(mediaWrapper);*/
+                handleActionPlayOnFragment(intent.getStringExtra(MEDIA_CATEGORY), intent.getIntExtra(MEDIA_POSITION, 0));
             } else if (ACTION_BAZ.equals(action)) {
                 final String param1 = intent.getStringExtra(EXTRA_PARAM1);
                 final String param2 = intent.getStringExtra(EXTRA_PARAM2);
                 handleActionBaz(param1, param2);
             }
+            else if (ACTION_PLAY_ON_QUEUE.equals(action)) {
+                final int position = intent.getIntExtra(MEDIA_POSITION, 0);
+                handleActionPlayOnQueue(position);
+            }
         }
     }
 
-    private void handleActionPlayOnHome(MediaWrapper media) {
+    private void handleActionPlayOnHome(List<MediaWrapper> media) {
         for (PlayOnHolder poh : mCallBackPlay)
             poh.onLoadedPlayOnHolder(media);
+    }
+
+    private void handleActionPlayOnFragment(String category, int position) {
+        for (PlayOnHolder poh : mCallBackPlay)
+            poh.onLoadedPlayOnHolder(category, position);
+
+    }
+
+    private void handleActionPlayOnQueue(int position) {
+        System.out.println("SEND POSISI : " + position);
+        for (PlayOnHolder poh : mCallBackPlay)
+            poh.onLoadedPlayOnHolder(position);
     }
 
     /**

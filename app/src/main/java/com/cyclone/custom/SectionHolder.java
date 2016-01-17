@@ -45,6 +45,7 @@ public class SectionHolder extends UniversalHolder {
 					Intent i = new Intent(activity, DrawerActivity.class);
 					i.putExtra("fragmentType", section.targetFragment);
 					i.putExtra("title", section.name);
+					i.putExtra("section_category", section.category);
 					activity.startActivity(i);
 				}
 			};

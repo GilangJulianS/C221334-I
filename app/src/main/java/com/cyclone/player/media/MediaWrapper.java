@@ -247,6 +247,32 @@ public class MediaWrapper implements Parcelable {
         media.release();
     }
 
+    public void updateMeta(MediaWrapper media) {
+        mTitle = media.getTitle();
+        mArtist = media.getArtist();
+        mAlbum = media.getAlbum();
+        mGenre = media.getGenre();
+        mAlbumArtist = media.getAlbumArtist();
+        mArtworkURL = media.getArtworkURL();
+        mNowPlaying = media.getNowPlaying();
+        final String trackNumber = String.valueOf(media.getTrackNumber());
+        if (!TextUtils.isEmpty(trackNumber)) {
+            try {
+                mTrackNumber = Integer.parseInt(trackNumber);
+            } catch (NumberFormatException ignored) {}
+        }
+        final String discNumber = String.valueOf(media.getDiscNumber());
+        if (!TextUtils.isEmpty(discNumber)) {
+            try {
+                mDiscNumber = Integer.parseInt(discNumber);
+            } catch (NumberFormatException ignored) {}
+        }
+        Log.d(TAG, "Title " + mTitle);
+        Log.d(TAG, "Artist " + mArtist);
+        Log.d(TAG, "Genre " + mGenre);
+        Log.d(TAG, "Album " + mAlbum);
+    }
+
     public String getFileName() {
         if (mFilename == null) {
             mFilename = mUri.getLastPathSegment();

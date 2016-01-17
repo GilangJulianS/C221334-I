@@ -7,9 +7,11 @@ public class Song {
 
 	public String primary;
 	public String secondary;
+	public String id;
 
-	public Song(String primaryInfo, String secondaryInfo){
+	public Song(String primaryInfo, String secondaryInfo, String id){
 		primary = primaryInfo;
 		secondary = secondaryInfo;
+		this.id = id;
 	}
 }

@@ -102,18 +102,18 @@ public class PlaylistFragment extends RecyclerFragment {
 
 	public List<Object> parse(String json){
 		List<Object> datas = new ArrayList<>();
-		datas.add(new SubcategoryItem("", "Could it Be", "Raisa"));
-		datas.add(new SubcategoryItem("", "Something About Us", "Daft Punk"));
-		datas.add(new SubcategoryItem("", "Sugar", "Maroon 5"));
-		datas.add(new SubcategoryItem("", "Get Lucky", "Daft Punk"));
-		datas.add(new SubcategoryItem("", "Could it Be", "Raisa"));
-		datas.add(new SubcategoryItem("", "Something About Us", "Daft Punk"));
-		datas.add(new SubcategoryItem("", "Sugar", "Maroon 5"));
-		datas.add(new SubcategoryItem("", "Get Lucky", "Daft Punk"));
-		datas.add(new SubcategoryItem("", "Could it Be", "Raisa"));
-		datas.add(new SubcategoryItem("", "Something About Us", "Daft Punk"));
-		datas.add(new SubcategoryItem("", "Sugar", "Maroon 5"));
-		datas.add(new SubcategoryItem("", "Get Lucky", "Daft Punk"));
+		datas.add(new SubcategoryItem("", "Could it Be", "Raisa", ""));
+		datas.add(new SubcategoryItem("", "Something About Us", "Daft Punk", ""));
+		datas.add(new SubcategoryItem("", "Sugar", "Maroon 5", ""));
+		datas.add(new SubcategoryItem("", "Get Lucky", "Daft Punk", ""));
+		datas.add(new SubcategoryItem("", "Could it Be", "Raisa",""));
+		datas.add(new SubcategoryItem("", "Something About Us", "Daft Punk", ""));
+		datas.add(new SubcategoryItem("", "Sugar", "Maroon 5", ""));
+		datas.add(new SubcategoryItem("", "Get Lucky", "Daft Punk", ""));
+		datas.add(new SubcategoryItem("", "Could it Be", "Raisa", ""));
+		datas.add(new SubcategoryItem("", "Something About Us", "Daft Punk", ""));
+		datas.add(new SubcategoryItem("", "Sugar", "Maroon 5", ""));
+		datas.add(new SubcategoryItem("", "Get Lucky", "Daft Punk", ""));
 		return datas;
 	}
 }

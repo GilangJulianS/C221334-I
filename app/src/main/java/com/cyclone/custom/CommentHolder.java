@@ -2,6 +2,7 @@ package com.cyclone.custom;
 
 import android.app.Activity;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,12 +17,15 @@ public class CommentHolder extends UniversalHolder{
 	public ImageView imgUser;
 	public TextView txtUsername;
 	public TextView txtComment;
+	public EditText editTextComment;
+
 
 	public CommentHolder(View v, Activity activity, UniversalAdapter adapter) {
 		super(v, activity, adapter);
 		imgUser = (ImageView) v.findViewById(R.id.img_user);
 		txtUsername = (TextView) v.findViewById(R.id.txt_name);
 		txtComment = (TextView) v.findViewById(R.id.txt_comment);
+
 	}
 
 	@Override

@@ -22,7 +22,6 @@ package org.videolan.libvlc.util;
 
 import android.net.Uri;
 import android.os.Build;
-import android.util.Log;
 
 import java.io.File;
 
@@ -87,8 +86,9 @@ public class AndroidUtil {
 
     public static Uri LocationToUri(String location) {
         Uri uri = Uri.parse(location);
-        if (uri.getScheme() == null)
-            throw new IllegalArgumentException("location has no scheme");
+        try{if (uri.getScheme() == null)
+            throw new IllegalArgumentException("location has no scheme");}catch (Exception e){}
+
         return uri;
     }
 

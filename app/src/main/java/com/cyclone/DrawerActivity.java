@@ -1,5 +1,6 @@
 package com.cyclone;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,6 +24,8 @@ import android.view.WindowManager;
 import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
 
+import com.cyclone.Utils.ServerUrl;
+import com.cyclone.Utils.UtilUser;
 import com.cyclone.fragment.AboutFragment;
 import com.cyclone.fragment.AccountSettingFragment;
 import com.cyclone.fragment.AddMixFormFragment;
@@ -58,6 +61,7 @@ import com.cyclone.fragment.TrackListFragment;
 import com.cyclone.fragment.UploadFinishedFragment;
 import com.cyclone.fragment.UploadFragment;
 import com.cyclone.fragment.VirtualCardFragment;
+import com.cyclone.loopback.UserClass;
 import com.cyclone.player.media.MediaDatabase;
 import com.cyclone.player.media.MediaLibrary;
 import com.cyclone.player.preferences.PreferencesActivity;
@@ -65,12 +69,12 @@ import com.cyclone.player.util.Permissions;
 import com.cyclone.player.util.Util;
 import com.cyclone.player.util.VLCInstance;
 import com.cyclone.player.util.WeakHandler;
+import com.strongloop.android.loopback.RestAdapter;
+import com.strongloop.android.loopback.callbacks.ObjectCallback;
 
-public class DrawerActivity extends MasterActivity
-		implements NavigationView.OnNavigationItemSelectedListener,FilterQueryProvider {
+public class DrawerActivity extends MasterActivity implements NavigationView.OnNavigationItemSelectedListener,FilterQueryProvider {
 
 	public final static String TAG = "VLC/MainActivity";
-
 	private static final String PREF_FIRST_RUN = "first_run";
 	private static final int ACTIVITY_RESULT_PREFERENCES = 1;
 	private static final int ACTIVITY_RESULT_OPEN = 2;
@@ -78,39 +82,84 @@ public class DrawerActivity extends MasterActivity
 	private static final int ACTIVITY_SHOW_PROGRESSBAR = 3;
 	private static final int ACTIVITY_HIDE_PROGRESSBAR = 4;
 	private static final int ACTIVITY_SHOW_TEXTINFO = 5;
-
-
-	MediaLibrary mMediaLibrary;
-
 	private int mVersionNumber = -1;
 	private boolean mFirstRun = false;
 	private boolean mScanNeeded = false;
-
 	private Handler mHandler = new MainActivityHandler(this);
 	private int mFocusedPrior = 0;
 	private int mActionBarIconId = -1;
-
 	private boolean isParentView = false;
 	private boolean isCollapseLayout = false;
 	private ActionBarDrawerToggle toggle;
 	private CollapsingToolbarLayout toolbarLayout;
-	public CoordinatorLayout coordinatorLayout;
-	private boolean showMiniPlayer = true;
+	public static boolean showMiniPlayer = true;
 	private boolean hasExtras;
 	private String title;
-	private int fragmentType;
+	private static int fragmentType;
+	private static String category;
 	private int mode;
 	private int menuId;
 	private String transitionId;
+	private static Context mContext;
+	private static Activity mActivity;
+	public CoordinatorLayout coordinatorLayout;
+	RestAdapter restAdapter ;
+	UserClass.UserRepository userRepo ;
+	MediaLibrary mMediaLibrary;
+	static DrawerActivity drawerActivity;
+	static FragmentManager manager;
+	public static String CurrentPersonProfile;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		drawerActivity = this;
+		mContext = this;
+		mActivity = this;
 		if (!VLCInstance.testCompatibleCPU(this)) {
 			finish();
 			return;
 		}
+		restAdapter = new RestAdapter(this, ServerUrl.API_URL);
+		userRepo = restAdapter.createRepository(UserClass.UserRepository.class);
+
+		if(UtilUser.currentUser == null){
+			userRepo.findCurrentUser(new ObjectCallback<UserClass.User>() {
+				@Override
+				public void onSuccess(UserClass.User object) {
+					if (object != null) {
+						// logged in
+						UtilUser.currentUser = object;
+						System.out.println("LOGINED");
+					} else {
+						// anonymous user
+						System.out.println("not LOGIN");
+						Intent i = new Intent(mContext, EmptyActivity.class);
+						mActivity.startActivity(i);
+						mActivity.finish();
+						return;
+					}
+				}
+
+				@Override
+				public void onError(Throwable t) {
+					Intent i = new Intent(mContext, EmptyActivity.class);
+					mActivity.startActivity(i);
+					mActivity.finish();
+					return;
+				}
+
+
+			});
+		}
+		else{
+			System.out.println("login cache");
+			System.out.println("user : >>>> "+UtilUser.currentUser.getEmail());
+		}
+
+
+
 
 		/*RestAdapter restAdapter = new RestAdapter(getBaseContext(), "http://192.168.1.12:3000/api/");
 
@@ -170,27 +219,40 @@ public class DrawerActivity extends MasterActivity
 				mMediaLibrary.loadMedaItems();
 		}
 
-
 		Intent caller = getIntent();
 		if(caller != null && caller.getExtras() != null) {
 			hasExtras = true;
 			isParentView = caller.getExtras().getBoolean("parent", false);
 			title = caller.getExtras().getString("title", "");
 			fragmentType = caller.getExtras().getInt("fragmentType", FRAGMENT_RADIO_PROFILE);
+			category = caller.getExtras().getString("section_category");
+
 			mode = caller.getExtras().getInt("mode", -1);
 			menuId = caller.getExtras().getInt("menuId", 0);
 			transitionId = caller.getExtras().getString("transition", "profile");
+
+			CurrentPersonProfile = caller.getExtras().getString("ownerId");
 
 			int rootLayout = getBaseLayout(fragmentType);
 
 			setContentView(rootLayout);
 			if(rootLayout == R.layout.activity_drawer)
 				isCollapseLayout = true;
+
+			if(caller.getAction() == ACTION_SHOW_PLAYER){
+				Intent i = new Intent(DrawerActivity.getmContext(), DrawerActivity.class);
+				i.putExtra("fragmentType", DrawerActivity.FRAGMENT_PLAYER);
+				i.putExtra("title", "Player");
+				startActivity(i);
+			}
+
 		}
 		else {
 			setContentView(R.layout.activity_drawer);
 			isCollapseLayout = true;
 		}
+
+
 
 		setupToolbar();
 		setupMiniPlayer();
@@ -214,6 +276,9 @@ public class DrawerActivity extends MasterActivity
 		navigationView.addHeaderView(headerView);
 		navigationView.setNavigationItemSelectedListener(this);
 
+		if(UtilUser.currentUser != null)
+			navigationView.getMenu().getItem(3).setTitle(UtilUser.currentUser.getUsername());
+
 		coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
 
 		if(isCollapseLayout) {
@@ -224,7 +289,8 @@ public class DrawerActivity extends MasterActivity
 		}
 
 		if(hasExtras) {
-			FragmentManager manager = getSupportFragmentManager();
+			showMiniPlayer = true;
+			/*FragmentManager */manager = getSupportFragmentManager();
 			if(title != null && !title.equals("")) {
 				if(toolbarLayout != null)
 					toolbarLayout.setTitle(title);
@@ -251,7 +317,7 @@ public class DrawerActivity extends MasterActivity
 						.newInstance()).commit();
 			} else if (fragmentType == FRAGMENT_PERSON_PROFILE) {
 				PersonProfileFragment fragment = PersonProfileFragment.newInstance(mode,
-						transitionId, "");
+						transitionId, "", CurrentPersonProfile);
 				callback = fragment;
 				manager.beginTransaction().replace(R.id.container, fragment).commit();
 			} else if (fragmentType == FRAGMENT_PLAYER) {
@@ -297,7 +363,7 @@ public class DrawerActivity extends MasterActivity
 						.commit();
 			}else if(fragmentType == FRAGMENT_SUBCATEGORY){
 				callback = null;
-				manager.beginTransaction().replace(R.id.container, SubcategoryFragment.newInstance(""))
+				manager.beginTransaction().replace(R.id.container, SubcategoryFragment.newInstance(category))
 						.commit();
 			}else if(fragmentType == FRAGMENT_ADD_MIX){
 				callback = null;
@@ -322,7 +388,7 @@ public class DrawerActivity extends MasterActivity
 						.commit();
 			}else if(fragmentType == FRAGMENT_COMMENT){
 				callback = null;
-				manager.beginTransaction().replace(R.id.container, CommentFragment.newInstance(""))
+				manager.beginTransaction().replace(R.id.container, CommentFragment.newInstance(caller.getExtras().getString("feedId", "")))
 						.commit();
 			}else if(fragmentType == FRAGMENT_MIX){
 				callback = null;
@@ -363,9 +429,10 @@ public class DrawerActivity extends MasterActivity
 			}
 			navigationView.getMenu().getItem(menuId).setChecked(true);
 		}else{
+			fragmentType = FRAGMENT_HOME;
 			isParentView = true;
 			FragmentManager manager = getSupportFragmentManager();
-			manager.beginTransaction().replace(R.id.container, RadioProfileFragment.newInstance()).commit();
+			manager.beginTransaction().replace(R.id.container, HomeFragment.newInstance("")).commit();
 			navigationView.getMenu().getItem(0).setChecked(true);
 		}
 
@@ -404,14 +471,14 @@ public class DrawerActivity extends MasterActivity
 	@Override
 	protected void onResume() {
 		super.onResume();
-		SharedPreferences pref = getSharedPreferences(getString(R.string.preference_key), Context
-				.MODE_PRIVATE);
-		if(!showMiniPlayer && pref.getInt("state", PlayerFragment.STATE_STOP) == PlayerFragment
-				.STATE_STOP){
-			miniPlayer.setVisibility(View.GONE);
-		}else if(showMiniPlayer){
-			miniPlayer.setVisibility(View.VISIBLE);
+		System.out.println("on resume");
+		if(fragmentType == FRAGMENT_PLAYER || fragmentType == FRAGMENT_STREAM_PLAYER)
+			showMiniPlayer = false;
+		else{
+			showMiniPlayer = true;
 		}
+		update();
+
         /* Load media items from database and storage */
 		if (mScanNeeded)
 			mMediaLibrary.scanMediaItems();
@@ -511,6 +578,7 @@ public class DrawerActivity extends MasterActivity
 			case R.id.nav_profile:
 				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_PERSON_PROFILE);
 				intent.putExtra("title", "Dimas Danang");
+				intent.putExtra("ownerId", UtilUser.currentUser.getId().toString());
 				intent.putExtra("menuId", 3);
 				startActivity(intent);
 				finish();
@@ -549,6 +617,7 @@ public class DrawerActivity extends MasterActivity
 				intent.putExtra("menuId", 8);
 				startActivity(intent);
 				finish();
+
 				break;
 		}
 		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -607,6 +676,7 @@ public class DrawerActivity extends MasterActivity
 		return MediaDatabase.getInstance().queryMedia(constraint.toString());
 	}
 
+
 	private static class MainActivityHandler extends WeakHandler<DrawerActivity> {
 		public MainActivityHandler(DrawerActivity owner) {
 			super(owner);
@@ -655,15 +725,44 @@ public class DrawerActivity extends MasterActivity
 		}
 	}
 
-	public static class User extends com.strongloop.android.loopback.User {
+	/*public static class User extends com.strongloop.android.loopback.User {
 	}
-	public static class UserRepository
-			extends com.strongloop.android.loopback.UserRepository<User> {
-		public interface LoginCallback
-		extends com.strongloop.android.loopback.UserRepository.LoginCallback<User> {
+	public static class UserRepository extends com.strongloop.android.loopback.UserRepository<User> {
+		public interface LoginCallback extends com.strongloop.android.loopback.UserRepository.LoginCallback<User> {
 		}
 		public UserRepository() {
-			super("accounts", null, User.class);
+			super("accounts/login", null, User.class);
+		}
+	}*/
+
+	public static Context getmContext(){
+		return mContext;
+	}
+
+	public static Activity getmActivity(){
+		return mActivity;
+	}
+
+	public static int getFragmentType(){
+		return fragmentType;
+	}
+
+	public static void setFragmentType(int fragment){
+		fragmentType = fragment;
+	}
+
+	public static void refresh(){
+		Intent intent = new Intent(getmContext(), DrawerActivity.class);
+		intent.putExtra("parent", true);
+
+		if(fragmentType == FRAGMENT_HOME){
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			intent.putExtra("fragmentType", MasterActivity.FRAGMENT_HOME);
+			intent.putExtra("menuId", 0);
+			mActivity.startActivity(intent);
+			mActivity.finish();
 		}
 	}
+
+
 }

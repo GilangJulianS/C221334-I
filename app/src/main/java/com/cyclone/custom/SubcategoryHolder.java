@@ -1,6 +1,7 @@
 package com.cyclone.custom;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
@@ -9,8 +10,13 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.cyclone.R;
+import com.cyclone.fragment.SubcategoryFragment;
+import com.cyclone.model.Content;
 import com.cyclone.model.Data;
 import com.cyclone.model.SubcategoryItem;
+import com.cyclone.service.ServicePlayOnHolder;
+import com.koushikdutta.urlimageviewhelper.UrlImageViewCallback;
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 
 /**
  * Created by gilang on 21/11/2015.
@@ -23,6 +29,9 @@ public class SubcategoryHolder extends UniversalHolder {
 	public ImageButton btnMenu;
 	public ImageButton btnDelete;
 	public CheckBox checkbox;
+	Bitmap mCover;
+
+	int position;
 
 	public SubcategoryHolder(View v, Activity activity, UniversalAdapter adapter) {
 		super(v, activity, adapter);
@@ -36,6 +45,7 @@ public class SubcategoryHolder extends UniversalHolder {
 
 	@Override
 	public void bind(Object object, Activity activity, int position) {
+		this.position = position;
 		bind((SubcategoryItem) object);
 	}
 
@@ -45,7 +55,14 @@ public class SubcategoryHolder extends UniversalHolder {
 	}*/
 
 	public void bind(final SubcategoryItem subcategoryItem){
-		imgCover.setImageResource(R.drawable.wallpaper);
+		//imgCover.setImageResource(R.drawable.wallpaper);
+		UrlImageViewHelper.setUrlDrawable(imgCover, subcategoryItem.imgUrl, R.drawable.radio_icon, new UrlImageViewCallback() {
+			@Override
+			public void onLoaded(ImageView imageView, Bitmap bitmap, String s, boolean b) {
+				imgCover.setImageBitmap(bitmap);
+				mCover = bitmap;
+			}
+		});
 		txtPrimary.setText(subcategoryItem.txtPrimary);
 		txtSecondary.setText(subcategoryItem.txtSecondary);
 		if(subcategoryItem.type == SubcategoryItem.TYPE_NORMAL) {
@@ -55,7 +72,8 @@ public class SubcategoryHolder extends UniversalHolder {
 				public void onClick(View v) {
 					PopupMenu menu = new PopupMenu(activity, btnMenu);
 					menu.inflate(R.menu.popup_default);
-					menu.setOnMenuItemClickListener(new PopupMenuListener(activity));
+					final Content c = new Content("","","","","","");
+					menu.setOnMenuItemClickListener(new PopupMenuListener(activity, c, btnMenu, subcategoryItem.id));
 					menu.show();
 				}
 			});
@@ -73,5 +91,13 @@ public class SubcategoryHolder extends UniversalHolder {
 		}else if(subcategoryItem.type == SubcategoryItem.TYPE_SELECTABLE){
 			checkbox.setVisibility(View.VISIBLE);
 		}
+
+		imgCover.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ServicePlayOnHolder servicePlayOnHolder = new ServicePlayOnHolder();
+				servicePlayOnHolder.startPlayOnFragment(v.getContext(), SubcategoryFragment.getInstance(), subcategoryItem.category, position);
+			}
+		});
 	}
 }

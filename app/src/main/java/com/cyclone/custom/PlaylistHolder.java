@@ -6,7 +6,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cyclone.R;
+import com.cyclone.fragment.PlayerFragment;
 import com.cyclone.model.Queue;
+import com.cyclone.service.ServicePlayOnHolder;
 
 /**
  * Created by gilang on 01/11/2015.
@@ -26,11 +28,13 @@ public class PlaylistHolder extends UniversalHolder{
 		txtDuration = (TextView) v.findViewById(R.id.txt_duration);
 		card = (ViewGroup) v.findViewById(R.id.card_queue);
 
+
 	}
 
 	@Override
 	public void bind(Object object, Activity activity, int position) {
 		bind((Queue)object);
+		posisi = position;
 	}
 
 	/*@Override
@@ -47,7 +51,10 @@ public class PlaylistHolder extends UniversalHolder{
 			@Override
 			public void onClick(View v) {
 				System.out.println("Kklik di: "+posisi);
+				ServicePlayOnHolder servicePlayOnHolder = new ServicePlayOnHolder();
+				servicePlayOnHolder.startPlayOnQueue(v.getContext(), posisi, PlayerFragment.getInstance());
 			}
 		});
+
 	}
 }

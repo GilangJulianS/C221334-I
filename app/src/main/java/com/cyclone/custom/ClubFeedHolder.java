@@ -15,8 +15,11 @@ import android.widget.TextView;
 import com.cyclone.DrawerActivity;
 import com.cyclone.MasterActivity;
 import com.cyclone.R;
+import com.cyclone.Utils.ServerUrl;
 import com.cyclone.fragment.PersonProfileFragment;
+import com.cyclone.loopback.repository.FeedLikeRepository;
 import com.cyclone.model.Post;
+import com.strongloop.android.loopback.RestAdapter;
 
 /**
  * Created by gilang on 01/11/2015.
@@ -82,15 +85,29 @@ public class ClubFeedHolder extends UniversalHolder{
 		txtPostContent.setText(p.postContent);
 		txtPostInfo.setText(p.postInfo);
 		txtLikesInfo.setText(p.likesCount + " likes • " + p.commentCount + " comments");
+		if(p.isLiked)
+			btnLike.setColorFilter(Color.parseColor("#E91E63"));
+		else
+			btnLike.setColorFilter(null);
 		btnLike.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(!p.isLiked) {
+				final RestAdapter restAdapter = new RestAdapter(activity.getBaseContext(), ServerUrl.API_URL);
+				final FeedLikeRepository feedLikeRepository= restAdapter.createRepository(FeedLikeRepository.class);
+				if (!p.isLiked) {
 					btnLike.setColorFilter(Color.parseColor("#E91E63"));
 					p.isLiked = true;
-				}else{
+					p.likesCount++;
+					txtLikesInfo.setText(p.likesCount + " likes • " + p.commentCount + " comments");
+					System.out.println("on holder id : "+p.FeedId);
+					feedLikeRepository.like(p.FeedId);
+				} else {
 					btnLike.setColorFilter(null);
 					p.isLiked = false;
+					p.likesCount--;
+					txtLikesInfo.setText(p.likesCount + " likes • " + p.commentCount + " comments");
+					System.out.println("on holder id : " + p.FeedId);
+					feedLikeRepository.unlike(p.FeedId);
 				}
 			}
 		});
@@ -103,7 +120,12 @@ public class ClubFeedHolder extends UniversalHolder{
 		btnComment.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-
+				Intent i = new Intent(activity, DrawerActivity.class);
+				i.putExtra("fragmentType", MasterActivity.FRAGMENT_COMMENT);
+				i.putExtra("title", "Comments");
+				i.putExtra("feedId", p.FeedId);
+				System.out.println("feed Id : "+ p.FeedId);
+				activity.startActivity(i);
 			}
 		});
 		final ImageView imageView = imgUser;
@@ -119,6 +141,8 @@ public class ClubFeedHolder extends UniversalHolder{
 				i.putExtra("fragmentType", DrawerActivity.FRAGMENT_PERSON_PROFILE);
 				i.putExtra("mode", PersonProfileFragment.MODE_OTHERS_PROFILE);
 				i.putExtra("transition", "profile" + transitionId);
+				i.putExtra("ownerId", p.userId);
+				i.putExtra("title", p.username);
 
 				if(Build.VERSION.SDK_INT >= 16) {
 					ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation

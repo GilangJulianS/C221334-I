@@ -57,12 +57,12 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.cyclone.BuildConfig;
 import com.cyclone.R;
 import com.cyclone.fragment.PlayerFragment;
-import com.cyclone.interfaces.test;
 import com.cyclone.player.gui.AudioPlayerContainerActivity;
 import com.cyclone.player.helpers.AudioUtil;
 import com.cyclone.player.interfaces.IgetCoverUrl;
@@ -79,6 +79,8 @@ import com.cyclone.player.util.VLCInstance;
 import com.cyclone.player.util.VLCOptions;
 import com.cyclone.player.util.WeakHandler;
 import com.cyclone.player.widget.VLCAppWidgetProvider;
+import com.koushikdutta.urlimageviewhelper.UrlImageViewCallback;
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 
 import org.videolan.libvlc.IVLCVout;
 import org.videolan.libvlc.LibVLC;
@@ -88,11 +90,13 @@ import org.videolan.libvlc.MediaPlayer;
 import org.videolan.libvlc.util.AndroidUtil;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -131,6 +135,7 @@ public class PlaybackService extends Service implements IVLCVout.Callback, IgetC
     public static final String ACTION_REMOTE_LAST_PLAYLIST = ACTION_REMOTE_GENERIC+"LastPlaylist";
     public static final String ACTION_REMOTE_LAST_VIDEO_PLAYLIST = ACTION_REMOTE_GENERIC+"LastVideoPlaylist";
     public static final String ACTION_REMOTE_SWITCH_VIDEO = ACTION_REMOTE_GENERIC+"SwitchToVideo";
+
 
     @Override
     public void OnCoverLoaded(Bitmap bitmap) {
@@ -407,6 +412,7 @@ public class PlaybackService extends Service implements IVLCVout.Callback, IgetC
                         }
                         if (mLossTransient) {
                             mMediaPlayer.play();
+                            handlerIklan.postDelayed(runnableIkln, 5000);
                             mLossTransient = false;
                         }
                         break;
@@ -593,6 +599,8 @@ public class PlaybackService extends Service implements IVLCVout.Callback, IgetC
                 case MediaPlayer.Event.Playing:
 
                     Log.i(TAG, "MediaPlayer.Event.Playing");
+
+                    mHandler.sendEmptyMessage(SHOW_PROGRESS);
                     executeUpdate();
                     publishState(event.type);
                     executeUpdateProgress();
@@ -846,7 +854,7 @@ public class PlaybackService extends Service implements IVLCVout.Callback, IgetC
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+   // @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void showNotification() {
         if (mMediaPlayer.getVLCVout().areViewsAttached())
             return;
@@ -855,9 +863,24 @@ public class PlaybackService extends Service implements IVLCVout.Callback, IgetC
             String title = metaData.getString(MediaMetadataCompat.METADATA_KEY_TITLE);
             String artist = metaData.getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST);
             String album = metaData.getString(MediaMetadataCompat.METADATA_KEY_ALBUM);
+            String cover_url = metaData.getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI);
             Bitmap cover = metaData.getBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART);
-            if (cover == null)
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            if (cover == null){
                 cover = BitmapFactory.decodeResource(VLCApplication.getAppContext().getResources(), R.drawable.radio_icon);
+                UrlImageViewHelper.loadUrlDrawable(VLCApplication.getAppContext(),cover_url, new UrlImageViewCallback() {
+                    @Override
+                    public void onLoaded(ImageView imageView, Bitmap bitmap, String s, boolean b) {
+                        hideNotification();
+                        builder.setLargeIcon(Bitmap.createScaledBitmap(bitmap, 350, 350, false));
+                        showNotification();
+
+                    }
+
+                });
+            }
+
+
             Notification notification;
 
             //Watch notification dismissed
@@ -865,12 +888,12 @@ public class PlaybackService extends Service implements IVLCVout.Callback, IgetC
                     new Intent(ACTION_REMOTE_STOP), PendingIntent.FLAG_UPDATE_CURRENT);
 
             // add notification to status bar
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+
             builder.setSmallIcon(R.drawable.radio_icon)
                     .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                     .setContentTitle(title)
                     .setContentText(artist + " - " + album)
-                    .setLargeIcon(cover)
+                    .setLargeIcon(Bitmap.createScaledBitmap(cover, 350, 350, false))
                     .setTicker(title + " - " + artist)
                     .setAutoCancel(!mMediaPlayer.isPlaying())
                     .setOngoing(mMediaPlayer.isPlaying())
@@ -958,8 +981,7 @@ public class PlaybackService extends Service implements IVLCVout.Callback, IgetC
     public void play() {
         if(hasCurrentMedia()) {
             mMediaPlayer.play();
-
-            mHandler.sendEmptyMessage(SHOW_PROGRESS);
+            handlerIklan.postDelayed(runnableIkln, 5000);
             updateMetadata();
             updateWidget();
             broadcastMetadata();
@@ -968,6 +990,12 @@ public class PlaybackService extends Service implements IVLCVout.Callback, IgetC
 
     @MainThread
     public void stop() {
+        //Stop Iklan
+        if(iklanMediaPlayer != null && iklanMediaPlayer.isPlaying()){
+            iklanMediaPlayer.stop();
+        }
+        //end stop iklan
+
         if (mMediaSession != null) {
             mMediaSession.setActive(false);
             mMediaSession.release();
@@ -995,6 +1023,8 @@ public class PlaybackService extends Service implements IVLCVout.Callback, IgetC
         changeAudioFocus(false);
 
         stopSelf();
+        for (Callback callback : mCallbacks)
+            callback.update();
     }
 
     private void determinePrevAndNextIndices() {
@@ -1288,10 +1318,10 @@ public class PlaybackService extends Service implements IVLCVout.Callback, IgetC
         if(bitmap != null){
             //getCurrentMedia().setPicture(bitmap);
             System.out.println("executeUpdate <<<<<<<<<<<");
-            if(PlayerFragment.playerFragment != null){
+            if(PlayerFragment.getInstance() != null){
                 ArrayList<updateCoverFromUrl> mCallbacks = new ArrayList<updateCoverFromUrl>();
                 mCallbacks.clear();
-                mCallbacks.add(PlayerFragment.playerFragment);
+                mCallbacks.add(PlayerFragment.getInstance());
                 System.out.println("send update cover");
                 for (updateCoverFromUrl updt : mCallbacks)
                     updt.onComplateLoadCoverUrl(bitmap);
@@ -1720,6 +1750,7 @@ public class PlaybackService extends Service implements IVLCVout.Callback, IgetC
         changeAudioFocus(true);
         mMediaPlayer.setEventListener(mMediaPlayerListener);
         mMediaPlayer.play();
+        handlerIklan.postDelayed(runnableIkln, 5000);
         if(mSavedTime != 0l)
             mMediaPlayer.setTime(mSavedTime);
         mSavedTime = 0l;
@@ -1790,7 +1821,7 @@ public class PlaybackService extends Service implements IVLCVout.Callback, IgetC
     public void moveItem(int positionStart, int positionEnd) {
         mMediaList.move(positionStart, positionEnd);
         PlaybackService.this.saveMediaList();
-        Log.d(TAG, "moveItem "+positionStart+" -> "+positionEnd);
+        Log.d(TAG, "moveItem " + positionStart + " -> " + positionEnd);
     }
 
     @MainThread
@@ -2025,6 +2056,14 @@ public class PlaybackService extends Service implements IVLCVout.Callback, IgetC
         return ret;
     }
 
+    @MainThread
+    public void updateMetadataOnPlay() {
+        updateMetadata();
+        executeUpdate();
+        updateWidget();
+        broadcastMetadata();
+    }
+
     public void restartMediaPlayer() {
         stop();
         mMediaPlayer.release();
@@ -2127,4 +2166,27 @@ public class PlaybackService extends Service implements IVLCVout.Callback, IgetC
             return mMediaList;
         return null;
     }
+
+
+    //IKLAN <<<<<<<<<<<<<<<<<<<<<<<<<<,
+    MediaPlayer iklanMediaPlayer = null;
+    public void playIklan(){
+       /* Media media = new Media(VLCInstance.get(), Uri.parse("http://www.noiseaddicts.com/samples_1w72b820/29.mp3"));
+        //Media media = new Media(VLCInstance.get(), Uri.parse("rtmp://stm.melon.co.id/prelisten?rtmp_swfurl=\"http://www.melon.co.id/flash/player.swf?songId=114514031\"&rtmp_playpath=\"melon\"&rtmp_app=\"prelisten\"&rtmp_tcurl=\"rtmp://stm.melon.co.id/prelisten\""));
+        iklanMediaPlayer = new MediaPlayer(media);
+        iklanMediaPlayer.play();*/
+    }
+
+    public Runnable runnableIkln = new Runnable() {
+        @Override
+        public void run() {
+            System.out.println("refresh");
+            playIklan();
+
+           // handlerIklan.postDelayed(runnableIkln, 11000);
+        }
+    };
+
+    Handler handlerIklan = new Handler();
+
 }

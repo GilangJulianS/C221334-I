@@ -15,14 +15,17 @@ public class Post {
 	public String postTitle;
 	public String postContent;
 	public String postInfo;
+	public String userId;
 	public int likesCount;
 	public int commentCount;
 	public int type;
 	public boolean isLiked;
+	public String username;
+	public String FeedId;
 
 	public Post(String imgUrl, String headerName, String timestamp, String playlistType, String
 			postImgUrl, String postTitle, String postContent, String postInfo, int likesCount,
-				int commentCount, int type, boolean isLiked){
+				int commentCount, int type, boolean isLiked, String userId){
 		this.imgUrl = imgUrl;
 		this.headerName = headerName;
 		this.timestamp = timestamp;
@@ -35,5 +38,24 @@ public class Post {
 		this.commentCount = commentCount;
 		this.type = type;
 		this.isLiked = isLiked;
+	}
+	public Post(String imgUrl, String headerName, String timestamp, String playlistType, String
+			postImgUrl, String postTitle, String postContent, String postInfo, int likesCount,
+				int commentCount, int type, boolean isLiked, String userId, String username,  String FeedId){
+		this.imgUrl = imgUrl;
+		this.headerName = headerName;
+		this.timestamp = timestamp;
+		this.playlistType =  playlistType;
+		this.postImgUrl = postImgUrl;
+		this.postTitle = postTitle;
+		this.postContent = postContent;
+		this.postInfo =  postInfo;
+		this.likesCount = likesCount;
+		this.commentCount = commentCount;
+		this.type = type;
+		this.isLiked = isLiked;
+		this.userId = userId;
+		this.username = username;
+		this.FeedId = FeedId;
 	}
 }

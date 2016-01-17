@@ -37,6 +37,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.cyclone.DrawerActivity;
 import com.cyclone.fragment.PlayerFragment;
 import com.cyclone.player.PlaybackService;
 import com.cyclone.player.media.MediaLibrary;
@@ -225,11 +226,10 @@ public class AudioPlayerContainerActivity extends AppCompatActivity implements P
      * Show the audio player.
      */
     public void showAudioPlayer() {
-       /* mActionBar.collapseActionView();
-        // Open the pane only if is entirely opened.
-        if (mSlidingPane.getState() == mSlidingPane.STATE_OPENED_ENTIRELY)
-            mSlidingPane.openPane();
-        mAudioPlayerFilling.setVisibility(View.VISIBLE);*/
+        Intent i = new Intent(DrawerActivity.getmContext(), DrawerActivity.class);
+        i.putExtra("fragmentType", DrawerActivity.FRAGMENT_PLAYER);
+        i.putExtra("title", "Player");
+        startActivity(i);
     }
 
     public int  getSlidingPaneState() {

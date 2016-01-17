@@ -7,9 +7,13 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.interfaces.getData;
-import com.cyclone.interfaces.test;
+import com.cyclone.interfaces.onLoadMediaWrapper;
 import com.cyclone.model.Content;
+import com.cyclone.model.ProgramContent;
+import com.cyclone.model.ProgramPager;
+import com.cyclone.model.RunningProgram;
 import com.cyclone.player.helpers.GetCoverUrl;
 import com.cyclone.player.helpers.ServiceQueueJson;
 import com.cyclone.player.interfaces.IgetCoverUrl;
@@ -23,7 +27,9 @@ import org.json.JSONObject;
 import org.videolan.libvlc.Media;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -39,6 +45,7 @@ public class ServiceGetData extends IntentService {
     private static final String ACTION_BAZ = "com.cyclone.service.action.BAZ";
     private static final String ACTION_GET_COVER_URL = "com.cyclone.service.action.GET_COVER_URL";
     private static final String ACTION_GET_DATA_HOME = "com.cyclone.service.action.GET_DATA_HOME";
+    private static final String ACTION_GET_DATA_STREAM = "com.cyclone.service.action.GET_DATA_STREAM";
     private static final String ACTION_PLAY_ON_HOME = "com.cyclone.service.action.ACTION_PLAY_ON_HOME";
 
     // TODO: Rename parameters
@@ -51,7 +58,7 @@ public class ServiceGetData extends IntentService {
     private static final String COVER_URL = "com.cyclone.service.extra.COVER_URL";
 
     //static private test mCallbacks ;
-    public static ArrayList<test> mCallbacks = new ArrayList<test>();
+    public static ArrayList<onLoadMediaWrapper> mCallbacks = new ArrayList<onLoadMediaWrapper>();
     public static ArrayList<getData> mCallbacksGetDataHome = new ArrayList<getData>();
     public static ArrayList<IgetCoverUrl> callbackCover = new ArrayList<IgetCoverUrl>();
 
@@ -76,7 +83,7 @@ public class ServiceGetData extends IntentService {
      * @see IntentService
      */
     // TODO: Customize helper method
-    public static void startActionGetTestDataForPlay(Context context, test client) {
+    public static void startActionGetTestDataForPlay(Context context, onLoadMediaWrapper client) {
         if (!mCallbacks.contains(client))
             mCallbacks.add(client);
 
@@ -86,19 +93,27 @@ public class ServiceGetData extends IntentService {
         context.startService(intent);
     }
 
-    public static void getDataHome(Context context, getData client, String param2) {
+    public static void getDataHome(Context context, getData client) {
         if (!mCallbacksGetDataHome.contains(client))
             mCallbacksGetDataHome.add(client);
 
-        System.out.println("dalam callback : " + mCallbacks.size());
+        System.out.println("dalam callback : " + mCallbacksGetDataHome.size());
         Intent intent = new Intent(context, ServiceGetData.class);
         intent.setAction(ACTION_GET_DATA_HOME);
-        //mCallbacks = param1;
-        intent.putExtra(EXTRA_PARAM2, param2);
         context.startService(intent);
     }
 
-    public static void startPlayOnHome(Context context, MediaWrapper media, test client) {
+    public static void getDataStream(Context context, getData client) {
+        if (!mCallbacksGetDataHome.contains(client))
+            mCallbacksGetDataHome.add(client);
+
+        System.out.println("dalam callback : " + mCallbacksGetDataHome.size());
+        Intent intent = new Intent(context, ServiceGetData.class);
+        intent.setAction(ACTION_GET_DATA_STREAM);
+        context.startService(intent);
+    }
+
+    public static void startPlayOnHome(Context context, MediaWrapper media, onLoadMediaWrapper client) {
         if(mCallbacks != null)
             mCallbacks.clear();
         mCallbacks.add(client);
@@ -143,6 +158,7 @@ public class ServiceGetData extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        System.out.println("onHandleIntent start");
         if (intent != null) {
             final String action = intent.getAction();
             if (ACTION_FOO.equals(action)) {
@@ -159,16 +175,22 @@ public class ServiceGetData extends IntentService {
                 final String coverPath = intent.getStringExtra(COVER_PATH);
                 final String cachePath = intent.getStringExtra(CACHE_PATH);
                 final int width = intent.getIntExtra("int", 0);
-                handleActionGetCoveUrl(url, coverPath, cachePath,width);
+                handleActionGetCoveUrl(url, coverPath, cachePath, width);
             }
             else if(ACTION_GET_DATA_HOME.equals(action)){
                 getDataHome();
             }
+            else if(ACTION_GET_DATA_STREAM.equals(action)){
+                getDataStream();
+            }
+
            /* else if (ACTION_PLAY_ON_HOME.equals(action)) {
                 MediaWrapper media = intent.getParcelableExtra(MEDIA_WARPER);
                 handleActionPlayOnHome(media);
             }*/
+
         }
+        System.out.println("onHandleIntent finish");
     }
 
     /**
@@ -189,6 +211,10 @@ public class ServiceGetData extends IntentService {
         new getDataHome().execute();
     }
 
+    private void getDataStream(){
+        new getDataStream().execute();
+    }
+
     /**
      * Handle action Baz in the provided background thread with the provided
      * parameters.
@@ -199,7 +225,6 @@ public class ServiceGetData extends IntentService {
     }
 
     private class getQueueArray extends AsyncTask<Void, Void, Void> {
-
 
         List<Media> alMedia = new ArrayList<Media>();
         Media m;
@@ -218,14 +243,7 @@ public class ServiceGetData extends IntentService {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            // Showing progress dialog
-           /* pDialogA = new ProgressDialog(mContextA);
-            pDialogA.setMessage("Please wait...");
-            pDialogA.setCancelable(false);
-            pDialogA.show();*/
-
             System.out.println("onPreExecute");
-
         }
 
         @Override
@@ -243,7 +261,6 @@ public class ServiceGetData extends IntentService {
                     // looping through All Contacts
                     for (int i = 0; i < mJsonArray.length(); i++) {
                         JSONObject mJsonObject = mJsonArray.getJSONObject(i);
-
                         myUri = Uri.parse(mJsonObject.getString("file"));
 
                         MC = new MediaCustom();
@@ -263,9 +280,6 @@ public class ServiceGetData extends IntentService {
 
                         mw.add(mMedia);
                     }
-
-
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -282,58 +296,47 @@ public class ServiceGetData extends IntentService {
             // Dismiss the progress dialog
             System.out.println("onPostExecute");
             System.out.println("jumlah list :" + mw.size());
-            for(test myTest : mCallbacks)
+            for(onLoadMediaWrapper myTest : mCallbacks)
                 myTest.OnLoadComplite(mw);
-
-           /* if (pDialogA.isShowing())
-                pDialogA.dismiss();*/
-            /**
-             * Updating parsed JSON data into ListView
-             * */
-
-
-
         }
-
     }
 
-
     private class getDataHome extends AsyncTask<Void, Void, Void> {
-
-
         List<List> list = new ArrayList<>();
+
+        Map<String, List> mapList = new HashMap<String, List>();
         ServiceQueueJson sh = new ServiceQueueJson();
         String url_news = "http://www.1071klitefm.com/apis/data/lists/berita";
+        String url_talk = "http://www.1071klitefm.com/apis/data/lists/variety";
+       /* String url_news = "http://www.sonorasemarang.com/apis/data/lists/berita";
+        String url_talk = "http://www.sonorasemarang.com/apis/data/lists/variety";*/
 
-        // Making a request to url and getting response
-        String jsonStr = sh.makeServiceCall(url_news, ServiceQueueJson.GET);
-
-
+        String jsonStrNews ;
+        String jsonStrTalk ;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
             System.out.println("onPreExecute");
 
         }
-
         @Override
         protected Void doInBackground(Void... arg0) {
-            // Creating service handler class instance
+            // Making a request to url and getting response
             System.out.println("doInBackground");
 
-            Log.d("Response: ", "> " + jsonStr);
+            jsonStrNews = sh.makeServiceCall(url_news, ServiceQueueJson.GET);
+            // Creating service handler class instance
+
+            Log.d("Response News: ", "> " + jsonStrNews);
 
             List<Content> news = new ArrayList<>();
-            if (jsonStr != null) {
+            if (jsonStrNews != null) {
                 try {
-                    //JSONObject jsonObj = new JSONObject(jsonStr);
-                    JSONArray mJsonArray = new JSONArray(jsonStr);
-
+                    JSONArray mJsonArray = new JSONArray(jsonStrNews);
                     // looping through All Contacts
-                    for (int i = 0; i < 3; i++) {
-
+                    for (int i = 0; i < mJsonArray.length(); i++) {
+                        System.out.println("added from JSON  news item");
                             JSONObject mJsonObject = mJsonArray.getJSONObject(i);
                             String id = mJsonObject.getString("id");
                             String title = mJsonObject.getString("title");
@@ -341,15 +344,41 @@ public class ServiceGetData extends IntentService {
                             String file = mJsonObject.getString("file");
                             String gambar = mJsonObject.getString("attachment");
                             String radio = mJsonObject.getString("radio");
-                            // myUri = Uri.parse(mJsonObject.getString("file"));
-
-                            //news.add(new Content(id,title, date, file, gambar, radio));
-                        news.add(new Content(gambar, "Latest News", title, "Nama Radio", date, file));
-
+                        news.add(new Content(gambar, UtilArrayData.CATEGORY_NEWS,0, title, UtilArrayData.NAMA_RADIO, date, file, i,id));
                     }
 
                     list.add(news);
+                    mapList.put("news", news);
 
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Log.e("ServiceHandler", "Couldn't get any data from the url");
+            }
+
+
+            jsonStrTalk = sh.makeServiceCall(url_talk, ServiceQueueJson.GET);
+            Log.d("Response Talk: ", "> " + jsonStrTalk);
+            List<Content> talk = new ArrayList<>();
+            if (jsonStrTalk != null) {
+                try {
+                    JSONArray mJsonArray = new JSONArray(jsonStrTalk);
+                    // looping through All Contacts
+                    for (int i = 0; i < mJsonArray.length(); i++) {
+                        System.out.println("added from JSON  news item");
+                        JSONObject mJsonObject = mJsonArray.getJSONObject(i);
+                        String id = mJsonObject.getString("id");
+                        String title = mJsonObject.getString("title");
+                        String date = mJsonObject.getString("post_date");
+                        String file = mJsonObject.getString("file");
+                        String gambar = mJsonObject.getString("attachment");
+                        String radio = mJsonObject.getString("radio");
+                        talk.add(new Content(gambar, UtilArrayData.CATEGORY_TALK,0, title, UtilArrayData.NAMA_RADIO, date, file, i,id));
+                    }
+
+                    list.add(talk);
+                    mapList.put("talk", talk);
 
 
                 } catch (JSONException e) {
@@ -369,26 +398,141 @@ public class ServiceGetData extends IntentService {
             System.out.println("onPostExecute");
             System.out.println("jumlah list : " + list.size());
 
+            UtilArrayData.ContentTalk.clear();
+            UtilArrayData.ContentTalk = mapList.get("talk");
+            System.out.println("content talk size: "+UtilArrayData.ContentTalk.size());
+            UtilArrayData.ContentNews.clear();
+            UtilArrayData.ContentNews = mapList.get("news");
+            System.out.println("content news size : " + UtilArrayData.ContentNews.size());
+
             for(getData dataCallback : mCallbacksGetDataHome)
-                dataCallback.onDataLoadedHome(list);
+                dataCallback.onDataLoadedHome(mapList);
+        }
 
-
-
-           /* if (pDialogA.isShowing())
-                pDialogA.dismiss();*/
-            /**
-             * Updating parsed JSON data into ListView
-             * */
-
-
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            for(getData dataCallback : mCallbacksGetDataHome)
+                 dataCallback.onDataLoadedHomeCancel();
+                //dataCallback.onDataLoadedHome(mapList);
 
         }
 
     }
 
-    /*private void handleActionPlayOnHome(MediaWrapper media) {
-        System.out.println("handleActionPlayOnHome");
-        for(test myTest : mCallbacks)
-            myTest.onLoadedPlayOnHolder(media);
-    }*/
+    private class getDataStream extends AsyncTask<Void, Void, Void> {
+
+        ServiceQueueJson sh = new ServiceQueueJson();
+        String url_rundown = "http://www.1071klitefm.com/apis/data/rundown";
+        String url_runing = "http://www.1071klitefm.com/apis/data/programme";
+
+        String jsonStrRunDown ;
+        String jsonStrRuning ;
+
+        List<Object> datas = new ArrayList<>();
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            System.out.println("onPreExecute");
+
+        }
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            // Making a request to url and getting response
+            System.out.println("doInBackground");
+
+            jsonStrRuning = sh.makeServiceCall(url_runing, ServiceQueueJson.GET);
+            jsonStrRunDown = sh.makeServiceCall(url_rundown, ServiceQueueJson.GET);
+            // Creating service handler class instance
+
+            Log.d("Response Running: ", "> " + jsonStrRuning);
+            Log.d("Response Run Down: ", "> " + jsonStrRunDown);
+
+            List<String> images = new ArrayList<>();
+            images.add("");
+            images.add("");
+            images.add("");
+            datas.add(new ProgramPager(images, 1));
+
+            if (jsonStrRuning != null) {
+                try {
+                    JSONArray mJsonArray = new JSONArray(jsonStrRuning);
+                    // looping through All Contacts
+                    for (int i = 0; i < mJsonArray.length(); i++) {
+                        System.out.println("added from JSON  running item");
+                        JSONObject mJsonObject = mJsonArray.getJSONObject(i);
+                        String nama = mJsonObject.getString("nama");
+                        String foto = mJsonObject.getString("foto");
+                        String deskripsi = mJsonObject.getString("deskripsi");
+                        datas.add(new RunningProgram(nama, deskripsi, foto));
+                        UtilArrayData.program = new RunningProgram(nama, deskripsi, foto);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Log.e("ServiceHandler", "Couldn't get any data from the url");
+            }
+
+            if (jsonStrRunDown != null) {
+                try {
+                    JSONArray mJsonArray = new JSONArray(jsonStrRunDown);
+                    // looping through All Contacts
+                    for (int i = 0; i < mJsonArray.length(); i++) {
+                        System.out.println("added from JSON  news item");
+                        JSONObject mJsonObject = mJsonArray.getJSONObject(i);
+                        String type = mJsonObject.getString("log_group");
+                        String waktu = mJsonObject.getString("waktu");
+                        String remark = mJsonObject.getString("remark");
+                        int setType = ProgramContent.TYPE_SOUND;
+                        if(type.equalsIgnoreCase("SONG"))
+                            setType = ProgramContent.TYPE_MUSIC;
+                        else if (type.equalsIgnoreCase("ADVS_AUDIO"))
+                                setType = ProgramContent.TYPE_COMMERCIAL;
+                        else if(type .equalsIgnoreCase("SOUND"))
+                                setType = ProgramContent.TYPE_SOUND;
+
+                        datas.add(new ProgramContent(setType, waktu, remark));
+                    }
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Log.e("ServiceHandler", "Couldn't get any data from the url");
+            }
+
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            // Dismiss the progress dialog
+            System.out.println("onPostExecute");
+            System.out.println("jumlah list : " + datas.size());
+
+            if(datas.size() > 0){
+                UtilArrayData.ContentLiveStreaming.clear();
+                UtilArrayData.ContentLiveStreaming = datas;
+            }
+
+            for(getData dataCallback : mCallbacksGetDataHome)
+                dataCallback.onDataLoadedLiveStreaming(datas);
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            for(getData dataCallback : mCallbacksGetDataHome)
+                dataCallback.onDataLoadedHomeCancel();
+            //dataCallback.onDataLoadedHome(mapList);
+
+        }
+
+    }
 }

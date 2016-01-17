@@ -15,7 +15,8 @@
 			android:layout_width="50dp"
 			android:layout_height="50dp"
 			android:scaleType="centerCrop"
-			android:src="@drawable/wallpaper"/>
+			android:src="@drawable/wallpaper"
+			android:id="@+id/cover"/>
 
 		<ImageButton
 			android:id="@+id/btn_play"

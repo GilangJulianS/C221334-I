@@ -95,6 +95,7 @@ public class VLCApplication extends Application {
         MediaDatabase.getInstance();
         // Prepare cache folder constants
         AudioUtil.prepareCacheFolder(this);
+
     }
 
     /**

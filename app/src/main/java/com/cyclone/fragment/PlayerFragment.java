@@ -31,6 +31,7 @@ import android.widget.TextView;
 
 import com.cyclone.DrawerActivity;
 import com.cyclone.R;
+import com.cyclone.interfaces.PlayOnHolder;
 import com.cyclone.model.Queue;
 import com.cyclone.player.PlaybackService;
 import com.cyclone.player.VLCApplication;
@@ -39,6 +40,8 @@ import com.cyclone.player.interfaces.updateCoverFromUrl;
 import com.cyclone.player.media.MediaWrapper;
 import com.cyclone.player.media.MediaWrapperList;
 import com.cyclone.player.util.Strings;
+import com.koushikdutta.urlimageviewhelper.UrlImageViewCallback;
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
@@ -49,7 +52,7 @@ import java.util.List;
 /**
  * Created by gilang on 29/10/2015.
  */
-public class PlayerFragment extends PlaybackServiceRecyclerFragment implements PlaybackService.Callback, updateCoverFromUrl {
+public class PlayerFragment extends PlaybackServiceRecyclerFragment implements PlaybackService.Callback, updateCoverFromUrl, PlayOnHolder {
 
 	public static final int STATE_PLAYING = 100;
 	public static final int STATE_STOP = 101;
@@ -63,12 +66,17 @@ public class PlayerFragment extends PlaybackServiceRecyclerFragment implements P
 	private TextView txtTitle, txtArtist, txtTotalTime, txtCurTime;
 	private SeekBar seekbar;
 	private boolean mPreviewingSeek = false;
-	public static PlayerFragment playerFragment = null;
+	static PlayerFragment fragment;
 	public PlayerFragment(){}
+	Context mContext;
 
 	public static PlayerFragment newInstance(String json){
-		PlayerFragment fragment = new PlayerFragment();
+		fragment = new PlayerFragment();
 		fragment.json = json;
+		return fragment;
+	}
+
+	public static PlayerFragment getInstance(){
 		return fragment;
 	}
 
@@ -80,7 +88,7 @@ public class PlayerFragment extends PlaybackServiceRecyclerFragment implements P
 	@Override
 	public void onCreateView(View v, ViewGroup parent, Bundle savedInstanceState) {
 		setHasOptionsMenu(true);
-		 playerFragment = new PlayerFragment();
+
 	}
 
 	@Override
@@ -433,6 +441,13 @@ public class PlayerFragment extends PlaybackServiceRecyclerFragment implements P
 	public void update() {
 		if (mService == null || getActivity() == null)
 			return;
+		if(!mService.hasMedia()){
+			System.out.println("NO MEDIA / STOPED");
+			DrawerActivity.showMiniPlayer = true;
+			DrawerActivity.setFragmentType(DrawerActivity.FRAGMENT_HOME);
+			getActivity().finish();
+			return;
+		}
 
 		/*if (mService.hasMedia() && !mService.isVideoPlaying()) {
 			SharedPreferences mSettings= PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -506,24 +521,40 @@ public class PlayerFragment extends PlaybackServiceRecyclerFragment implements P
 
 		updateList();
 
-		txtTitle.setText(mService.getTitle());
-		txtArtist.setText(mService.getArtist() + " - " + mService.getAlbum());
+		txtTitle.setText(mService.getArtist() + " - " + mService.getAlbum());
+		txtArtist.setText(mService.getTitle());
 
 		System.out.println("PLAYER UPDATE //////////////");
-
 
 
 	}
 
 	public void changeImage(){
 		try{
-			imgTemp.setImageDrawable(imgCover.getDrawable());
-			imgCover.setImageBitmap(mService.getCover());
-
-			setPlayerColor();
-			if(Build.VERSION.SDK_INT >= 21) {
-				showImage(imgCover);
+			if(mService.getCover() == null){
+				UrlImageViewHelper.loadUrlDrawable(getContext(), mService.getMediaList().getMedia(mService.getCurrentMediaPosition()).getArtworkURL(), new UrlImageViewCallback() {
+					@Override
+					public void onLoaded(ImageView imageView, Bitmap bitmap, String s, boolean b) {
+						imgTemp.setImageDrawable(imgCover.getDrawable());
+						imgCover.setImageBitmap(bitmap);
+						setPlayerColor();
+						if(Build.VERSION.SDK_INT >= 21) {
+							showImage(imgCover);
+						}
+					}
+				});
 			}
+			else{
+				imgTemp.setImageDrawable(imgCover.getDrawable());
+				imgCover.setImageBitmap(mService.getCover());
+				setPlayerColor();
+				if(Build.VERSION.SDK_INT >= 21) {
+					showImage(imgCover);
+				}
+			}
+
+
+
 		}catch (Exception e){}
 
 
@@ -562,6 +593,9 @@ public class PlayerFragment extends PlaybackServiceRecyclerFragment implements P
 				break;
 			case MediaPlayer.Event.Stopped:
 				//hide();
+				System.out.println("STOPED");
+				DrawerActivity.showMiniPlayer = true;
+				super.getActivity().onBackPressed();
 				break;
 		}
 	}
@@ -691,6 +725,7 @@ public class PlayerFragment extends PlaybackServiceRecyclerFragment implements P
 	@Override
 	public void onConnected(PlaybackService service) {
 		super.onConnected(service);
+		System.out.println("service on player connected");
 		mService.addCallback(this);
 		//mPlaylistAdapter.setService(service);
 
@@ -751,14 +786,30 @@ public class PlayerFragment extends PlaybackServiceRecyclerFragment implements P
 			//}*/
 
 			//imgCover.setImageBitmap(cover);
-			if(mService != null){
-				mService.pause();
-				mService.play();
-			}
+
 		}
 		else{
 			System.out.println("cover null");
 		}
+
+	}
+
+	@Override
+	public void onLoadedPlayOnHolder(List<MediaWrapper> media) {
+
+	}
+
+	@Override
+	public void onLoadedPlayOnHolder(int position) {
+		if(mService != null)
+			mService.playIndex(position);
+		else{
+			System.out.println("onLoadedPlayOnHolder : service null");
+		}
+	}
+
+	@Override
+	public void onLoadedPlayOnHolder(String category, int position) {
 
 	}
 
@@ -855,6 +906,12 @@ public class PlayerFragment extends PlaybackServiceRecyclerFragment implements P
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		playerFragment = null;
+		fragment = null;
+
 	}
+
+	/*public static PlaybackService getService(){
+		return mService;
+	}*/
+
 }

@@ -1,29 +1,48 @@
 package com.cyclone;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.Toast;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.cyclone.Utils.ServerUrl;
+import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.custom.OnOffsetChangedListener;
-import com.cyclone.fragment.PlayerFragment;
+import com.cyclone.interfaces.getData;
+import com.cyclone.model.RunningProgram;
+import com.cyclone.player.PlaybackService;
 import com.cyclone.player.gui.AudioPlayerContainerActivity;
+import com.cyclone.player.media.MediaCustom;
+import com.cyclone.player.media.MediaDatabase;
+import com.cyclone.player.media.MediaWrapper;
 import com.cyclone.player.util.Strings;
+import com.cyclone.service.ServiceGetData;
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
+
+import org.videolan.libvlc.Media;
+import org.videolan.libvlc.MediaPlayer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by gilang on 07/11/2015.
  */
 public abstract class MasterActivity extends AudioPlayerContainerActivity implements GestureDetector
-		.OnGestureListener{
+		.OnGestureListener, PlaybackService.Callback, getData {
 
 	public static final int FRAGMENT_PROGRAM_PAGE = 101;
 	public static final int FRAGMENT_PERSON_PROFILE = 102;
@@ -63,22 +82,26 @@ public abstract class MasterActivity extends AudioPlayerContainerActivity implem
 	public static final int FRAGMENT_UPLOAD_FINISHED = 136;
 
 	public AppBarLayout appBarLayout;
-	public boolean isExpanded = true;
+	public static boolean isExpanded = true;
 
 	protected GestureDetectorCompat gd;
 	protected View miniPlayer;
 	protected ImageButton btnMiniPlay, btnMiniNext;
+	ImageView coverMiniPlayer;
+	TextView txtTitle, txtArtist;
+	ProgressBar progressBar;
 	protected OnOffsetChangedListener callback;
 	protected Toolbar toolbar;
 
 	public static final String ACTION_SHOW_PLAYER = Strings.buildPkgString("cyclone.ShowPlayer");
 	public final static String EXIT_PLAYER = Strings.buildPkgString("cyclone.EXIT_PLAYER");
-	public static final String ulr_stream = "http://stream.suararadio.com:8000/bandung_klitefm_mp3";
+
 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 	}
 
 	protected void setupToolbar(){
@@ -88,9 +111,29 @@ public abstract class MasterActivity extends AudioPlayerContainerActivity implem
 
 	protected void setupMiniPlayer(){
 		miniPlayer = findViewById(R.id.minimized_player);
+
+		if (mService != null) {
+			if(mService.isPlaying()){
+				if(DrawerActivity.showMiniPlayer)
+					miniPlayer.setVisibility(View.VISIBLE);
+			}
+			else{
+				miniPlayer.setVisibility(View.GONE);
+			}
+		}
+		else {
+			miniPlayer.setVisibility(View.GONE);
+		}
 		btnMiniNext = (ImageButton) miniPlayer.findViewById(R.id.btn_next);
 		btnMiniPlay = (ImageButton) miniPlayer.findViewById(R.id.btn_play);
-
+		coverMiniPlayer =  (ImageView) miniPlayer.findViewById(R.id.coverMiniPlayer);
+		txtArtist = (TextView) miniPlayer.findViewById(R.id.txt_artistMiniPlayer);
+		txtTitle = (TextView) miniPlayer.findViewById(R.id.txtTitleMiniPlayer);
+		progressBar = (ProgressBar) miniPlayer.findViewById(R.id.progressbar);
+		txtTitle.setText("");
+		txtArtist.setText("");
+		progressBar.setVisibility(View.VISIBLE);
+		coverMiniPlayer.setImageResource(R.drawable.radio_icon);
 		miniPlayer.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -104,35 +147,35 @@ public abstract class MasterActivity extends AudioPlayerContainerActivity implem
 		btnMiniNext.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(MasterActivity.this, "Next Pressed", Toast.LENGTH_SHORT).show();
+				if (mService == null)
+					return;
+				if (mService.hasNext())
+					mService.next();
+				else
+					Snackbar.make(v, R.string.lastsong, Snackbar.LENGTH_SHORT).show();
 			}
 		});
 
 		btnMiniPlay.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (PlayerFragment.state == PlayerFragment.STATE_STOP) {
-					PlayerFragment.state = PlayerFragment.STATE_PLAYING;
-					btnMiniPlay.setImageResource(R.drawable.ic_pause_white_36dp);
+				if (mService == null)
+					return;
+				if (mService.isPlaying()) {
+					mService.pause();
 				} else {
-					PlayerFragment.state = PlayerFragment.STATE_STOP;
-					btnMiniPlay.setImageResource(R.drawable.ic_play_arrow_white_36dp);
+					mService.play();
 				}
-				SharedPreferences pref = getSharedPreferences(getString(R.string
-						.preference_key), Context.MODE_PRIVATE);
-				SharedPreferences.Editor editor = pref.edit();
-				editor.putInt("state", PlayerFragment.state);
-				editor.commit();
 			}
 		});
-
-		SharedPreferences pref = getSharedPreferences(getString(R.string.preference_key), Context
-				.MODE_PRIVATE);
-		if(pref.getInt("state", PlayerFragment.STATE_STOP) == PlayerFragment.STATE_STOP){
-			miniPlayer.setVisibility(View.GONE);
-		}else{
-			miniPlayer.setVisibility(View.VISIBLE);
-		}
+		btnMiniPlay.setOnLongClickListener(new View.OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				if (mService != null)
+					mService.stop();
+				return false;
+			}
+		});
 	}
 
 	protected void setupGestureListener(){
@@ -152,22 +195,21 @@ public abstract class MasterActivity extends AudioPlayerContainerActivity implem
 		appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
 			@Override
 			public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-				float percent = (float)Math.abs(verticalOffset) / (float)appBarLayout
+				float percent = (float) Math.abs(verticalOffset) / (float) appBarLayout
 						.getTotalScrollRange()
 						* 100;
 //				System.out.println(percent);
-				if(percent == 0) {
+				if (percent == 0) {
 					isExpanded = true;
 					System.out.println("expanded blalbla");
-				}
-				else if(percent == 100) {
+				} else if (percent == 100) {
 					isExpanded = false;
 					System.out.println("collapsed blalbla");
 				}
-				if(percent == 100 || percent == 0){
+				if (percent == 100 || percent == 0) {
 					System.out.println("finish");
 				}
-				if(callback != null) {
+				if (callback != null) {
 					callback.onChanged(percent);
 				}
 			}
@@ -233,6 +275,226 @@ public abstract class MasterActivity extends AudioPlayerContainerActivity implem
 
 	@Override
 	public void onLongPress(MotionEvent e) {
+
+	}
+
+	@Override
+	public void updateProgress() {
+
+	}
+
+	@Override
+	public void update() {
+
+		if (mService == null) {
+			return;
+		}
+		if(!mService.hasMedia()){
+			miniPlayer.setVisibility(View.GONE);
+			return;
+		}
+
+		if (mService.isPlaying()) {
+			if(DrawerActivity.showMiniPlayer)
+				miniPlayer.setVisibility(View.VISIBLE);
+			btnMiniPlay.setImageResource(R.drawable.ic_pause_white_36dp);
+			btnMiniPlay.setContentDescription(getString(R.string.pause));
+			progressBar.setVisibility(View.GONE);
+
+		} else {
+			btnMiniPlay.setImageResource(R.drawable.ic_play_arrow_white_36dp);
+			btnMiniPlay.setContentDescription(getString(R.string.play));
+		}
+		if(mService.getCover() != null){
+			coverMiniPlayer.setImageBitmap(mService.getCover());
+		}
+		else{
+			UrlImageViewHelper.setUrlDrawable(coverMiniPlayer,mService.getMediaList().getMedia(mService.getCurrentMediaPosition()).getArtworkURL(),R.drawable.radio_icon);
+		}
+
+		txtTitle.setText(mService.getTitle());
+		txtArtist.setText(mService.getArtist() + " - " + mService.getAlbum());
+
+		System.out.println("PLAYER UPDATE //////////////");
+
+	}
+
+	/*@Override
+	public void onMediaEvent(Media.Event event) {
+
+	}
+
+	@Override
+	public void onMediaPlayerEvent(MediaPlayer.Event event) {
+		switch (event.type) {
+			case MediaPlayer.Event.Opening:
+				System.out.println("Opening ON MASTER ACTIVITY");
+				if(DrawerActivity.showMiniPlayer)
+					miniPlayer.setVisibility(View.VISIBLE);
+				progressBar.setVisibility(View.VISIBLE);
+
+				break;
+			case MediaPlayer.Event.Stopped:
+				//hide();
+				System.out.println("STOPED ON MASTER ACTIVITY");
+				miniPlayer.setVisibility(View.GONE);
+				progressBar.setVisibility(View.VISIBLE);
+				break;
+			case MediaPlayer.Event.Playing:
+				System.out.println("PLAYNG ON MASTER ACTIVITY");
+				if(DrawerActivity.showMiniPlayer)
+					miniPlayer.setVisibility(View.VISIBLE);
+				progressBar.setVisibility(View.GONE);
+				update();
+				break;
+		}
+
+	}*/
+
+	@Override
+	public void onMediaEvent(Media.Event event) {
+
+	}
+
+	@Override
+	public void onMediaPlayerEvent(MediaPlayer.Event event) {
+		switch (event.type) {
+			case MediaPlayer.Event.Opening:
+				System.out.println("Opening ON MASTER ACTIVITY");
+				if(DrawerActivity.showMiniPlayer)
+					miniPlayer.setVisibility(View.VISIBLE);
+				progressBar.setVisibility(View.VISIBLE);
+
+				break;
+			case MediaPlayer.Event.Stopped:
+				//hide();
+				System.out.println("STOPED ON MASTER ACTIVITY");
+				miniPlayer.setVisibility(View.GONE);
+				progressBar.setVisibility(View.VISIBLE);
+				break;
+			case MediaPlayer.Event.Playing:
+				System.out.println("PLAYNG ON MASTER ACTIVITY");
+				if(DrawerActivity.showMiniPlayer)
+					miniPlayer.setVisibility(View.VISIBLE);
+				progressBar.setVisibility(View.GONE);
+				update();
+				break;
+		}
+	}
+
+	@Override
+	public void onConnected(PlaybackService service) {
+		System.out.println("Service Conect on MasterActivity : retun to HomeFragment");
+
+		mService = service;
+		mService.addCallback(DrawerActivity.drawerActivity);
+		update();
+
+		if(mService.isPlaying() && mService.getCurrentMediaLocation() == ServerUrl.ulr_stream){
+			System.out.println("looping");
+			if(DrawerActivity.getFragmentType() != FRAGMENT_LIVE){
+				System.out.println("is playing :"+mService.getCurrentMediaLocation());
+				handler.postDelayed(runnable, 25000);
+			}
+
+		}
+		else{
+
+		}
+
+
+		// AudioController.setPlabackService(service);
+	}
+
+	Runnable runnable = new Runnable() {
+		@Override
+		public void run() {
+			if(mService != null){
+				if(mService.isPlaying() && mService.getCurrentMediaLocation() == ServerUrl.ulr_stream) {
+					try {
+						ServiceGetData serviceGetData = new ServiceGetData();
+						serviceGetData.getDataStream(DrawerActivity.getmContext(), DrawerActivity.drawerActivity);
+					}catch (Exception e){}
+					handler.postDelayed(runnable, 25000);
+				}
+			}
+
+			}
+
+
+	};
+
+	Handler handler = new Handler();
+
+	@Override
+	public void onDisconnected() {
+		mService = null;
+	}
+
+	@Override
+	public void onDataLoadedHome(Map<String, List> data) {
+
+	}
+
+	@Override
+	public void onDataLoadedLiveStreaming(List<Object> data) {
+		if(DrawerActivity.getFragmentType() != FRAGMENT_LIVE) {
+			if(mService != null){
+				if(mService.isPlaying() && mService.getCurrentMediaLocation() == ServerUrl.ulr_stream){
+					RunningProgram program = UtilArrayData.program;
+					MediaWrapper mMedia;
+					MediaCustom MC;
+					MediaDatabase mDB = MediaDatabase.getInstance();
+					List<MediaWrapper> mw = new ArrayList<MediaWrapper>();
+					MC = new MediaCustom();
+
+					MC.setUri(Uri.parse(ServerUrl.ulr_stream));
+
+					MC.setTitle(program.name);
+					MC.setArtist(UtilArrayData.NAMA_RADIO);
+					MC.setAlbum(program.description);
+					MC.setAlbumArtist(UtilArrayData.NAMA_RADIO);
+					MC.setArtworkURL("https://lh6.ggpht.com/cEwi4r2tcVC9neGWHxjt6ZLQ2TuAs_iPn3rL_YQAp4sZsit4dNHROrsH2Fk8gr94hlxw=w300");
+
+					mMedia = new MediaWrapper(MC.getUri(), MC.getTime(), MC.getLength(), MC.getType(),
+							MC.getPicture(), MC.getTitle(), MC.getArtist(), MC.getGenre(), MC.getAlbum(), MC.getAlbumArtist(),
+							MC.getWidth(), MC.getHeight(), MC.getArtworkURL(), MC.getAudio(), MC.getSpu(), MC.getTrackNumber(),
+							MC.getDiscNumber(), MC.getLastModified());
+					try {
+						mService.getMediaList().getMedia(mService.getCurrentMediaPosition()).updateMeta(mMedia);
+						mService.updateMetadataOnPlay();
+					} catch (Exception e) {
+
+					}
+				}RunningProgram program = UtilArrayData.program;
+				MediaWrapper mMedia;
+				MediaCustom MC;
+				MediaDatabase mDB = MediaDatabase.getInstance();
+				List<MediaWrapper> mw = new ArrayList<MediaWrapper>();
+				MC = new MediaCustom();
+
+				MC.setUri(Uri.parse(ServerUrl.ulr_stream));
+
+				MC.setTitle(program.name);
+				MC.setArtist(UtilArrayData.NAMA_RADIO);
+				MC.setAlbum(program.description);
+				MC.setAlbumArtist(UtilArrayData.NAMA_RADIO);
+				MC.setArtworkURL("https://lh6.ggpht.com/cEwi4r2tcVC9neGWHxjt6ZLQ2TuAs_iPn3rL_YQAp4sZsit4dNHROrsH2Fk8gr94hlxw=w300");
+
+				mMedia = new MediaWrapper(MC.getUri(), MC.getTime(), MC.getLength(), MC.getType(),
+						MC.getPicture(), MC.getTitle(), MC.getArtist(), MC.getGenre(), MC.getAlbum(), MC.getAlbumArtist(),
+						MC.getWidth(), MC.getHeight(), MC.getArtworkURL(), MC.getAudio(), MC.getSpu(), MC.getTrackNumber(),
+						MC.getDiscNumber(), MC.getLastModified());
+				mService.getMediaList().getMedia(mService.getCurrentMediaPosition()).updateMeta(mMedia);
+				mService.updateMetadataOnPlay();
+			}
+
+
+		}
+	}
+
+	@Override
+	public void onDataLoadedHomeCancel() {
 
 	}
 
