@@ -27,16 +27,11 @@ public class CategoriesHolder extends UniversalHolder{
 		group2 = (ViewGroup) v.findViewById(R.id.group_2);
 	}
 
+
 	@Override
 	public void bind(Object object, Activity activity, int position) {
 		bind((Categories)object);
 	}
-
-
-	/*@Override
-	public void bind(Object object, Activity activity, int position) {
-		bind((Categories)object);
-	}*/
 
 	public void bind(Categories categories){
 		group1.removeAllViews();
@@ -56,6 +51,7 @@ public class CategoriesHolder extends UniversalHolder{
 					Intent i = new Intent(activity, DrawerActivity.class);
 					i.putExtra("fragmentType", MasterActivity.FRAGMENT_CATEGORY);
 					i.putExtra("title", label);
+					i.putExtra("category", temp.category);
 					activity.startActivity(i);
 				}
 			});

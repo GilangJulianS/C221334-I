@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.cyclone.DrawerActivity;
 import com.cyclone.R;
-import com.cyclone.model.Content;
 import com.cyclone.model.Program;
 
 /**
@@ -44,13 +43,8 @@ public class ProgramHolder extends UniversalHolder{
 		bind((Program) object, activity);
 	}
 
-	/*@Override
-	public void bind(Object object, Activity activity, int position) {
-		bind((Program) object, activity);
-	}*/
-
 	public void bind(Program program, final Activity activity){
-		final Program p = program;
+		Program p = program;
 		final ImageView imageView = imgCover;
 		imgCover.setImageResource(R.drawable.background_login);
 		txtTitle.setText(p.title);
@@ -76,8 +70,7 @@ public class ProgramHolder extends UniversalHolder{
 			public void onClick(View v) {
 				PopupMenu menu = new PopupMenu(activity, btnMenu);
 				menu.inflate(R.menu.popup_default);
-				final Content c = new Content("","","","","","");
-				menu.setOnMenuItemClickListener(new PopupMenuListener(activity, c, btnMenu, p.id));
+//				menu.setOnMenuItemClickListener(new PopupMenuListener(activity));
 				menu.show();
 			}
 		});

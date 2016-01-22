@@ -19,9 +19,6 @@ android{
 			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 		}
 	}
-
-
-
 }
 
 dependencies {
@@ -39,7 +36,7 @@ dependencies {
 	compile 'com.wunderlist:sliding-layer:1.2.5'
 	compile 'fr.avianey.com.viewpagerindicator:library:2.4.1@aar'
 	compile 'com.getbase:floatingactionbutton:1.10.1'
-	compile project(':libvlc')
 	compile 'com.strongloop:loopback-sdk-android:1.5.+'
+	compile project(':libvlc')
 	compile files('src/main/assets/urlimageviewhelper-1.0.4.jar')
 }

@@ -8,7 +8,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:scaleType="centerCrop"
-			android:src="@drawable/header"/>
+			android:src="@drawable/wallpaper"/>
 
 		<View
 			android:layout_width="match_parent"
@@ -18,9 +18,9 @@
 		<ImageView
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="50dp"
+			android:layout_marginTop="100dp"
 			android:scaleType="centerInside"
-			android:src="@drawable/radio_icon"/>
+			android:src="@drawable/logo_prambors_highlighted"/>
 
 		<LinearLayout
 			android:layout_width="match_parent"
@@ -39,7 +39,7 @@
 				android:text="LOGIN"
 				android:textColor="#fff"
 				android:textSize="22sp"
-				android:background="#0000"/>
+				android:background="@drawable/btn_flat_transparent"/>
 
 			<Button
 				android:id="@+id/btn_signup"
@@ -51,7 +51,7 @@
 				android:textSize="22sp"
 				android:text="SIGNUP"
 				android:textColor="#fff"
-				android:background="#0000"/>
+				android:background="@drawable/btn_flat_transparent"/>
 
 		</LinearLayout>
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.cyclone.DrawerActivity;
 import com.cyclone.R;
 import com.cyclone.model.ProgramContent;
 
@@ -27,11 +28,6 @@ public class ProgramContentHolder extends UniversalHolder {
 	public void bind(Object object, Activity activity, int position) {
 		bind((ProgramContent)object);
 	}
-
-	/*@Override
-	public void bind(Object object, Activity activity, int position) {
-		bind((ProgramContent)object);
-	}*/
 
 	public void bind(ProgramContent pc){
 		if(pc.type == ProgramContent.TYPE_MUSIC){

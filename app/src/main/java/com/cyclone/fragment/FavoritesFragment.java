@@ -80,61 +80,61 @@ public class FavoritesFragment extends RecyclerFragment {
 		Contents contents;
 
 		contentList = new ArrayList<>();
-		datas.add(new Section("Playlist", "palylist"));
-		contentList.add(new Content("", "Playlist", "Morning Sunshine", "Dimas Danang", null, ""));
-		contentList.add(new Content("", "Playlist", "My Playlist 1", "Imam Darto", null, ""));
-		contentList.add(new Content("", "Playlist", "My Playlist 2", "Siapa", null, ""));
+		datas.add(new Section("Playlist", "playlist"));
+		contentList.add(new Content("", "Playlist",Content.FAVORITABLE, "Morning Sunshine", "Dimas Danang", null, false, Content.TYPE_PLAYLIST,"", 0, ""));
+		contentList.add(new Content("", "Playlist",Content.FAVORITABLE, "My Playlist 1", "Imam Darto", null,false, Content.TYPE_PLAYLIST,"", 0, ""));
+		contentList.add(new Content("", "Playlist",Content.FAVORITABLE, "My Playlist 2", "Siapa", null,false, Content.TYPE_PLAYLIST,"", 0, ""));
 		completeList.addAll(contentList);
 		contents = new Contents(contentList);
 		datas.add(contents);
 
 		contentList = new ArrayList<>();
 		datas.add(new Section("Mix", "mix"));
-		contentList.add(new Content("", "Mix", "Mix max", "Nycta Gina", null, ""));
-		contentList.add(new Content("", "Mix", "Dubidududu", "Julia", null, ""));
+		contentList.add(new Content("", "Mix",Content.FAVORITABLE, "Mix max", "Nycta Gina", null,false, Content.TYPE_MIX,"", 0, ""));
+		contentList.add(new Content("", "Mix",Content.FAVORITABLE, "Dubidududu", "Julia", null,false, Content.TYPE_MIX,"", 0, ""));
 		completeList.addAll(contentList);
 		contents = new Contents(contentList);
 		datas.add(contents);
 
 		contentList = new ArrayList<>();
 		datas.add(new Section("Tracks", "tracks"));
-		contentList.add(new Content("", "Tracks", "Demons", "Imagine Dragons", null, ""));
-		contentList.add(new Content("", "Tracks", "Demons", "Imagine Dragons", null, ""));
-		contentList.add(new Content("", "Tracks", "Demons", "Imagine Dragons", null, ""));
+		contentList.add(new Content("", "Tracks",Content.FAVORITABLE, "Demons", "Imagine Dragons", null,false, Content.TYPE_TRACKS,"", 0, ""));
+		contentList.add(new Content("", "Tracks",Content.FAVORITABLE, "Demons", "Imagine Dragons", null,false, Content.TYPE_TRACKS,"", 0, ""));
+		contentList.add(new Content("", "Tracks",Content.FAVORITABLE, "Demons", "Imagine Dragons", null,false, Content.TYPE_TRACKS,"", 0, ""));
 		completeList.addAll(contentList);
 		contents = new Contents(contentList);
 		datas.add(contents);
 
 		contentList = new ArrayList<>();
 		datas.add(new Section("Artist", "artist"));
-		contentList.add(new Content("", "Artist", "Sheila on 7", null, null, ""));
-		contentList.add(new Content("", "Artist", "Oasis", null, null, ""));
+		contentList.add(new Content("", "Artist",Content.FAVORITABLE, "Sheila on 7", null, null,false, Content.TYPE_ARTIST,"", 0, ""));
+		contentList.add(new Content("", "Artist",Content.FAVORITABLE, "Oasis", null, null,false, Content.TYPE_ARTIST,"", 0, ""));
 		completeList.addAll(contentList);
 		contents = new Contents(contentList);
 		datas.add(contents);
 
 		contentList = new ArrayList<>();
 		datas.add(new Section("Album", "album"));
-		contentList.add(new Content("", "Album", "Xscape", "Michael Jackson", null, ""));
-		contentList.add(new Content("", "Album", "Night Vision", "Imagine Dragons", null, ""));
-		contentList.add(new Content("", "Album", "The Very Best", "Nirvana", null, ""));
+		contentList.add(new Content("", "Album",Content.FAVORITABLE, "Xscape", "Michael Jackson", null,false, Content.TYPE_ALBUM,"", 0, ""));
+		contentList.add(new Content("", "Album",Content.FAVORITABLE, "Night Vision", "Imagine Dragons", null,false, Content.TYPE_ALBUM,"", 0, ""));
+		contentList.add(new Content("", "Album",Content.FAVORITABLE, "The Very Best", "Nirvana", null,false, Content.TYPE_ALBUM,"", 0, ""));
 		completeList.addAll(contentList);
 		contents = new Contents(contentList);
 		datas.add(contents);
 
 		contentList = new ArrayList<>();
 		datas.add(new Section("Uploaded", "uploaded"));
-		contentList.add(new Content("", "Uploaded", "It's me - cover", "Nycta Gina", null, ""));
-		contentList.add(new Content("", "Uploaded", "Don't remember - cover", "Julia", null, ""));
+		contentList.add(new Content("", "Uploaded",Content.FAVORITABLE, "It's me - cover", "Nycta Gina", null,false, Content.TYPE_UPLOADED,"", 0, ""));
+		contentList.add(new Content("", "Uploaded",Content.FAVORITABLE, "Don't remember - cover", "Julia", null,false, Content.TYPE_UPLOADED,"", 0, ""));
 		completeList.addAll(contentList);
 		contents = new Contents(contentList);
 		datas.add(contents);
 
 		contentList = new ArrayList<>();
 		datas.add(new Section("Radio Content", "radio content"));
-		contentList.add(new Content("", "Radio Content", "Di atas sesuatu", "Apalah", null, ""));
-		contentList.add(new Content("", "Radio Content", "Hampir 30 film", "Hampir sebanyak 30 film terbaru ditayangkan dalam acara ini", null, ""));
-		contentList.add(new Content("", "Radio Content", "Melawan Asap", "Dalam perjuangannya melawan asap yang semakin memburuk", null, ""));
+		contentList.add(new Content("", "Radio Content",Content.FAVORITABLE, "Di atas sesuatu", "Apalah", null,false, Content.TYPE_RADIO_CONTENT,"", 0, ""));
+		contentList.add(new Content("", "Radio Content",Content.FAVORITABLE, "Hampir 30 film", "Hampir sebanyak 30 film terbaru ditayangkan dalam acara ini", null,false, Content.TYPE_RADIO_CONTENT,"", 0, ""));
+		contentList.add(new Content("", "Radio Content",Content.FAVORITABLE, "Melawan Asap", "Dalam perjuangannya melawan asap yang semakin memburuk", null,false, Content.TYPE_RADIO_CONTENT,"", 0, ""));
 		completeList.addAll(contentList);
 		contents = new Contents(contentList);
 		datas.add(contents);
@@ -176,11 +176,11 @@ public class FavoritesFragment extends RecyclerFragment {
 			while(searchResult.size() > 0){
 				currentType = searchResult.get(0).tag;
 				newAdapter.add(new Section(currentType, currentType, Section.TYPE_NONE, MasterActivity.FRAGMENT_GRID_MIX));
-				newAdapter.add(new SubcategoryItem("", searchResult.get(0).txtPrimary, searchResult.get(0).txtSecondary, ""));
+				newAdapter.add(new SubcategoryItem("", searchResult.get(0).txtPrimary, searchResult.get(0).txtSecondary));
 				searchResult.remove(0);
 				for(int i=0; i<searchResult.size(); i++){
 					if(searchResult.get(i).tag.equals(currentType)){
-						newAdapter.add(new SubcategoryItem("", searchResult.get(i).txtPrimary, searchResult.get(i).txtSecondary,""));
+						newAdapter.add(new SubcategoryItem("", searchResult.get(i).txtPrimary, searchResult.get(i).txtSecondary));
 						searchResult.remove(i);
 						i--;
 					}

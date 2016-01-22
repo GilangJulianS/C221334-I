@@ -64,11 +64,12 @@ public class TrackListFragment extends RecyclerFragment {
 
 	}
 
+
 	public List<Object> parse(String json){
 		List<Object> datas = new ArrayList<>();
 		for(Object o : Data.getData()) {
 			Content c = (Content) o;
-			datas.add(new SubcategoryItem("", c.txtPrimary, c.txtSecondary, SubcategoryItem.TYPE_DELETABLE, ""));
+			datas.add(new SubcategoryItem("", c.txtPrimary, c.txtSecondary, SubcategoryItem.TYPE_DELETABLE));
 		}
 		return datas;
 	}

@@ -1,7 +1,6 @@
 package com.cyclone.custom;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
@@ -15,7 +14,6 @@ import com.cyclone.model.Content;
 import com.cyclone.model.Data;
 import com.cyclone.model.SubcategoryItem;
 import com.cyclone.service.ServicePlayOnHolder;
-import com.koushikdutta.urlimageviewhelper.UrlImageViewCallback;
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 
 /**
@@ -29,9 +27,7 @@ public class SubcategoryHolder extends UniversalHolder {
 	public ImageButton btnMenu;
 	public ImageButton btnDelete;
 	public CheckBox checkbox;
-	Bitmap mCover;
-
-	int position;
+	public View card;
 
 	public SubcategoryHolder(View v, Activity activity, UniversalAdapter adapter) {
 		super(v, activity, adapter);
@@ -41,39 +37,28 @@ public class SubcategoryHolder extends UniversalHolder {
 		btnMenu = (ImageButton) v.findViewById(R.id.btn_menu);
 		btnDelete = (ImageButton) v.findViewById(R.id.btn_delete);
 		checkbox = (CheckBox) v.findViewById(R.id.checkbox);
+		card = (View)v.findViewById(R.id.card);
 	}
 
 	@Override
 	public void bind(Object object, Activity activity, int position) {
-		this.position = position;
 		bind((SubcategoryItem) object);
 	}
 
-	/*@Override
-	public void bind(Object object, Activity activity, int position) {
-		bind((SubcategoryItem) object);
-	}*/
-
 	public void bind(final SubcategoryItem subcategoryItem){
 		//imgCover.setImageResource(R.drawable.wallpaper);
-		UrlImageViewHelper.setUrlDrawable(imgCover, subcategoryItem.imgUrl, R.drawable.radio_icon, new UrlImageViewCallback() {
-			@Override
-			public void onLoaded(ImageView imageView, Bitmap bitmap, String s, boolean b) {
-				imgCover.setImageBitmap(bitmap);
-				mCover = bitmap;
-			}
-		});
+		UrlImageViewHelper.setUrlDrawable(imgCover,subcategoryItem.imgUrl,R.drawable.radio_icon);
 		txtPrimary.setText(subcategoryItem.txtPrimary);
 		txtSecondary.setText(subcategoryItem.txtSecondary);
 		if(subcategoryItem.type == SubcategoryItem.TYPE_NORMAL) {
+			final Content c = new Content(subcategoryItem.imgUrl, "Tracks",Content.FAVORITABLE, subcategoryItem.txtPrimary, subcategoryItem.txtSecondary, null,false, Content.TYPE_TRACKS,"",0,"");
 			btnMenu.setVisibility(View.VISIBLE);
 			btnMenu.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					PopupMenu menu = new PopupMenu(activity, btnMenu);
 					menu.inflate(R.menu.popup_default);
-					final Content c = new Content("","","","","","");
-					menu.setOnMenuItemClickListener(new PopupMenuListener(activity, c, btnMenu, subcategoryItem.id));
+					menu.setOnMenuItemClickListener(new PopupMenuListener(activity, c, btnMenu));
 					menu.show();
 				}
 			});
@@ -92,11 +77,11 @@ public class SubcategoryHolder extends UniversalHolder {
 			checkbox.setVisibility(View.VISIBLE);
 		}
 
-		imgCover.setOnClickListener(new View.OnClickListener() {
+		card.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				ServicePlayOnHolder servicePlayOnHolder = new ServicePlayOnHolder();
-				servicePlayOnHolder.startPlayOnFragment(v.getContext(), SubcategoryFragment.getInstance(), subcategoryItem.category, position);
+				servicePlayOnHolder.startPlayOnFragment(v.getContext(), SubcategoryFragment.getInstance(), subcategoryItem.category, subcategoryItem.posisi);
 			}
 		});
 	}

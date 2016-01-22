@@ -1,6 +1,7 @@
 package com.cyclone.custom;
 
 import android.app.Activity;
+import android.media.Image;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,11 +29,6 @@ public class MixHolder extends UniversalHolder {
 	public void bind(Object object, Activity activity, int position) {
 		bind((Mix) object);
 	}
-
-	/*@Override
-	public void bind(Object object, Activity activity, int position) {
-		bind((Mix) object);
-	}*/
 
 	public void bind(final Mix mix){
 		imgCover.setImageResource(R.drawable.wallpaper);

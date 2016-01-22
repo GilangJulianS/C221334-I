@@ -27,7 +27,6 @@ import com.cyclone.player.gui.AudioPlayerContainerActivity;
 import com.cyclone.player.media.MediaCustom;
 import com.cyclone.player.media.MediaDatabase;
 import com.cyclone.player.media.MediaWrapper;
-import com.cyclone.player.util.Strings;
 import com.cyclone.service.ServiceGetData;
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 
@@ -82,26 +81,22 @@ public abstract class MasterActivity extends AudioPlayerContainerActivity implem
 	public static final int FRAGMENT_UPLOAD_FINISHED = 136;
 
 	public AppBarLayout appBarLayout;
-	public static boolean isExpanded = true;
+	public boolean isExpanded = true;
 
 	protected GestureDetectorCompat gd;
 	protected View miniPlayer;
 	protected ImageButton btnMiniPlay, btnMiniNext;
-	ImageView coverMiniPlayer;
-	TextView txtTitle, txtArtist;
-	ProgressBar progressBar;
 	protected OnOffsetChangedListener callback;
 	protected Toolbar toolbar;
 
-	public static final String ACTION_SHOW_PLAYER = Strings.buildPkgString("cyclone.ShowPlayer");
-	public final static String EXIT_PLAYER = Strings.buildPkgString("cyclone.EXIT_PLAYER");
-
+	ImageView coverMiniPlayer;
+	TextView txtTitle, txtArtist;
+	ProgressBar progressBar;
 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 	}
 
 	protected void setupToolbar(){
@@ -195,21 +190,22 @@ public abstract class MasterActivity extends AudioPlayerContainerActivity implem
 		appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
 			@Override
 			public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-				float percent = (float) Math.abs(verticalOffset) / (float) appBarLayout
+				float percent = (float)Math.abs(verticalOffset) / (float)appBarLayout
 						.getTotalScrollRange()
 						* 100;
 //				System.out.println(percent);
-				if (percent == 0) {
+				if(percent == 0) {
 					isExpanded = true;
-					System.out.println("expanded blalbla");
-				} else if (percent == 100) {
-					isExpanded = false;
-					System.out.println("collapsed blalbla");
+//					System.out.println("expanded blalbla");
 				}
-				if (percent == 100 || percent == 0) {
+				else if(percent == 100) {
+					isExpanded = false;
+//					System.out.println("collapsed blalbla");
+				}
+				if(percent == 100 || percent == 0){
 					System.out.println("finish");
 				}
-				if (callback != null) {
+				if(callback != null) {
 					callback.onChanged(percent);
 				}
 			}
@@ -309,7 +305,7 @@ public abstract class MasterActivity extends AudioPlayerContainerActivity implem
 			coverMiniPlayer.setImageBitmap(mService.getCover());
 		}
 		else{
-			UrlImageViewHelper.setUrlDrawable(coverMiniPlayer,mService.getMediaList().getMedia(mService.getCurrentMediaPosition()).getArtworkURL(),R.drawable.radio_icon);
+			UrlImageViewHelper.setUrlDrawable(coverMiniPlayer, mService.getMediaList().getMedia(mService.getCurrentMediaPosition()).getArtworkURL(), R.drawable.radio_icon);
 		}
 
 		txtTitle.setText(mService.getTitle());
@@ -419,7 +415,7 @@ public abstract class MasterActivity extends AudioPlayerContainerActivity implem
 				}
 			}
 
-			}
+		}
 
 
 	};

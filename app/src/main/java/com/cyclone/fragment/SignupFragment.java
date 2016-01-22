@@ -1,16 +1,26 @@
 package com.cyclone.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
 
+import com.cyclone.EmptyActivity;
 import com.cyclone.R;
 import com.cyclone.Utils.ServerUrl;
 import com.cyclone.loopback.repository.CreatUserRepository;
@@ -21,10 +31,16 @@ import com.strongloop.android.remoting.adapters.Adapter;
  * Created by gilang on 22/10/2015.
  */
 public class SignupFragment extends Fragment {
-	ProgressDialog progressDialog;
+
 	private Button btnSignup;
+	private TextView txtToc;
+	private Spinner spinnerGender;
+	private String[] spinnerGenderItems = {"Male", "Female", "Gender"};
+
+	ProgressDialog progressDialog;
 	EditText editTextUsername, editTextFulName, editTextPassword, editTextEmail;
 	int cntLogin = 0;
+
 	public SignupFragment(){}
 
 	public static SignupFragment newInstance(){
@@ -35,28 +51,64 @@ public class SignupFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
 		View v = inflater.inflate(R.layout.fragment_signup, parent, false);
+
 		btnSignup = (Button) v.findViewById(R.id.btn_signup);
-		editTextEmail = (EditText)v.findViewById(R.id.form_email);
-		editTextFulName = (EditText)v.findViewById(R.id.form_full_name);
-		editTextPassword = (EditText)v.findViewById(R.id.form_password);
-		editTextUsername = (EditText)v.findViewById(R.id.form_user);
-
-
+		spinnerGender = (Spinner) v.findViewById(R.id.spinner_gender);
+		txtToc = (TextView) v.findViewById(R.id.txt_toc);
 
 		btnSignup.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				/*FragmentManager manager = getActivity().getSupportFragmentManager();
 				manager.popBackStack();*/
-
-
 				progressDialog = new ProgressDialog(getActivity(),R.style.transparentProgesDialog);
 				progressDialog.setCancelable(false);
 				progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Large_Inverse);
 				progressDialog.show();
 				register();
+
 			}
 		});
+
+
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, R.id.text, spinnerGenderItems){
+
+			@Override
+			public View getView(int position, View convertView, ViewGroup parent) {
+
+				View v = super.getView(position, convertView, parent);
+				if (position == getCount()) {
+					((TextView)v.findViewById(R.id.text)).setText(getItem(getCount()));
+				}
+
+				return v;
+			}
+
+			@Override
+			public int getCount() {
+				return super.getCount() - 1;
+			}
+		};
+		spinnerGender.setAdapter(adapter);
+		spinnerGender.setSelection(adapter.getCount());
+
+		String tocString = txtToc.getText().toString();
+		final int startIdx = tocString.indexOf("Term");
+		int endIdx = tocString.indexOf("Conditions") + 10;
+		SpannableString ss = new SpannableString(txtToc.getText());
+		ClickableSpan span = new ClickableSpan() {
+			@Override
+			public void onClick(View widget) {
+				Intent i = new Intent(getContext(), EmptyActivity.class);
+				i.putExtra("fragmentType", EmptyActivity.FRAGMENT_TOC);
+				getActivity().startActivity(i);
+			}
+		};
+		ss.setSpan(span, startIdx, endIdx, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+		txtToc.setText(ss);
+		txtToc.setMovementMethod(LinkMovementMethod.getInstance());
+		txtToc.setHighlightColor(Color.BLUE);
+
 		return v;
 	}
 
@@ -66,7 +118,7 @@ public class SignupFragment extends Fragment {
 
 		if(editTextUsername.getText().length() < 1 || editTextUsername.getText().equals(" ")){
 			progressDialog.dismiss();
-			Snackbar.make(getView(),"Username is Empty", Snackbar.LENGTH_SHORT).show();
+			Snackbar.make(getView(), "Username is Empty", Snackbar.LENGTH_SHORT).show();
 			return;
 		}
 		if(editTextEmail.getText().length() < 1 || editTextEmail.getText().equals(" ")){
@@ -99,13 +151,12 @@ public class SignupFragment extends Fragment {
 
 			@Override
 			public void onError(Throwable t) {
-				if(cntLogin == 0){
+				if (cntLogin == 0) {
 					ServerUrl.API_URL = ServerUrl.API_URL_local;
 					cntLogin++;
 					Snackbar.make(getView(), "Connecting to local", Snackbar.LENGTH_SHORT).show();
 					register();
-				}
-				else {
+				} else {
 					progressDialog.dismiss();
 					Snackbar.make(getView(), "Error SignUp", Snackbar.LENGTH_LONG).show();
 				}

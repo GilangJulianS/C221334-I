@@ -40,11 +40,6 @@ public class PersonHolder extends UniversalHolder{
 		bind((Person)object, activity);
 	}
 
-	/*@Override
-	public void bind(Object object, Activity activity, int position) {
-		bind((Person)object, activity);
-	}*/
-
 	public void bind(final Person person, final Activity activity){
 		imgUser.setImageResource(R.drawable.background_login);
 		txtName.setText(person.name);

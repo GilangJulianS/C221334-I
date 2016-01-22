@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-	<group android:checkableBehavior="single">
+	<group android:id="@+id/group_1" android:checkableBehavior="all">
 		<item
 			android:id="@+id/nav_home"
 			android:icon="@drawable/ic_home_black_36dp"
@@ -14,9 +14,11 @@
 			android:id="@+id/nav_klub"
 			android:icon="@drawable/ic_people_black_36dp"
 			android:title="KlubRadio"/>
+	</group>
+	<group android:id="@+id/group_2" android:checkableBehavior="all">
 		<item
 			android:id="@+id/nav_profile"
-			android:icon="@drawable/ic_person_black_36dp"
+			android:icon="@drawable/profile_photo"
 			android:title="Dimas Danang"/>
 		<item
 			android:id="@+id/nav_favorite"
@@ -30,6 +32,8 @@
 			android:id="@+id/nav_virtual_card"
 			android:icon="@drawable/ic_credit_card_black_36dp"
 			android:title="Virtual Card"/>
+	</group>
+	<group android:id="@+id/group_3" android:checkableBehavior="all">
 		<item
 			android:id="@+id/nav_setting"
 			android:icon="@drawable/ic_settings_black_36dp"

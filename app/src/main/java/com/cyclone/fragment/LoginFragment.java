@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.cyclone.DrawerActivity;
 import com.cyclone.R;
@@ -51,17 +52,16 @@ public class LoginFragment extends Fragment {
 		btnLogin.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-			progressBar.setVisibility(View.VISIBLE);
-			btnLogin.setVisibility(View.GONE);
+				progressBar.setVisibility(View.VISIBLE);
+				btnLogin.setVisibility(View.GONE);
 				login();
-			/*new Handler().postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					Intent i = new Intent(getContext(), DrawerActivity.class);
-					startActivity(i);
-					getActivity().finish();
-				}
-			}, 2);*/
+			}
+		});
+
+		btnForget.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(getActivity(), "Forget Password Clicked", Toast.LENGTH_SHORT).show();
 			}
 		});
 
@@ -89,7 +89,7 @@ public class LoginFragment extends Fragment {
 
 		final RestAdapter restAdapter = new RestAdapter(getContext(), ServerUrl.API_URL);
 		final UserClass.UserRepository userRepo = restAdapter.createRepository(UserClass.UserRepository.class);
-		userRepo.createUser(email,password);
+		userRepo.createUser(email, password);
 		userRepo.loginUser(email, password,
 				new UserClass.UserRepository.LoginCallback() {
 					@Override
@@ -98,7 +98,7 @@ public class LoginFragment extends Fragment {
 						UtilUser.currentUser = user;
 						UtilUser.currentToken = token;
 						System.out.println("success");
-						System.out.println("user : " + token.getUserId() );
+						System.out.println("user : " + token.getUserId());
 						System.out.println("username : ");
 						Intent i = new Intent(getContext(), DrawerActivity.class);
 						startActivity(i);
@@ -110,13 +110,12 @@ public class LoginFragment extends Fragment {
 					public void onError(Throwable t) {
 						// login failed
 
-						if(cntLogin == 0){
+						if (cntLogin == 0) {
 							ServerUrl.API_URL = ServerUrl.API_URL_local;
 							cntLogin++;
 							Snackbar.make(getView(), "Connecting to local", Snackbar.LENGTH_SHORT).show();
 							login();
-						}
-						else {
+						} else {
 							progressBar.setVisibility(View.GONE);
 							btnLogin.setVisibility(View.VISIBLE);
 							Snackbar.make(getView(), "Error Login", Snackbar.LENGTH_LONG).show();

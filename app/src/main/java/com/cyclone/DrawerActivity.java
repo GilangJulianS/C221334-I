@@ -11,8 +11,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -74,6 +74,20 @@ import com.strongloop.android.loopback.callbacks.ObjectCallback;
 
 public class DrawerActivity extends MasterActivity implements NavigationView.OnNavigationItemSelectedListener,FilterQueryProvider {
 
+	private boolean isParentView = false;
+	private boolean isCollapseLayout = false;
+	private ActionBarDrawerToggle toggle;
+	private CollapsingToolbarLayout toolbarLayout;
+	private MenuItem activeMenuItem;
+	public CoordinatorLayout coordinatorLayout;
+	public static boolean showMiniPlayer = true;
+	private boolean hasExtras;
+	private String title;
+	private static int fragmentType;
+	private int mode;
+	private int menuId;
+	private String transitionId;
+
 	public final static String TAG = "VLC/MainActivity";
 	private static final String PREF_FIRST_RUN = "first_run";
 	private static final int ACTIVITY_RESULT_PREFERENCES = 1;
@@ -88,21 +102,9 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 	private Handler mHandler = new MainActivityHandler(this);
 	private int mFocusedPrior = 0;
 	private int mActionBarIconId = -1;
-	private boolean isParentView = false;
-	private boolean isCollapseLayout = false;
-	private ActionBarDrawerToggle toggle;
-	private CollapsingToolbarLayout toolbarLayout;
-	public static boolean showMiniPlayer = true;
-	private boolean hasExtras;
-	private String title;
-	private static int fragmentType;
 	private static String category;
-	private int mode;
-	private int menuId;
-	private String transitionId;
 	private static Context mContext;
 	private static Activity mActivity;
-	public CoordinatorLayout coordinatorLayout;
 	RestAdapter restAdapter ;
 	UserClass.UserRepository userRepo ;
 	MediaLibrary mMediaLibrary;
@@ -113,7 +115,6 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		drawerActivity = this;
 		mContext = this;
 		mActivity = this;
@@ -121,6 +122,7 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 			finish();
 			return;
 		}
+
 		restAdapter = new RestAdapter(this, ServerUrl.API_URL);
 		userRepo = restAdapter.createRepository(UserClass.UserRepository.class);
 
@@ -155,46 +157,9 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 		}
 		else{
 			System.out.println("login cache");
-			System.out.println("user : >>>> "+UtilUser.currentUser.getEmail());
+			System.out.println("user : >>>> " + UtilUser.currentUser.getEmail());
 		}
 
-
-
-
-		/*RestAdapter restAdapter = new RestAdapter(getBaseContext(), "http://192.168.1.12:3000/api/");
-
-		UserRepository userRepo = restAdapter.createRepository(UserRepository.class);
-		//User user = userRepo.createUser("username", "password");
-
-		userRepo.loginUser("username","password", new UserRepository.LoginCallback() {
-			@Override
-			public void onSuccess(AccessToken token, User currentUser) {
-				System.out.println(token +" : "+currentUser);
-			}
-
-			@Override
-			public void onError(Throwable t) {
-				System.out.println("login failed");
-			}
-		});
-
-		userRepo.findCurrentUser(new ObjectCallback<User>() {
-			@Override
-			public void onSuccess(User user) {
-				if (user != null) {
-					// logged in
-					System.out.println("sLogin :"+ user);
-				} else {
-					// anonymous user
-					System.out.println("not login");
-				}
-			}
-
-			@Override
-			public void onError(Throwable t) {
-
-			}
-		});*/
 		 /* Enable the indeterminate progress feature */
 		supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
@@ -225,8 +190,6 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 			isParentView = caller.getExtras().getBoolean("parent", false);
 			title = caller.getExtras().getString("title", "");
 			fragmentType = caller.getExtras().getInt("fragmentType", FRAGMENT_RADIO_PROFILE);
-			category = caller.getExtras().getString("section_category");
-
 			mode = caller.getExtras().getInt("mode", -1);
 			menuId = caller.getExtras().getInt("menuId", 0);
 			transitionId = caller.getExtras().getString("transition", "profile");
@@ -252,8 +215,6 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 			isCollapseLayout = true;
 		}
 
-
-
 		setupToolbar();
 		setupMiniPlayer();
 		setupAppbarLayout();
@@ -265,10 +226,12 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 		radioLogo.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if(activeMenuItem != null)
+					activeMenuItem.setChecked(false);
 				Intent i = new Intent(getApplicationContext(), DrawerActivity.class);
 				i.putExtra("fragmentType", MasterActivity.FRAGMENT_RADIO_PROFILE);
 				i.putExtra("parent", true);
-				i.putExtra("title", "K-Lite FM Bandung");
+				i.putExtra("title", "Prambors FM Jakarta");
 				startActivity(i);
 				finish();
 			}
@@ -285,12 +248,11 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 			toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id
 					.collapsing_toolbar_layout);
 			toolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
-			toolbarLayout.setTitle("K-Lite FM Bandung");
+			toolbarLayout.setTitle("Prambors FM Jakarta");
 		}
 
 		if(hasExtras) {
-			showMiniPlayer = true;
-			/*FragmentManager */manager = getSupportFragmentManager();
+			FragmentManager manager = getSupportFragmentManager();
 			if(title != null && !title.equals("")) {
 				if(toolbarLayout != null)
 					toolbarLayout.setTitle(title);
@@ -317,13 +279,14 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 						.newInstance()).commit();
 			} else if (fragmentType == FRAGMENT_PERSON_PROFILE) {
 				PersonProfileFragment fragment = PersonProfileFragment.newInstance(mode,
-						transitionId, "", CurrentPersonProfile);
+						transitionId, "");
 				callback = fragment;
 				manager.beginTransaction().replace(R.id.container, fragment).commit();
 			} else if (fragmentType == FRAGMENT_PLAYER) {
-				callback = null;
+				PlayerFragment fragment = PlayerFragment.newInstance("");
+				callback = fragment;
 				showMiniPlayer = false;
-				manager.beginTransaction().replace(R.id.container, PlayerFragment.newInstance(""))
+				manager.beginTransaction().replace(R.id.container, fragment)
 						.commit();
 			} else if (fragmentType == FRAGMENT_ALBUM) {
 				callback = null;
@@ -359,11 +322,11 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 						.commit();
 			}else if(fragmentType == FRAGMENT_CATEGORY){
 				callback = null;
-				manager.beginTransaction().replace(R.id.container, CategoryFragment.newInstance(""))
+				manager.beginTransaction().replace(R.id.container, CategoryFragment.newInstance("",caller.getExtras().getString("category","")))
 						.commit();
 			}else if(fragmentType == FRAGMENT_SUBCATEGORY){
 				callback = null;
-				manager.beginTransaction().replace(R.id.container, SubcategoryFragment.newInstance(category))
+				manager.beginTransaction().replace(R.id.container, SubcategoryFragment.newInstance("",caller.getExtras().getString("category","")))
 						.commit();
 			}else if(fragmentType == FRAGMENT_ADD_MIX){
 				callback = null;
@@ -388,8 +351,8 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 						.commit();
 			}else if(fragmentType == FRAGMENT_COMMENT){
 				callback = null;
-				manager.beginTransaction().replace(R.id.container, CommentFragment.newInstance(caller.getExtras().getString("feedId", "")))
-						.commit();
+				manager.beginTransaction().replace(R.id.container, CommentFragment.newInstance("", caller.getExtras().getInt("mode"),
+						caller.getExtras().getString("contentId"))).commit();
 			}else if(fragmentType == FRAGMENT_MIX){
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, MixFragment.newInstance(""))
@@ -429,10 +392,9 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 			}
 			navigationView.getMenu().getItem(menuId).setChecked(true);
 		}else{
-			fragmentType = FRAGMENT_HOME;
 			isParentView = true;
 			FragmentManager manager = getSupportFragmentManager();
-			manager.beginTransaction().replace(R.id.container, HomeFragment.newInstance("")).commit();
+			manager.beginTransaction().replace(R.id.container, RadioProfileFragment.newInstance()).commit();
 			navigationView.getMenu().getItem(0).setChecked(true);
 		}
 
@@ -464,13 +426,15 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 			}, 500);
 		}
 
-        /* Reload the latest preferences */
+		/* Reload the latest preferences */
 		reloadPreferences();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+		SharedPreferences pref = getSharedPreferences(getString(R.string.preference_key), Context
+				.MODE_PRIVATE);
 		System.out.println("on resume");
 		if(fragmentType == FRAGMENT_PLAYER || fragmentType == FRAGMENT_STREAM_PLAYER)
 			showMiniPlayer = false;
@@ -484,9 +448,6 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 			mMediaLibrary.scanMediaItems();
 	}
 
-	/**
-	 * Stop audio player and save opened tab
-	 */
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -508,7 +469,6 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
         /* Reload the latest preferences */
 		reloadPreferences();
 	}
-
 
 	@Override
 	public void onBackPressed() {
@@ -541,6 +501,14 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 					onBackPressed();
 					return true;
 				}
+				break;
+			case R.id.action_settings:
+				Intent intent = new Intent(this, DrawerActivity.class);
+				intent.putExtra("title", "Settings");
+				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_SETTINGS);
+				intent.putExtra("menuId", 7);
+				startActivity(intent);
+				break;
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -551,6 +519,11 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 	@Override
 	public boolean onNavigationItemSelected(MenuItem item) {
 		// Handle navigation view item clicks here.
+		if(activeMenuItem != null)
+			activeMenuItem.setChecked(false);
+		item.setChecked(true);
+		activeMenuItem = item;
+
 		int id = item.getItemId();
 		Intent intent = new Intent(this, DrawerActivity.class);
 		intent.putExtra("parent", true);
@@ -578,7 +551,6 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 			case R.id.nav_profile:
 				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_PERSON_PROFILE);
 				intent.putExtra("title", "Dimas Danang");
-				intent.putExtra("ownerId", UtilUser.currentUser.getId().toString());
 				intent.putExtra("menuId", 3);
 				startActivity(intent);
 				finish();
@@ -617,7 +589,6 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 				intent.putExtra("menuId", 8);
 				startActivity(intent);
 				finish();
-
 				break;
 		}
 		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -747,6 +718,7 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 		return fragmentType;
 	}
 
+
 	public static void setFragmentType(int fragment){
 		fragmentType = fragment;
 	}
@@ -763,6 +735,4 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 			mActivity.finish();
 		}
 	}
-
-
 }

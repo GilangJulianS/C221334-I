@@ -6,7 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.cyclone.R;
-import com.cyclone.fragment.SimpleImageFragment;
+import com.cyclone.fragment.PagerFragment;
+import com.cyclone.model.Program;
 import com.cyclone.model.ProgramPager;
 import com.viewpagerindicator.CirclePageIndicator;
 
@@ -30,16 +31,13 @@ public class ProgramPagerHolder extends UniversalHolder {
 		bind((ProgramPager) object, (AppCompatActivity)activity);
 	}
 
-	/*@Override
-	public void bind(Object object, Activity activity, int position) {
-		bind((ProgramPager) object, (AppCompatActivity)activity);
-	}*/
-
 	public void bind(ProgramPager p, AppCompatActivity activity){
 
 		adapter = new CustomPagerAdapter(activity.getSupportFragmentManager());
-		for(String imgUrl : p.imgUrls) {
-			adapter.add(SimpleImageFragment.newInstance(imgUrl));
+		int id = 0;
+		for(Program program : p.programs) {
+			adapter.add(PagerFragment.newInstance(program, id));
+			id++;
 		}
 		viewPager.setAdapter(adapter);
 		viewPager.setCurrentItem(1);

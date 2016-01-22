@@ -31,11 +31,6 @@ public class SectionHolder extends UniversalHolder {
 		bind((Section)object);
 	}
 
-	/*@Override
-	public void bind(Object object, Activity activity, int position) {
-		bind((Section)object);
-	}*/
-
 	public void bind(final Section section){
 		txtTitle.setText(section.name);
 		if(section.targetFragment != -1) {
@@ -45,7 +40,8 @@ public class SectionHolder extends UniversalHolder {
 					Intent i = new Intent(activity, DrawerActivity.class);
 					i.putExtra("fragmentType", section.targetFragment);
 					i.putExtra("title", section.name);
-					i.putExtra("section_category", section.category);
+					i.putExtra("category", section.category);
+					System.out.println("setcionholder category : "+ section.category);
 					activity.startActivity(i);
 				}
 			};

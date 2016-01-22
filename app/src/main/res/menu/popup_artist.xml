@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_share"
+        app:showAsAction="ifRoom|withText"
+        android:title="Share"
+        android:visible="true"/>
+    <item
+        android:id="@+id/menu_play_mix"
+        app:showAsAction="ifRoom|withText"
+        android:title="Play Mix from Artist"
+        android:visible="true"/>
+</menu>

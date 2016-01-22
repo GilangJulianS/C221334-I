@@ -11,6 +11,7 @@ import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.interfaces.getData;
 import com.cyclone.interfaces.onLoadMediaWrapper;
 import com.cyclone.model.Content;
+import com.cyclone.model.Program;
 import com.cyclone.model.ProgramContent;
 import com.cyclone.model.ProgramPager;
 import com.cyclone.model.RunningProgram;
@@ -344,7 +345,7 @@ public class ServiceGetData extends IntentService {
                             String file = mJsonObject.getString("file");
                             String gambar = mJsonObject.getString("attachment");
                             String radio = mJsonObject.getString("radio");
-                        news.add(new Content(gambar, UtilArrayData.CATEGORY_NEWS,0, title, UtilArrayData.NAMA_RADIO, date, file, i,id));
+                            news.add(new Content(gambar, UtilArrayData.CATEGORY_NEWS,Content.FAVORITABLE, title, UtilArrayData.NAMA_RADIO, date, false, Content.TYPE_RADIO_CONTENT, file, i, id));
                     }
 
                     list.add(news);
@@ -374,9 +375,8 @@ public class ServiceGetData extends IntentService {
                         String file = mJsonObject.getString("file");
                         String gambar = mJsonObject.getString("attachment");
                         String radio = mJsonObject.getString("radio");
-                        talk.add(new Content(gambar, UtilArrayData.CATEGORY_TALK,0, title, UtilArrayData.NAMA_RADIO, date, file, i,id));
+                        talk.add(new Content(gambar, UtilArrayData.CATEGORY_TALK,Content.FAVORITABLE, title, UtilArrayData.NAMA_RADIO, date, false, Content.TYPE_RADIO_CONTENT, file, i, id));
                     }
-
                     list.add(talk);
                     mapList.put("talk", talk);
 
@@ -400,7 +400,7 @@ public class ServiceGetData extends IntentService {
 
             UtilArrayData.ContentTalk.clear();
             UtilArrayData.ContentTalk = mapList.get("talk");
-            System.out.println("content talk size: "+UtilArrayData.ContentTalk.size());
+            System.out.println("content talk size: "+ UtilArrayData.ContentTalk.size());
             UtilArrayData.ContentNews.clear();
             UtilArrayData.ContentNews = mapList.get("news");
             System.out.println("content news size : " + UtilArrayData.ContentNews.size());
@@ -449,11 +449,11 @@ public class ServiceGetData extends IntentService {
             Log.d("Response Running: ", "> " + jsonStrRuning);
             Log.d("Response Run Down: ", "> " + jsonStrRunDown);
 
-            List<String> images = new ArrayList<>();
-            images.add("");
-            images.add("");
-            images.add("");
-            datas.add(new ProgramPager(images, 1));
+            List<Program> programs = new ArrayList<>();
+            programs.add(new Program("", "The Dandees", "9am-12am", 5f));
+            programs.add(new Program("", "Desta and Gina in The Morning", "7am-9am", 4.5f));
+            programs.add(new Program("", "Popular Musics", "1pm-2pm", 4.2f));
+            datas.add(new ProgramPager(programs, 1));
 
             if (jsonStrRuning != null) {
                 try {

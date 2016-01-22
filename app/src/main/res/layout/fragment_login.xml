@@ -10,7 +10,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:scaleType="centerCrop"
-		android:src="@drawable/header"/>
+		android:src="@drawable/wallpaper"/>
 
 	<View
 		android:layout_width="match_parent"
@@ -54,8 +54,9 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="15dp"
+			android:padding="10dp"
 			android:text="Login"
-			android:background="#0000"/>
+			android:background="@drawable/btn_flat_transparent"/>
 		
 		<ProgressBar
 			android:id="@+id/progressbar"
@@ -68,9 +69,10 @@
 			android:id="@+id/btn_forget_password"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:padding="10dp"
 			android:text="Forgot Password"
 			android:textSize="10sp"
-			android:background="#0000"/>
+			android:background="@drawable/btn_flat_transparent"/>
 	
 		<View
 			android:layout_width="wrap_content"
@@ -86,7 +88,7 @@
 			<ImageView
 				android:layout_width="30dp"
 				android:layout_height="30dp"
-				android:src="#fff"/>
+				android:src="@drawable/logo_facebook_white"/>
 
 			<TextView
 				android:layout_width="wrap_content"
@@ -108,7 +110,7 @@
 			<ImageView
 				android:layout_width="30dp"
 				android:layout_height="30dp"
-				android:src="#fff"/>
+				android:src="@drawable/logo_google_white"/>
 
 			<TextView
 				android:layout_width="wrap_content"

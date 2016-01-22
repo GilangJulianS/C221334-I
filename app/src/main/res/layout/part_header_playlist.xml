@@ -28,7 +28,7 @@
 			android:textSize="20sp"
 			android:textStyle="bold"
 			android:textColor="#fff"
-			android:text="Mix Max"/>
+			android:text="Happy Holiday"/>
 
 		<TextView
 			android:layout_width="wrap_content"
@@ -44,7 +44,7 @@
 			android:layout_marginTop="5dp"
 			android:textSize="16sp"
 			android:textColor="#fff"
-			android:text="Fullfill your day with this mix #funky"/>
+			android:text="Fullfill your day with this playlist #funky"/>
 
 		<LinearLayout
 			android:layout_width="match_parent"

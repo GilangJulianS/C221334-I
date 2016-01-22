@@ -140,7 +140,7 @@ public class PlaybackService extends Service implements IVLCVout.Callback, IgetC
     @Override
     public void OnCoverLoaded(Bitmap bitmap) {
         System.out.println("wahhh nyamse sini");
-       updateCover(bitmap);
+        updateCover(bitmap);
 
     }
 
@@ -580,8 +580,8 @@ public class PlaybackService extends Service implements IVLCVout.Callback, IgetC
                     Log.i(TAG, "Media.Event.ParsedChanged");
                     final MediaWrapper mw = getCurrentMedia();
                     if (mw != null)
-                       // mw.updateMeta(mMediaPlayer);
-                    executeUpdate();
+                        // mw.updateMeta(mMediaPlayer);
+                        executeUpdate();
                     mParsed = true;
                     break;
 
@@ -629,7 +629,7 @@ public class PlaybackService extends Service implements IVLCVout.Callback, IgetC
                    /* if (switchToVideo())
                         hideNotification();
                     else*/
-                        showNotification();
+                    showNotification();
                     break;
                 case MediaPlayer.Event.Paused:
                     Log.i(TAG, "MediaPlayer.Event.Paused");
@@ -854,7 +854,7 @@ public class PlaybackService extends Service implements IVLCVout.Callback, IgetC
         }
     }
 
-   // @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    // @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void showNotification() {
         if (mMediaPlayer.getVLCVout().areViewsAttached())
             return;
@@ -1146,7 +1146,7 @@ public class PlaybackService extends Service implements IVLCVout.Callback, IgetC
         String title ;
        /* = media.getNowPlaying();
         if (title == null)*/
-            title = media.getTitle();
+        title = media.getTitle();
         Bitmap cover = AudioUtil.getCover(this, media, 512);
         MediaMetadataCompat.Builder bob = new MediaMetadataCompat.Builder();
         bob.putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
@@ -2183,7 +2183,7 @@ public class PlaybackService extends Service implements IVLCVout.Callback, IgetC
             System.out.println("refresh");
             playIklan();
 
-           // handlerIklan.postDelayed(runnableIkln, 11000);
+            // handlerIklan.postDelayed(runnableIkln, 11000);
         }
     };
 

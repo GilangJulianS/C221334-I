@@ -6,13 +6,13 @@
 	<ImageView
 		android:id="@+id/img_header_background"
 		android:layout_width="match_parent"
-		android:layout_height="220dp"
+		android:layout_height="260dp"
 		android:scaleType="centerCrop"
 		android:src="@drawable/wallpaper"/>
 
 	<View
 		android:layout_width="match_parent"
-		android:layout_height="220dp"
+		android:layout_height="260dp"
 		android:background="@color/dim_filter"/>
 
 	<LinearLayout
@@ -22,10 +22,17 @@
 		android:gravity="center_horizontal"
 		android:orientation="vertical">
 
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Dimas Danang"
+			android:textColor="#fff"/>
+
 		<de.hdodenhof.circleimageview.CircleImageView
 			android:id="@+id/img_user"
 			android:layout_width="60dp"
 			android:layout_height="60dp"
+			android:layout_marginTop="10dp"
 			android:transitionName="picture"
 			android:src="@drawable/background_login"/>
 

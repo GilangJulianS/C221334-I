@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_add_queue"
+        app:showAsAction="ifRoom|withText"
+        android:title="Add to Queue"
+        android:visible="true"/>
+
+    <item
+        android:id="@+id/menu_add_playlist"
+        app:showAsAction="ifRoom|withText"
+        android:title="Add to Playlist"
+        android:visible="true"/>
+
+    <item
+        android:id="@+id/menu_add_favorites"
+        app:showAsAction="ifRoom|withText"
+        android:title="Add to Favorites"
+        android:visible="true"/>
+
+    <item
+        android:id="@+id/menu_share"
+        app:showAsAction="ifRoom|withText"
+        android:title="Share"
+        android:visible="true"/>
+
+    <item
+        android:id="@+id/menu_show_article"
+        app:showAsAction="ifRoom|withText"
+        android:title="Show Article"
+        android:visible="true"/>
+
+    <item
+        android:id="@+id/menu_take_offline"
+        app:showAsAction="ifRoom|withText"
+        android:title="Take Offline"
+        android:visible="true"/>
+</menu>

@@ -15,11 +15,9 @@ import android.widget.TextView;
 import com.cyclone.DrawerActivity;
 import com.cyclone.MasterActivity;
 import com.cyclone.R;
-import com.cyclone.Utils.ServerUrl;
-import com.cyclone.Utils.UtilArrayData;
-import com.cyclone.Utils.UtilUser;
+import com.cyclone.fragment.CategoryFragment;
 import com.cyclone.fragment.HomeFragment;
-import com.cyclone.loopback.repository.PlaylistRepository;
+import com.cyclone.interfaces.PlayOnHolder;
 import com.cyclone.model.Content;
 import com.cyclone.model.Contents;
 import com.cyclone.model.Data;
@@ -27,11 +25,6 @@ import com.cyclone.model.MasterModel;
 import com.cyclone.service.ServicePlayOnHolder;
 import com.koushikdutta.urlimageviewhelper.UrlImageViewCallback;
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
-import com.strongloop.android.loopback.RestAdapter;
-import com.strongloop.android.remoting.adapters.Adapter;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by gilang on 21/11/2015.
@@ -51,11 +44,10 @@ public class ContentsHolder extends UniversalHolder {
 		bind((Contents) object);
 	}
 
-
 	public void bind(Contents contents){
 		int counter = 0;
 		container.removeAllViews();
-		for(final Content c : contents.list){
+		for( Content c : contents.list){
 			View v = activity.getLayoutInflater().inflate(R.layout.card_thumbnail, container, false);
 			final ImageView imgCover = (ImageView) v.findViewById(R.id.img_cover);
 			final ImageView imgHeart = (ImageView) v.findViewById(R.id.img_heart);
@@ -66,8 +58,6 @@ public class ContentsHolder extends UniversalHolder {
 			final CardView card = (CardView) v.findViewById(R.id.card);
 
 			final Content temp = c;
-			//imgCover.setImageResource(R.drawable.wallpaper);
-			//UrlImageViewHelper.setUrlDrawable(imgCover,c.imgUrl,R.drawable.radio_icon);
 			UrlImageViewHelper.setUrlDrawable(imgCover, c.imgUrl, R.drawable.radio_icon, new UrlImageViewCallback() {
 				@Override
 				public void onLoaded(ImageView imageView, Bitmap bitmap, String s, boolean b) {
@@ -78,7 +68,7 @@ public class ContentsHolder extends UniversalHolder {
 			imgCover.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					if (temp.targetType == Content.TYPE_FAVORITABLE) {
+					if (temp.favoritableType == Content.FAVORITABLE) {
 						temp.isFavorited = !temp.isFavorited;
 						if (temp.isFavorited) {
 							imgHeart.setVisibility(View.VISIBLE);
@@ -89,12 +79,17 @@ public class ContentsHolder extends UniversalHolder {
 							Data.remove((MasterModel) temp);
 							createSnackBar(activity).show();
 						}
-					} else {
-
+					}else{
+						PlayOnHolder playOnHolder = null;
+						if(DrawerActivity.getFragmentType() == DrawerActivity.FRAGMENT_HOME){
+							playOnHolder = HomeFragment.getInsane();
+						}else if(DrawerActivity.getFragmentType() == DrawerActivity.FRAGMENT_CATEGORY){
+							playOnHolder = CategoryFragment.getInstance();
+						}
 						ServicePlayOnHolder servicePlayOnHolder = new ServicePlayOnHolder();
-						servicePlayOnHolder.startPlayOnFragment(v.getContext(), HomeFragment.getInsane(), c.tag, c.position);
+						servicePlayOnHolder.startPlayOnFragment(v.getContext(), playOnHolder, temp.tag, temp.position);
 
-						System.out.println("Contens Holder c.tag : "+ c.tag);
+						System.out.println("Contens Holder c.tag : " + temp.tag);
 					}
 				}
 			});
@@ -104,13 +99,13 @@ public class ContentsHolder extends UniversalHolder {
 				imgHeart.setVisibility(View.GONE);
 			}
 
+
 			btnMenu.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					PopupMenu menu = new PopupMenu(activity, btnMenu);
-					menu.inflate(R.menu.popup_default);
-					//final Content c = new Content("","","","","", "");
-					menu.setOnMenuItemClickListener(new PopupMenuListener(activity, c, btnMenu, c.id));
+					menu.inflate(temp.getMenuResId());
+					menu.setOnMenuItemClickListener(new PopupMenuListener(activity, temp, btnMenu));
 					menu.show();
 				}
 			});
@@ -134,85 +129,22 @@ public class ContentsHolder extends UniversalHolder {
 			counter++;
 		}
 
-//		while(counter < 3){
-//			LayoutInflater inflater = activity.getLayoutInflater();
-//			View v = inflater.inflate(R.layout.view_filler_horizontal_full, container, false);
-//			container.addView(v);
-//			counter++;
-//		}
+//    while(counter < 3){
+//      LayoutInflater inflater = activity.getLayoutInflater();
+//      View v = inflater.inflate(R.layout.view_filler_horizontal_full, container, false);
+//      container.addView(v);
+//      counter++;
+//    }
 	}
 
 	public static Snackbar createSnackBar(final Activity activity){
-		System.out.println("snackbar here ................");
-
 		Snackbar snackbar =
 				Snackbar.make(((DrawerActivity) activity).coordinatorLayout, Data.getData().size()
 						+ " items added", Snackbar.LENGTH_INDEFINITE)
 						.setAction("Done", new View.OnClickListener() {
 							@Override
 							public void onClick(View v) {
-								System.out.println("KLIKED : " + DrawerActivity.getFragmentType());
-								//Toast.makeText(activity.getBaseContext(),"KLIKED : "+ DrawerActivity.getFragmentType(), Toast.LENGTH_LONG).show();
-								if(DrawerActivity.getFragmentType() == DrawerActivity.FRAGMENT_ADD_PLAYLIST_FORM){
-									if(UtilUser.currentUser != null) {
-										Map<String, String> parm = new HashMap<String, String>();
-										//parm.put("id", UtilUser.currentUser.getId().toString());
-										parm.put("name", UtilArrayData.TitleAdd);
-										parm.put("caption", "created new");
-										parm.put("private", "false");
-										final RestAdapter restAdapter = new RestAdapter(activity.getBaseContext(), ServerUrl.API_URL);
-										PlaylistRepository playlistRepository = restAdapter.createRepository(PlaylistRepository.class);
-
-										playlistRepository.createContract();
-										playlistRepository.creat(parm, new Adapter.Callback() {
-											@Override
-											public void onSuccess(String response) {
-												System.out.println("saved success : " + response);
-												activity.onBackPressed();
-											}
-
-											@Override
-											public void onError(Throwable t) {
-												activity.onBackPressed();
-												System.out.println(t);
-											}
-										});
-									}
-/*
-									final RestAdapter restAdapter = new RestAdapter(activity.getBaseContext(), ServerUrl.API_URL);
-									final contenRepository contenRepo = restAdapter.createRepository(contenRepository.class);
-									if(UtilUser.currentUser != null){
-										Map<String, String> parm = new HashMap<>();
-										parm.put("type", "playlist");
-										parm.put("name", AddPlaylistFragment.title);
-										parm.put("id", UtilUser.currentUser.getId().toString());
-										parm.put("audio", "");
-										parm.put("lyric", "");
-										parm.put("info", "");
-										parm.put("private", "false");
-
-										contenRepo.createContract();
-										contenRepo.creat(parm, new Adapter.Callback() {
-											@Override
-											public void onSuccess(String response) {
-												System.out.println("saved success : "+response);
-											}
-
-											@Override
-											public void onError(Throwable t) {
-												System.out.println(t);
-											}
-										});
-										System.out.println(UtilUser.currentUser.getId().toString());
-										System.out.println("title : " + UtilArrayData.TitleAdd);
-
-									}
-									else{
-										System.out.println("user is null");
-									}*/
-
-								}
-								//activity.onBackPressed();
+								activity.onBackPressed();
 							}
 						});
 		View snack = snackbar.getView();
@@ -228,5 +160,4 @@ public class ContentsHolder extends UniversalHolder {
 		});
 		return snackbar;
 	}
-
 }

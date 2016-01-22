@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.cyclone.Utils.ServerUrl;
 import com.cyclone.Utils.UtilUser;
@@ -16,7 +17,14 @@ import com.cyclone.loopback.UserClass;
 import com.strongloop.android.loopback.RestAdapter;
 import com.strongloop.android.loopback.callbacks.ObjectCallback;
 
+import java.util.Random;
+
 public class SplashActivity extends Activity {
+
+	private ImageView imgSplash;
+
+	// daftar gambar buat di splash screen
+	private int[] images = {R.drawable.background_login, R.drawable.wallpaper};
 	protected SharedPreferences mSettings;
 	private final String USER_PREF_LOGIN = "com.cyclone.user_pref";
 	private final String USER_PREF_EMAIL = "com.cyclone.user_pref";
@@ -34,6 +42,30 @@ public class SplashActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_splash);
+
+		// milih gambar random dari daftar gambar
+		imgSplash = (ImageView) findViewById(R.id.img_splash);
+		int counter = images.length;
+		Random random = new Random();
+		int selectedImage = random.nextInt(counter);
+		imgSplash.setImageResource(images[selectedImage]);
+
+
+		/*// play sound effect
+		MediaPlayer mp = MediaPlayer.create(this, R.raw.sound_effect);
+		mp.start();
+
+		// buat start ke aplikasi setelah splash screen
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				Intent i = new Intent(getApplicationContext(), EmptyActivity.class);
+				i.putExtra("fragmentType", EmptyActivity.FRAGMENT_GET_STARTED);
+				startActivity(i);
+				finish();
+			}
+		}, 500*//*mp.getDuration()*//*); // pake mp.getDuration kalo mau dengerin sound effect sampe abis*/
+
 		mContext = this;
 		mActivity = this;
 		splashActivity = new SplashActivity();
@@ -41,14 +73,6 @@ public class SplashActivity extends Activity {
 		//isLogin = mSettings.getBoolean(USER_PREF_LOGIN, false);
 
 		connect();
-		/*new Handler().postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				Intent i = new Intent(getApplicationContext(), EmptyActivity.class);
-				startActivity(i);
-				finish();
-			}
-		}, 3000);*/
 	}
 
 	@Override
@@ -56,7 +80,6 @@ public class SplashActivity extends Activity {
 		view = parent;
 		return super.onCreateView(parent, name, context, attrs);
 	}
-
 	void connect(){
 		restAdapter = new RestAdapter(this, ServerUrl.API_URL);
 		userRepo = restAdapter.createRepository(UserClass.UserRepository.class);
@@ -78,6 +101,7 @@ public class SplashActivity extends Activity {
 					// anonymous user
 					System.out.println("not LOGIN");
 					Intent i = new Intent(mContext, EmptyActivity.class);
+					i.putExtra("fragmentType", EmptyActivity.FRAGMENT_GET_STARTED);
 					mActivity.startActivity(i);
 					mActivity.finish();
 				}
@@ -85,15 +109,15 @@ public class SplashActivity extends Activity {
 
 			@Override
 			public void onError(Throwable t) {
-				if(cntLogin == 0){
+				if (cntLogin == 0) {
 					ServerUrl.API_URL = ServerUrl.API_URL_local;
 					cntLogin++;
 					Snackbar.make(view, "Connecting to local", Snackbar.LENGTH_SHORT).show();
 					connect();
-				}
-				else{
+				} else {
 					Snackbar.make(view, "Connection failed. Check your internet connection.", Snackbar.LENGTH_SHORT).show();
 					Intent i = new Intent(mContext, EmptyActivity.class);
+					i.putExtra("fragmentType", EmptyActivity.FRAGMENT_GET_STARTED);
 					mActivity.startActivity(i);
 					mActivity.finish();
 				}

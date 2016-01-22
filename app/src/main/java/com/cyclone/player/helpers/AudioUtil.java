@@ -314,7 +314,7 @@ public class AudioUtil {
         File cacheFile = null;
 
         System.out.println("judul : "+media.getTitle()
-        +"\natris : "+media.getArtist()
+                +"\natris : "+media.getArtist()
                 +"\nalbum : "+media.getAlbum()
                 +"\nartcover : "+media.getArtworkURL());
         if (width <= 0) {
@@ -361,7 +361,7 @@ public class AudioUtil {
             if(coverPath == null){
                 System.out.println("get dari url????");
                 ServiceGetData serviceGetData = new ServiceGetData();
-                serviceGetData.getCoverUrl(new PlaybackService(), context, media.getArtworkURL(),coverPath, cachePath, width);
+                serviceGetData.getCoverUrl(new PlaybackService(), context, media.getArtworkURL(), coverPath, cachePath, width);
 
             }
             else{

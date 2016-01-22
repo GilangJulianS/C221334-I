@@ -8,7 +8,6 @@ import android.util.Log;
 import com.cyclone.player.interfaces.IgetCoverUrl;
 import com.cyclone.player.util.Util;
 import com.cyclone.service.ServiceGetData;
-import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 
 import org.videolan.libvlc.util.AndroidUtil;
 

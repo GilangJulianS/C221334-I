@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.cyclone.DrawerActivity;
 import com.cyclone.R;
 import com.cyclone.model.Request;
 
@@ -32,11 +33,6 @@ public class RequestHolder extends UniversalHolder {
 	public void bind(Object object, Activity activity, int position) {
 		bind((Request)object);
 	}
-
-	/*@Override
-	public void bind(Object object, Activity activity, int position) {
-		bind((Request)object);
-	}*/
 
 	public void bind(Request request){
 		imgUser.setImageResource(R.drawable.background_login);

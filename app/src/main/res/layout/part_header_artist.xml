@@ -100,6 +100,7 @@
 			</LinearLayout>
 
 			<ImageButton
+				android:id="@+id/btn_menu"
 				android:layout_width="wrap_content"
 				android:layout_height="match_parent"
 				android:paddingRight="10dp"
@@ -122,7 +123,7 @@
 			android:orientation="horizontal">
 
 			<Button
-				android:id="@+id/btn_add_showlist"
+				android:id="@+id/btn_play"
 				android:layout_width="wrap_content"
 				android:layout_height="30dp"
 				android:layout_marginRight="10dp"
@@ -131,7 +132,7 @@
 				android:text="Play"/>
 
 			<Button
-				android:id="@+id/btn_upload"
+				android:id="@+id/btn_add_favorites"
 				android:layout_width="wrap_content"
 				android:layout_height="30dp"
 				android:layout_marginLeft="10dp"

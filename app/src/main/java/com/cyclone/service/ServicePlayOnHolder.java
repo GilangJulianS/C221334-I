@@ -32,6 +32,7 @@ public class ServicePlayOnHolder extends IntentService {
     private static final String MEDIA_POSITION = "com.cyclone.service.extra.MEDIA_POSITION";
     private static final String MEDIA_CATEGORY = "com.cyclone.service.extra.MEDIA_CATEGORY";
     public static ArrayList<PlayOnHolder> mCallBackPlay = new ArrayList<PlayOnHolder>();
+    public static PlayOnHolder playOnHolder;
 
     @Override
     public void onDestroy() {
@@ -89,6 +90,8 @@ public class ServicePlayOnHolder extends IntentService {
             mCallBackPlay.clear();
         mCallBackPlay.add(client);
 
+        playOnHolder = client;
+
         System.out.println("si start on play home : " + mCallBackPlay.size());
         Intent intent = new Intent(context, ServicePlayOnHolder.class);
         intent.setAction(ACTION_PLAY_ON_HOME);
@@ -137,8 +140,10 @@ public class ServicePlayOnHolder extends IntentService {
     }
 
     private void handleActionPlayOnFragment(String category, int position) {
-        for (PlayOnHolder poh : mCallBackPlay)
-            poh.onLoadedPlayOnHolder(category, position);
+       /* for (PlayOnHolder poh : mCallBackPlay)
+            poh.onLoadedPlayOnHolder(position);*/
+           // poh.onLoadedPlayOnHolder(category, position);
+        playOnHolder.onLoadedPlayOnHolder(category,position);
 
     }
 

@@ -31,21 +31,16 @@ public class SongHolder extends UniversalHolder {
 		bind((Song) object);
 	}
 
-	/*@Override
-	public void bind(Object object, Activity activity, int position) {
-		bind((Song) object);
-	}*/
-
-	public void bind(final Song song){
+	public void bind(Song song){
 		txtPrimary.setText(song.primary);
 		txtSecondary.setText(song.secondary);
+		final Content c = new Content("", "Tracks",Content.FAVORITABLE, song.primary, song.secondary, null,false, Content.TYPE_TRACKS,"",0,"");
 		btnMenu.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				PopupMenu menu = new PopupMenu(activity, btnMenu);
 				menu.inflate(R.menu.popup_default);
-				final Content c = new Content("","","","","","");
-				menu.setOnMenuItemClickListener(new PopupMenuListener(activity, c, btnMenu, song.id));
+				menu.setOnMenuItemClickListener(new PopupMenuListener(activity, c, btnMenu));
 				menu.show();
 			}
 		});

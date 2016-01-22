@@ -41,7 +41,7 @@
 				android:layout_width="30dp"
 				android:layout_height="30dp"
 				android:src="@drawable/ic_share_black_24dp"
-				android:background="#0000"/>
+				android:background="@drawable/btn_flat_transparent"/>
 
 		</LinearLayout>
 
@@ -109,6 +109,7 @@
 				android:text="Rate this show"/>
 
 			<RatingBar
+				android:id="@+id/ratingbar"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:numStars="5"
@@ -202,11 +203,13 @@
 				android:orientation="vertical">
 
 				<TextView
+					android:id="@+id/txt_name1"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="Subi"/>
 
 				<RatingBar
+					android:id="@+id/ratingbar1"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_marginTop="5dp"
@@ -215,6 +218,7 @@
 					style="?android:attr/ratingBarStyleSmall"/>
 
 				<TextView
+					android:id="@+id/txt_comment1"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="Mantap pisan lah!"/>
@@ -244,11 +248,13 @@
 				android:orientation="vertical">
 
 				<TextView
+					android:id="@+id/txt_name2"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="Subi"/>
 
 				<RatingBar
+					android:id="@+id/ratingbar2"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_marginTop="5dp"
@@ -257,6 +263,7 @@
 					style="?android:attr/ratingBarStyleSmall"/>
 
 				<TextView
+					android:id="@+id/txt_comment2"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="Mantap pisan lah!"/>
@@ -286,11 +293,13 @@
 				android:orientation="vertical">
 
 				<TextView
+					android:id="@+id/txt_name3"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="Subi"/>
 
 				<RatingBar
+					android:id="@+id/ratingbar3"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_marginTop="5dp"
@@ -299,6 +308,7 @@
 					style="?android:attr/ratingBarStyleSmall"/>
 
 				<TextView
+					android:id="@+id/txt_comment3"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="Mantap pisan lah!"/>
@@ -308,6 +318,7 @@
 		</LinearLayout>
 
 		<TextView
+			android:id="@+id/btn_all_comment"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_gravity="center_horizontal"

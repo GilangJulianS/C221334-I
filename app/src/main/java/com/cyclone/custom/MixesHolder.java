@@ -27,11 +27,6 @@ public class MixesHolder extends UniversalHolder {
 		bind((Mixes)object);
 	}
 
-	/*@Override
-	public void bind(Object object, Activity activity, int position) {
-		bind((Mixes)object);
-	}*/
-
 	public void bind(Mixes mixes){
 		int counter = 0;
 		container.removeAllViews();

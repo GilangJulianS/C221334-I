@@ -7,11 +7,11 @@ import java.util.List;
  */
 public class ProgramPager {
 
-	public List<String> imgUrls;
+	public List<Program> programs;
 	public int defaultIdx;
 
-	public ProgramPager(List<String> imgurls, int defaultIdx){
-		this.imgUrls = imgurls;
+	public ProgramPager(List<Program> programs, int defaultIdx){
+		this.programs = programs;
 		this.defaultIdx = defaultIdx;
 	}
 }

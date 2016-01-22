@@ -19,9 +19,9 @@ import com.cyclone.model.Notification;
 import com.cyclone.model.Person;
 import com.cyclone.model.Post;
 import com.cyclone.model.Program;
+import com.cyclone.model.Queue;
 import com.cyclone.model.ProgramContent;
 import com.cyclone.model.ProgramPager;
-import com.cyclone.model.Queue;
 import com.cyclone.model.Request;
 import com.cyclone.model.RunningProgram;
 import com.cyclone.model.Section;
@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * Created by gilang on 01/11/2015.
  */
-public class UniversalAdapter extends Adapter<UniversalHolder>{
+public class UniversalAdapter extends Adapter<UniversalHolder> {
 
 	public static final int TYPE_ANNOUNCER = 101;
 	public static final int TYPE_CLUB_FEED = 102;
@@ -59,7 +59,6 @@ public class UniversalAdapter extends Adapter<UniversalHolder>{
 	public List<Object> datas;
 	private SparseBooleanArray selectedItems;
 	private Activity activity;
-
 
 	public UniversalAdapter(Activity activity){
 		datas = new ArrayList<>();
@@ -130,7 +129,7 @@ public class UniversalAdapter extends Adapter<UniversalHolder>{
 			case TYPE_ALBUM: return R.layout.card_album;
 			case TYPE_RUNNING_PROGRAM: return R.layout.card_running_program;
 			case TYPE_PROGRAM_CONTENT: return R.layout.card_program_content;
-			case TYPE_PROGRAM_PAGER: return R.layout.card_image_pager;
+			case TYPE_PROGRAM_PAGER: return R.layout.card_pager;
 			case TYPE_REQUEST: return R.layout.card_request;
 			case TYPE_CATEGORIES: return R.layout.card_categories;
 			case TYPE_CONTENTS: return R.layout.card_contents;
@@ -150,7 +149,7 @@ public class UniversalAdapter extends Adapter<UniversalHolder>{
 			case TYPE_NOTIFICATION: holder = new NotificationHolder(v, activity, this); break;
 			case TYPE_PERSON: holder = new PersonHolder(v, activity, this); break;
 			case TYPE_PROGRAM: holder = new ProgramHolder(v, activity, this); break;
-			case TYPE_PLAYLIST: holder = new PlaylistHolder(v, activity, this); break;
+			case TYPE_PLAYLIST: holder = new QueueHolder(v, activity, this); break;
 			case TYPE_SECTION: holder = new SectionHolder(v, activity, this); break;
 			case TYPE_SONG: holder = new SongHolder(v, activity, this); break;
 			case TYPE_ALBUM: holder = new AlbumHolder(v, activity, this); break;
@@ -200,5 +199,4 @@ public class UniversalAdapter extends Adapter<UniversalHolder>{
 	public int getSelectedItemCount() {
 		return selectedItems.size();
 	}
-
 }

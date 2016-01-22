@@ -10,30 +10,30 @@ public class SubcategoryItem extends MasterModel{
 	public static final int TYPE_SELECTABLE = 102;
 	public String imgUrl;
 	public int type;
-	public String music_url;
-	public String category;
+	public int posisi;
 	public String id;
+	public String category;
+	public String url;
 
 
-	public SubcategoryItem(String imgUrl, String primaryInfo, String secondaryInfo, String id){
+	public SubcategoryItem(String imgUrl, String primaryInfo, String secondaryInfo){
 		super(primaryInfo, secondaryInfo);
 		this.imgUrl = imgUrl;
 		type = TYPE_NORMAL;
-		this.id = id;
-	}
-	public SubcategoryItem(String imgUrl, String primaryInfo, String secondaryInfo, String music_url, String category, String id){
-		super(primaryInfo, secondaryInfo);
-		this.imgUrl = imgUrl;
-		this.music_url = music_url;
-		this.category = category;
-		type = TYPE_NORMAL;
-		this.id = id;
 	}
 
-	public SubcategoryItem(String imgUrl, String primaryInfo, String secondaryInfo, int type, String id){
+	public SubcategoryItem(String imgUrl, String primaryInfo, String secondaryInfo, int type){
 		super(primaryInfo, secondaryInfo);
 		this.imgUrl = imgUrl;
 		this.type = type;
+	}
+	public SubcategoryItem(String imgUrl, String primaryInfo, String secondaryInfo, int type,String category, String url, int posisi, String id){
+		super(primaryInfo, secondaryInfo);
+		this.imgUrl = imgUrl;
+		this.type = type;
+		this.posisi = posisi;
 		this.id = id;
+		this.category = category;
+		this.url = url;
 	}
 }

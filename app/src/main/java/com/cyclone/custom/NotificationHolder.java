@@ -1,11 +1,13 @@
 package com.cyclone.custom;
 
 import android.app.Activity;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.cyclone.DrawerActivity;
 import com.cyclone.R;
 import com.cyclone.model.Notification;
 
@@ -29,11 +31,6 @@ public class NotificationHolder extends UniversalHolder{
 	public void bind(Object object, Activity activity, int position) {
 		bind((Notification)object);
 	}
-
-	/*@Override
-	public void bind(Object object, Activity activity, int position) {
-		bind((Notification)object);
-	}*/
 
 	public void bind(Notification notif){
 		imgUser.setImageResource(R.drawable.background_login);

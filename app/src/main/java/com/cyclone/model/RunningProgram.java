@@ -9,9 +9,9 @@ public class RunningProgram {
 	public String description;
 	public String cover_url;
 
-	public RunningProgram(String name, String description, String cover_ur){
+	public RunningProgram(String name, String description, String cover_url){
 		this.name = name;
 		this.description = description;
-		this.cover_url = cover_ur;
+		this.cover_url = cover_url;
 	}
 }

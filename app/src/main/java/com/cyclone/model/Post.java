@@ -15,17 +15,18 @@ public class Post {
 	public String postTitle;
 	public String postContent;
 	public String postInfo;
-	public String userId;
 	public int likesCount;
 	public int commentCount;
 	public int type;
 	public boolean isLiked;
+
 	public String username;
 	public String FeedId;
+	public String userId;
 
 	public Post(String imgUrl, String headerName, String timestamp, String playlistType, String
 			postImgUrl, String postTitle, String postContent, String postInfo, int likesCount,
-				int commentCount, int type, boolean isLiked, String userId){
+				int commentCount, int type, boolean isLiked){
 		this.imgUrl = imgUrl;
 		this.headerName = headerName;
 		this.timestamp = timestamp;

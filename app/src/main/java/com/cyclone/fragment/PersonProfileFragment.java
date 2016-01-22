@@ -14,16 +14,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cyclone.DrawerActivity;
 import com.cyclone.MasterActivity;
 import com.cyclone.R;
-import com.cyclone.Utils.ServerUrl;
-import com.cyclone.Utils.UtilUser;
 import com.cyclone.custom.Tools;
-import com.cyclone.loopback.repository.FollowRepository;
 import com.cyclone.model.Post;
-import com.strongloop.android.loopback.RestAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,16 +34,14 @@ public class PersonProfileFragment extends RecyclerFragment{
 	public static final int MODE_OTHERS_PROFILE = 102;
 	private String transitionId;
 	private int mode;
-	private String currentProfileId;
 
 	public PersonProfileFragment(){}
 
-	public static PersonProfileFragment newInstance(int mode, String transitionId, String json, String currentProfileId){
+	public static PersonProfileFragment newInstance(int mode, String transitionId, String json){
 		PersonProfileFragment fragment = new PersonProfileFragment();
 		fragment.json = json;
 		fragment.mode = mode;
 		fragment.transitionId = transitionId;
-		fragment.currentProfileId = currentProfileId;
 		return fragment;
 	}
 
@@ -93,23 +88,23 @@ public class PersonProfileFragment extends RecyclerFragment{
 	public List<Object> parse(String json){
 		List<Object> datas = new ArrayList<>();
 		datas.add(new Post("", "<b>Imam Darto</b> created new <b>Mix</b>", "1 Hour ago", "Mix",
-				"", "Funky Sunshine", "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST, false, "0", "Username", ""));
+				"", "Funky Sunshine", "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST, false));
 		datas.add(new Post("", "<b>Desta</b> liked a Playlist", "2 Hour ago", "Playlist",
-				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST, false, "0", "Username", ""));
+				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST, false));
 		datas.add(new Post("", "<b>Desta</b> created new <b>Playlist</b>", "4 Hour ago",
 				"Playlist", "", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post
-				.TYPE_POST, false, "0", "Username", ""));
+				.TYPE_POST, false));
 		datas.add(new Post("", "<b>Desta</b> shared a <b>Playlist</b>", "4 Hour ago", "Playlist",
-				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST, false, "0", "Username", ""));
+				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST, false));
 		datas.add(new Post("", "<b>Imam Darto</b> created new <b>Mix</b>", "1 Hour ago", "Mix",
-				"", "Funky Sunshine", "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST, false, "0", "Username", ""));
+				"", "Funky Sunshine", "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST, false));
 		datas.add(new Post("", "<b>Desta</b> liked a Playlist", "2 Hour ago", "Playlist",
-				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST, false, "0", "Username", ""));
+				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST, false));
 		datas.add(new Post("", "<b>Desta</b> created new <b>Playlist</b>", "4 Hour ago",
 				"Playlist", "", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post
-				.TYPE_POST, false, "0", "Username", ""));
+				.TYPE_POST, false));
 		datas.add(new Post("", "<b>Desta</b> shared a <b>Playlist</b>", "4 Hour ago", "Playlist",
-				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST, false, "0", "Username", ""));
+				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST, false));
 		return datas;
 	}
 
@@ -124,40 +119,27 @@ public class PersonProfileFragment extends RecyclerFragment{
 		TextView txtFollowing = (TextView) header.findViewById(R.id.txt_following_count);
 		Button btnAddShowList = (Button) header.findViewById(R.id.btn_add_showlist);
 		Button btnUpload = (Button) header.findViewById(R.id.btn_upload);
-		final Button btnFollow = (Button) header.findViewById(R.id.btn_follow);
+		Button btnFollow = (Button) header.findViewById(R.id.btn_follow);
 		ImageView imgUser = (ImageView) header.findViewById(R.id.img_user);
-		ViewGroup  ownProfile = (ViewGroup)header.findViewById(R.id.group_btn_own_profile);
-		ViewGroup  otherProfile = (ViewGroup)header.findViewById(R.id.group_btn_others_profile);
 
 		setupBackground(header);
 
 		if(mode == MODE_OWN_PROFILE){
 			header.findViewById(R.id.btn_follow).setVisibility(View.GONE);
 		}else if(mode == MODE_OTHERS_PROFILE){
-			System.out.println("current id: " + currentProfileId);
-			System.out.println("my id: " + UtilUser.currentUser.getId());
-			/*if(currentProfileId == UtilUser.currentToken.getUserId().){
-				header.findViewById(R.id.btn_follow).setVisibility(View.GONE);
-				System.out.println("Mine");
-			}
-			else{*/
-				System.out.println("Not me");
-				header.findViewById(R.id.group_btn_own_profile).setVisibility(View.GONE);
-				header.findViewById(R.id.group_btn_others_profile).setVisibility(View.VISIBLE);
-				final Button followButton = (Button) header.findViewById(R.id.btn_follow);
-				followButton.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						Drawable img = ContextCompat.getDrawable(getActivity(), R.drawable
-								.ic_check_black_36dp);
-						followButton.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
-						followButton.setText("Followed");
-						followButton.setEnabled(false);
-
-					}
-				});
-		//	}
-
+			header.findViewById(R.id.group_btn_own_profile).setVisibility(View.GONE);
+			header.findViewById(R.id.group_btn_others_profile).setVisibility(View.VISIBLE);
+			final Button followButton = (Button) header.findViewById(R.id.btn_follow);
+			followButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Drawable img = ContextCompat.getDrawable(getActivity(), R.drawable
+							.ic_check_black_36dp);
+					followButton.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
+					followButton.setText("Followed");
+					followButton.setEnabled(false);
+				}
+			});
 		}
 
 		btnShowlist.setOnClickListener(new View.OnClickListener() {
@@ -232,21 +214,6 @@ public class PersonProfileFragment extends RecyclerFragment{
 				i.putExtra("fragmentType", MasterActivity.FRAGMENT_UPLOAD);
 				i.putExtra("title", "Upload New Content");
 				startActivity(i);
-			}
-		});
-
-		btnFollow.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				final RestAdapter restAdapter = new RestAdapter(activity.getBaseContext(), ServerUrl.API_URL);
-				final FollowRepository followRepository = restAdapter.createRepository(FollowRepository.class);
-				followRepository.follow(currentProfileId);
-
-				Drawable img = ContextCompat.getDrawable(getActivity(), R.drawable
-						.ic_check_black_36dp);
-				btnFollow.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
-				btnFollow.setText("Followed");
-				btnFollow.setEnabled(false);
 			}
 		});
 

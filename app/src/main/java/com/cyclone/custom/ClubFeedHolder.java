@@ -16,6 +16,7 @@ import com.cyclone.DrawerActivity;
 import com.cyclone.MasterActivity;
 import com.cyclone.R;
 import com.cyclone.Utils.ServerUrl;
+import com.cyclone.fragment.CommentFragment;
 import com.cyclone.fragment.PersonProfileFragment;
 import com.cyclone.loopback.repository.FeedLikeRepository;
 import com.cyclone.model.Post;
@@ -67,12 +68,6 @@ public class ClubFeedHolder extends UniversalHolder{
 		bind((Post)object, activity);
 	}
 
-	/*@Override
-	public void bind(Object object, Activity activity, int position) {
-		this.activity = activity;
-		bind((Post)object, activity);
-	}*/
-
 	public void bind(Post post, final Activity activity){
 		final Post p = post;
 		imgUser.setImageResource(R.drawable.background_login);
@@ -99,7 +94,7 @@ public class ClubFeedHolder extends UniversalHolder{
 					p.isLiked = true;
 					p.likesCount++;
 					txtLikesInfo.setText(p.likesCount + " likes • " + p.commentCount + " comments");
-					System.out.println("on holder id : "+p.FeedId);
+					System.out.println("on holder id : " + p.FeedId);
 					feedLikeRepository.like(p.FeedId);
 				} else {
 					btnLike.setColorFilter(null);
@@ -120,12 +115,12 @@ public class ClubFeedHolder extends UniversalHolder{
 		btnComment.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(activity, DrawerActivity.class);
-				i.putExtra("fragmentType", MasterActivity.FRAGMENT_COMMENT);
-				i.putExtra("title", "Comments");
-				i.putExtra("feedId", p.FeedId);
-				System.out.println("feed Id : "+ p.FeedId);
-				activity.startActivity(i);
+				Intent intent = new Intent(activity, DrawerActivity.class);
+				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_COMMENT);
+				intent.putExtra("mode", CommentFragment.MODE_READ_WRITE);
+				intent.putExtra("title", "Comments");
+				intent.putExtra("contentId", p.FeedId);
+				activity.startActivity(intent);
 			}
 		});
 		final ImageView imageView = imgUser;
@@ -141,8 +136,6 @@ public class ClubFeedHolder extends UniversalHolder{
 				i.putExtra("fragmentType", DrawerActivity.FRAGMENT_PERSON_PROFILE);
 				i.putExtra("mode", PersonProfileFragment.MODE_OTHERS_PROFILE);
 				i.putExtra("transition", "profile" + transitionId);
-				i.putExtra("ownerId", p.userId);
-				i.putExtra("title", p.username);
 
 				if(Build.VERSION.SDK_INT >= 16) {
 					ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation
