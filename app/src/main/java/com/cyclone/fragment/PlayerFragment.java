@@ -66,8 +66,11 @@ public class PlayerFragment extends PlaybackServiceRecyclerFragment implements P
 	private TextView txtTitle, txtArtist, txtTotalTime, txtCurTime;
 	private SeekBar seekbar;
 	private boolean mPreviewingSeek = false;
+	private MenuItem btnCollapse;
+
 	static PlayerFragment fragment;
 	public PlayerFragment(){}
+
 	Context mContext;
 
 	public static PlayerFragment newInstance(String json){
@@ -155,6 +158,7 @@ public class PlayerFragment extends PlaybackServiceRecyclerFragment implements P
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.player, menu);
 		super.onCreateOptionsMenu(menu, inflater);
+		btnCollapse = menu.findItem(R.id.btn_collapse);
 	}
 
 	@Override
@@ -578,6 +582,19 @@ public class PlayerFragment extends PlaybackServiceRecyclerFragment implements P
 			mProgressBar.setProgress(time);
 		}*/
 
+	}
+
+	@Override
+	public void onChanged(float percent) {
+		super.onChanged(percent);
+		System.out.println(percent);
+		if(btnCollapse != null) {
+			if (percent == 0) {
+				btnCollapse.setVisible(false);
+			} else if (percent == 100) {
+				btnCollapse.setVisible(true);
+			}
+		}
 	}
 
 	@Override

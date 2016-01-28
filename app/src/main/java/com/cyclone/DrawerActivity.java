@@ -516,6 +516,9 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 	@SuppressWarnings("StatementWithEmptyBody")
 	@Override
 	public boolean onNavigationItemSelected(MenuItem item) {
+		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+		drawer.closeDrawer(GravityCompat.START);
+
 		// Handle navigation view item clicks here.
 		if(activeMenuItem != null)
 			activeMenuItem.setChecked(false);
@@ -523,28 +526,28 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 		activeMenuItem = item;
 
 		int id = item.getItemId();
-		Intent intent = new Intent(this, DrawerActivity.class);
+		final Intent intent = new Intent(this, DrawerActivity.class);
 		intent.putExtra("parent", true);
 		switch (id){
 			case R.id.nav_home:
 				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_HOME);
 				intent.putExtra("menuId", 0);
-				startActivity(intent);
-				finish();
+//				startActivity(intent);
+//				finish();
 				break;
 			case R.id.nav_live:
 				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_LIVE);
 				intent.putExtra("title", "Live Stream");
 				intent.putExtra("menuId", 1);
-				startActivity(intent);
-				finish();
+//				startActivity(intent);
+//				finish();
 				break;
 			case R.id.nav_klub:
 				intent.putExtra("title", "Klub Radio");
 				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_CLUB);
 				intent.putExtra("menuId", 2);
-				startActivity(intent);
-				finish();
+//				startActivity(intent);
+//				finish();
 				break;
 			case R.id.nav_profile:
 				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_PERSON_PROFILE);
@@ -552,47 +555,54 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 				intent.putExtra("mode", PersonProfileFragment.MODE_OWN_PROFILE);
 				intent.putExtra("id", UtilUser.currentUser.getId());
 				intent.putExtra("menuId", 3);
-				startActivity(intent);
-				finish();
+//				startActivity(intent);
+//				finish();
 				break;
 			case R.id.nav_favorite:
 				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_FAVORITES);
 				intent.putExtra("title", "Favorites");
 				intent.putExtra("menuId", 4);
-				startActivity(intent);
-				finish();
+//				startActivity(intent);
+//				finish();
 				break;
 			case R.id.nav_notification:
 				intent.putExtra("title", "Notifications");
 				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_NOTIFICATION);
 				intent.putExtra("menuId", 5);
-				startActivity(intent);
-				finish();
+//				startActivity(intent);
+//				finish();
 				break;
 			case R.id.nav_virtual_card:
 				intent.putExtra("title", "Virtual Card");
 				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_VIRTUAL_CARD);
 				intent.putExtra("menuId", 6);
-				startActivity(intent);
-				finish();
+//				startActivity(intent);
+//				finish();
 				break;
 			case R.id.nav_setting:
 				intent.putExtra("title", "Settings");
 				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_SETTINGS);
 				intent.putExtra("menuId", 7);
-				startActivity(intent);
-				finish();
+//				startActivity(intent);
+//				finish();
 				break;
 			case R.id.nav_player:
 				intent.putExtra("title", "Player");
 				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_PLAYER);
 				intent.putExtra("menuId", 8);
-				startActivity(intent);
-				finish();
+//				startActivity(intent);
+//				finish();
 				break;
 		}
-		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-		drawer.closeDrawer(GravityCompat.START);
+
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				startActivity(intent);
+				finish();
+			}
+		}, 300);
+
 		return true;
 	}
 
