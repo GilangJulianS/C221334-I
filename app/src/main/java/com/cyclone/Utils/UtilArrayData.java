@@ -62,6 +62,7 @@ public class UtilArrayData {
     public static List<FeedTimeline> feedTimelines = new ArrayList<>();
     public static List<radioProgram> radioPrograms = new ArrayList<>();
     public static List<comment> commentList = new ArrayList<>();
+    public static List<Object> RequestList = new ArrayList<>();
     public static List<PlaylistAccount> PlaylistAccount = new ArrayList<>();
     public static RunningProgram program = null;
     public static Profile CurrentProfile = null;

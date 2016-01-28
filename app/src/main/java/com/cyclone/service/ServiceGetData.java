@@ -14,6 +14,7 @@ import com.cyclone.model.Content;
 import com.cyclone.model.Program;
 import com.cyclone.model.ProgramContent;
 import com.cyclone.model.ProgramPager;
+import com.cyclone.model.Request;
 import com.cyclone.model.RunningProgram;
 import com.cyclone.player.helpers.GetCoverUrl;
 import com.cyclone.player.helpers.ServiceQueueJson;
@@ -47,6 +48,7 @@ public class ServiceGetData extends IntentService {
     private static final String ACTION_GET_COVER_URL = "com.cyclone.service.action.GET_COVER_URL";
     private static final String ACTION_GET_DATA_HOME = "com.cyclone.service.action.GET_DATA_HOME";
     private static final String ACTION_GET_DATA_STREAM = "com.cyclone.service.action.GET_DATA_STREAM";
+    private static final String ACTION_GET_DATA_REQUEST = "com.cyclone.service.action.GET_DATA_REQUEST";
     private static final String ACTION_PLAY_ON_HOME = "com.cyclone.service.action.ACTION_PLAY_ON_HOME";
 
     // TODO: Rename parameters
@@ -115,6 +117,18 @@ public class ServiceGetData extends IntentService {
         System.out.println("dalam callback : " + mCallbacksGetDataHome.size());
         Intent intent = new Intent(context, ServiceGetData.class);
         intent.setAction(ACTION_GET_DATA_STREAM);
+        context.startService(intent);
+    }
+
+    public static void getDataRequest(Context context, getData client) {
+        if (!mCallbacksGetDataHome.contains(client))
+            mCallbacksGetDataHome.add(client);
+
+        getData = client;
+
+        System.out.println(" on getDataRequesttttttt");
+        Intent intent = new Intent(context, ServiceGetData.class);
+        intent.setAction(ACTION_GET_DATA_REQUEST);
         context.startService(intent);
     }
 
@@ -188,6 +202,9 @@ public class ServiceGetData extends IntentService {
             else if(ACTION_GET_DATA_STREAM.equals(action)){
                 getDataStream();
             }
+            else if(ACTION_GET_DATA_REQUEST.equals(action)){
+                getDataRequest();
+            }
 
            /* else if (ACTION_PLAY_ON_HOME.equals(action)) {
                 MediaWrapper media = intent.getParcelableExtra(MEDIA_WARPER);
@@ -218,6 +235,10 @@ public class ServiceGetData extends IntentService {
 
     private void getDataStream(){
         new getDataStream().execute();
+    }
+
+    private void getDataRequest(){
+        new getDataRequest().execute();
     }
 
     /**
@@ -534,6 +555,82 @@ public class ServiceGetData extends IntentService {
         protected void onCancelled() {
             super.onCancelled();
                 getData.onDataLoadedHomeCancel();
+            //dataCallback.onDataLoadedHome(mapList);
+
+        }
+
+    }
+
+    private class getDataRequest extends AsyncTask<Void, Void, Void> {
+
+        ServiceQueueJson sh = new ServiceQueueJson();
+        String url_request = "http://www.1071klitefm.com/apis/data/request";
+        //String url_runing = "http://www.1071klitefm.com/apis/data/programme";
+
+        String jsonStrRequest ;
+        //String jsonStrRuning ;
+
+        List<Object> datas = new ArrayList<>();
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            System.out.println("onPreExecute getDataRequesttttttt");
+
+        }
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            // Making a request to url and getting response
+            System.out.println("doInBackground getDataRequesttttttt");
+
+            jsonStrRequest = sh.makeServiceCall(url_request, ServiceQueueJson.GET);
+            // Creating service handler class instance
+
+            Log.d("Response Request: ", "> " + url_request);
+            if (jsonStrRequest != null) {
+                try {
+                    JSONArray mJsonArray = new JSONArray(jsonStrRequest);
+                    for (int i = 0; i < mJsonArray.length(); i++) {
+                        System.out.println("added from JSON  running item");
+                        JSONObject mJsonObject = mJsonArray.getJSONObject(i);
+                        String id = mJsonObject.getString("id");
+                        String jenis = mJsonObject.getString("jenis");
+                        String creator = mJsonObject.getString("creator");
+                        String waktu = mJsonObject.getString("waktu");
+                        String pengirim = mJsonObject.getString("pengirim");
+                        String foto = mJsonObject.getString("foto");
+                        String pesan = mJsonObject.getString("pesan");
+                        datas.add(new Request(foto, 0, pengirim, pesan, waktu));
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Log.e("ServiceHandler", "Couldn't get any data from the url");
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            // Dismiss the progress dialog
+            System.out.println("onPostExecute");
+            System.out.println("jumlah list : " + datas.size());
+
+            if(datas.size() > 0){
+                UtilArrayData.RequestList.clear();
+                UtilArrayData.RequestList = datas;
+            }
+            getData.onDataLoadedLiveStreaming(datas);
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            getData.onDataLoadedHomeCancel();
             //dataCallback.onDataLoadedHome(mapList);
 
         }

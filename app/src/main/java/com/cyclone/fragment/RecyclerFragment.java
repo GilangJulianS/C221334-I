@@ -137,6 +137,12 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 			if(progressBar != null)
 				progressBar.setVisibility(View.VISIBLE);
 			onRefresh();
+		}else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_REQUEST){
+			System.out.println("on Request");
+			cnt = 0;
+			if(progressBar != null)
+				progressBar.setVisibility(View.VISIBLE);
+			onRefresh();
 		}else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_SUBCATEGORY){
 
 		}else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_CLUB){
@@ -392,6 +398,8 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 			getDataRadioProgram();
 		}else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_COMMENT){
 			getDataComment();
+		}else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_REQUEST){
+			getRequest();
 		}
 		else{
 			showData();
@@ -421,8 +429,8 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 			@Override
 			public void onSuccess(String response) {
 				scc++;
-				System.out.println("scc : "+scc +" | "+response);
-				if(scc==2) showData();
+				System.out.println("scc : " + scc + " | " + response);
+				if (scc == 2) showData();
 			}
 
 			@Override
@@ -435,8 +443,8 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 			@Override
 			public void onSuccess(String response) {
 				scc++;
-				System.out.println("scc : "+scc +" | "+response);
-				if(scc==2) showData();
+				System.out.println("scc : " + scc + " | " + response);
+				if (scc == 2) showData();
 			}
 
 			@Override
@@ -450,6 +458,18 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 		try {
 			ServiceGetData serviceGetData = new ServiceGetData();
 			serviceGetData.getDataStream(recuclerContext, mGetData);
+		} catch (Exception e) {
+			if(progressBar != null)
+				progressBar.setVisibility(View.GONE);
+			//onRefresh();
+		}
+	}
+
+	public void getRequest(){
+		System.out.println("on Requesttttttttttttt");
+		try {
+			ServiceGetData serviceGetData = new ServiceGetData();
+			serviceGetData.getDataRequest(RequestFragment.getmContext(), RequestFragment.getmGetData());
 		} catch (Exception e) {
 			if(progressBar != null)
 				progressBar.setVisibility(View.GONE);
