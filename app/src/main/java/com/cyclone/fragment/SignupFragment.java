@@ -1,10 +1,12 @@
 package com.cyclone.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.SpannableString;
@@ -14,6 +16,7 @@ import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,7 +41,8 @@ public class SignupFragment extends Fragment {
 	private String[] spinnerGenderItems = {"Male", "Female", "Gender"};
 
 	ProgressDialog progressDialog;
-	EditText editTextUsername, editTextFulName, editTextPassword, editTextEmail;
+	EditText editTextUsername, editTextFullName, editTextPassword, editTextEmail;
+	TextInputLayout labelUser, labelName, labelPassword, labelEmail;
 	int cntLogin = 0;
 
 	public SignupFragment(){}
@@ -55,6 +59,14 @@ public class SignupFragment extends Fragment {
 		btnSignup = (Button) v.findViewById(R.id.btn_signup);
 		spinnerGender = (Spinner) v.findViewById(R.id.spinner_gender);
 		txtToc = (TextView) v.findViewById(R.id.txt_toc);
+		labelUser = (TextInputLayout) v.findViewById(R.id.input_layout_user);
+		labelEmail = (TextInputLayout) v.findViewById(R.id.input_layout_email);
+		labelPassword = (TextInputLayout) v.findViewById(R.id.input_layout_password);
+		labelName  = (TextInputLayout) v.findViewById(R.id.input_layout_name);
+		editTextUsername = (EditText) v.findViewById(R.id.form_user);
+		editTextEmail = (EditText) v.findViewById(R.id.form_email);
+		editTextFullName = (EditText) v.findViewById(R.id.form_full_name);
+		editTextPassword = (EditText) v.findViewById(R.id.form_password);
 
 		btnSignup.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -65,7 +77,8 @@ public class SignupFragment extends Fragment {
 				progressDialog.setCancelable(false);
 				progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Large_Inverse);
 				progressDialog.show();
-				register();
+				if(isFormValid())
+					register();
 
 			}
 		});
@@ -112,28 +125,38 @@ public class SignupFragment extends Fragment {
 		return v;
 	}
 
+	private void hidekeyboard(){
+		View view = getActivity().getCurrentFocus();
+		if (view != null) {
+			InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+		}
+	}
+
 	private void register(){
+		hidekeyboard();
+
 		String male = "true";
 		String email, fullname, user, password;
 
 		if(editTextUsername.getText().length() < 1 || editTextUsername.getText().equals(" ")){
 			progressDialog.dismiss();
-			Snackbar.make(getView(), "Username is Empty", Snackbar.LENGTH_SHORT).show();
+//			Snackbar.make(getView(), "Username is Empty", Snackbar.LENGTH_SHORT).show();
 			return;
 		}
 		if(editTextEmail.getText().length() < 1 || editTextEmail.getText().equals(" ")){
 			progressDialog.dismiss();
-			Snackbar.make(getView(),"Email is Empty", Snackbar.LENGTH_SHORT).show();
+//			Snackbar.make(getView(),"Email is Empty", Snackbar.LENGTH_SHORT).show();
 			return;
 		}
 		if(editTextPassword.getText().length() < 1 || editTextPassword.getText().equals(" ")){
 			progressDialog.dismiss();
-			Snackbar.make(getView(),"Password is Empty", Snackbar.LENGTH_SHORT).show();
+//			Snackbar.make(getView(),"Password is Empty", Snackbar.LENGTH_SHORT).show();
 			return;
 		}
 
 		email = editTextEmail.getText().toString();
-		fullname = editTextFulName.getText().toString();
+		fullname = editTextFullName.getText().toString();
 		user = editTextUsername.getText().toString();
 		password = editTextPassword.getText().toString();
 
@@ -163,5 +186,49 @@ public class SignupFragment extends Fragment {
 			}
 		});
 
+	}
+
+	private boolean isFormValid(){
+		if(editTextUsername.getText().toString().equals("aaa")){
+			labelUser.setError("User already exist");
+			editTextUsername.requestFocus();
+			progressDialog.dismiss();
+			return false;
+		}else{
+			labelUser.setErrorEnabled(false);
+		}
+		if(editTextUsername.getText().toString().equals("")){
+			labelUser.setError("Username is empty");
+			editTextUsername.requestFocus();
+			progressDialog.dismiss();
+			return false;
+		}else{
+			labelUser.setErrorEnabled(false);
+		}
+		if(editTextFullName.getText().toString().equals("")){
+			labelName.setError("Name is empty");
+			editTextFullName.requestFocus();
+			progressDialog.dismiss();
+			return false;
+		}else{
+			labelName.setErrorEnabled(false);
+		}
+		if(editTextEmail.getText().toString().equals("")){
+			labelEmail.setError("Email is empty");
+			editTextEmail.requestFocus();
+			progressDialog.dismiss();
+			return false;
+		}else{
+			labelEmail.setErrorEnabled(false);
+		}
+		if(editTextPassword.getText().toString().equals("")){
+			labelPassword.setError("Password is empty");
+			editTextPassword.requestFocus();
+			progressDialog.dismiss();
+			return false;
+		}else{
+			labelPassword.setErrorEnabled(false);
+		}
+		return true;
 	}
 }

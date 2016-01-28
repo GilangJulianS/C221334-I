@@ -40,35 +40,69 @@
 				android:textStyle="bold"
 				android:textColor="#fff"/>
 
-			<EditText
-				android:id="@+id/form_user"
+			<android.support.design.widget.TextInputLayout
+				android:id="@+id/input_layout_user"
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="40dp"
-				android:hint="Username"/>
+				android:layout_height="wrap_content">
 
-			<EditText
-				android:id="@+id/form_full_name"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="10dp"
-				android:hint="Full Name"/>
+				<EditText
+					android:id="@+id/form_user"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="40dp"
+					android:singleLine="true"
+					android:hint="Username"/>
 
-			<EditText
-				android:id="@+id/form_email"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="10dp"
-				android:inputType="textEmailAddress"
-				android:hint="Email"/>
+			</android.support.design.widget.TextInputLayout>
 
-			<EditText
-				android:id="@+id/form_password"
+
+			<android.support.design.widget.TextInputLayout
+				android:id="@+id/input_layout_name"
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="10dp"
-				android:password="true"
-				android:hint="Password"/>
+				android:layout_height="wrap_content">
+
+				<EditText
+					android:id="@+id/form_full_name"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="10dp"
+					android:singleLine="true"
+					android:hint="Full Name"/>
+
+			</android.support.design.widget.TextInputLayout>
+
+
+			<android.support.design.widget.TextInputLayout
+				android:id="@+id/input_layout_email"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
+
+				<EditText
+					android:id="@+id/form_email"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="10dp"
+					android:inputType="textEmailAddress"
+					android:hint="Email"/>
+
+			</android.support.design.widget.TextInputLayout>
+
+
+			<android.support.design.widget.TextInputLayout
+				android:id="@+id/input_layout_password"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
+
+				<EditText
+					android:id="@+id/form_password"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="10dp"
+					android:singleLine="true"
+					android:password="true"
+					android:hint="Password"/>
+
+			</android.support.design.widget.TextInputLayout>
 
 			<LinearLayout
 				android:layout_width="match_parent"
@@ -91,6 +125,7 @@
 					android:layout_marginLeft="15dp"
 					android:inputType="number"
 					android:gravity="center_horizontal"
+					android:singleLine="true"
 					android:hint="Age"/>
 
 			</LinearLayout>
