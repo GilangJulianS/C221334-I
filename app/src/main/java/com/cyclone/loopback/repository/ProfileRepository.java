@@ -59,19 +59,19 @@ public class ProfileRepository extends ModelRepository<Profile> {
 
                 try {
                     result = new JSONObject(response);
-
-                    profile.setMale(result.getString("male"));
-                    profile.setBirthday(result.getString("birthday"));
-                    profile.setAbout(result.getString("about"));
-                    profile.setUsername(result.getString("username"));
-                    profile.setEmail(result.getString("email"));
-                    profile.setEmailVerified(result.getString("emailVerified"));
-                    profile.setVerificationToken(result.getString("verificationToken"));
-                    profile.setStatus(result.getString("status"));
-                    profile.setCreated(result.getString("created"));
-                    profile.setLastUpdated(result.getString("lastUpdated"));
-                    profile.setId(result.getString("id"));
-                    profile.setProfile_picture(result.getString("profile_picture"));
+                    try{}catch (Exception e){}
+                    try{profile.setMale(result.getString("male"));}catch (Exception e){profile.setMale("");}
+                    try{profile.setBirthday(result.getString("birthday"));}catch (Exception e){profile.setBirthday("");}
+                    try{profile.setAbout(result.getString("about"));}catch (Exception e){profile.setAbout("");}
+                    try{profile.setUsername(result.getString("username"));}catch (Exception e){profile.setUsername("");}
+                    try{profile.setEmail(result.getString("email"));}catch (Exception e){profile.setEmail("");}
+                    try{profile.setEmailVerified(result.getString("emailVerified"));}catch (Exception e){profile.setEmailVerified("");}
+                    try{profile.setVerificationToken(result.getString("verificationToken"));}catch (Exception e){profile.setVerificationToken("");}
+                    try{profile.setStatus(result.getString("status"));}catch (Exception e){profile.setStatus("");}
+                    try{profile.setCreated(result.getString("created"));}catch (Exception e){profile.setCreated("");}
+                    try{profile.setLastUpdated(result.getString("lastUpdated"));}catch (Exception e){profile.setLastUpdated("");}
+                    try{profile.setId(result.getString("id"));}catch (Exception e){profile.setId("");}
+                    try{profile.setProfile_picture(result.getString("profile_picture"));}catch (Exception e){profile.setProfile_picture("");}
 
                     UtilArrayData.CurrentProfile = profile;
 

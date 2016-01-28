@@ -14,9 +14,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.cyclone.DrawerActivity;
 import com.cyclone.R;
+import com.cyclone.Utils.ServerUrl;
+import com.cyclone.loopback.model.radioProfile;
+import com.cyclone.loopback.repository.radioProfileRepository;
+import com.strongloop.android.loopback.RestAdapter;
+import com.strongloop.android.loopback.callbacks.ObjectCallback;
 
 /**
  * Created by gilang on 09/10/2015.
@@ -31,9 +37,12 @@ public class RadioProfileFragment extends Fragment {
 	private CardView cardProgram1, cardProgram2;
 	private CardView cardDj1, cardDj2, cardDj3;
 
+	TextView txtRadioName, txtRegion, txtAbout, txtAlamat, txtPhone, txtEmail, txtWebsite, txtFacebook, txtTwetter, txtTag;
+
 	public RadioProfileFragment(){}
 
 	public static RadioProfileFragment newInstance(){
+
 		RadioProfileFragment fragment = new RadioProfileFragment();
 		return fragment;
 	}
@@ -56,6 +65,15 @@ public class RadioProfileFragment extends Fragment {
 //			});
 //		}
 
+		txtRadioName = (TextView)v.findViewById(R.id.txtRadioName);
+		txtRegion = (TextView)v.findViewById(R.id.txtRegion);
+		txtAbout = (TextView)v.findViewById(R.id.txtAbout);
+		txtAlamat = (TextView)v.findViewById(R.id.txtAlamat);
+		txtPhone = (TextView)v.findViewById(R.id.txtPhone);
+		txtEmail = (TextView)v.findViewById(R.id.txtEmail);
+		txtWebsite = (TextView)v.findViewById(R.id.txtWebsite);
+		txtFacebook = (TextView)v.findViewById(R.id.txtFacebook);
+		txtTwetter = (TextView)v.findViewById(R.id.txtTwetter);
 
 		btnMoreProgram = (Button) v.findViewById(R.id.btn_more_program);
 		btnMoreProgram.setOnClickListener(new View.OnClickListener() {
@@ -145,6 +163,32 @@ public class RadioProfileFragment extends Fragment {
 
 			}
 		});
+
+		final RestAdapter restAdapter = new RestAdapter(getContext(), ServerUrl.API_URL);
+		final radioProfileRepository profileRepository= restAdapter.createRepository(radioProfileRepository.class);
+
+		profileRepository.get(ServerUrl.RADIO_ID, new ObjectCallback<radioProfile>() {
+			@Override
+			public void onSuccess(radioProfile object) {
+				System.out.println("kkkkkkkkkkkkkkkkkk : " +object.getName());
+				txtRadioName.setText(object.getName());
+				txtAbout.setText(object.getAbout());
+				txtAlamat.setText(object.getAddress());
+				txtEmail.setText(object.getEmail());
+				txtRegion.setText(object.getRegion());
+				txtPhone.setText(object.getPhone_office());
+				txtFacebook.setText(object.getFacebook_page());
+				txtTwetter.setText(object.getTwitter_page());
+				txtWebsite.setText(object.getWebsite());
+				txtTag.setText(object.getTagline());
+			}
+
+			@Override
+			public void onError(Throwable t) {
+
+			}
+		});
+
 	}
 
 	@Override
@@ -157,8 +201,17 @@ public class RadioProfileFragment extends Fragment {
 			LayoutInflater inflater = activity.getLayoutInflater();
 			View header = inflater.inflate(R.layout.part_header_radio_profile, parallaxHeader,
 					false);
-			parallaxHeader.removeAllViews();
-			parallaxHeader.addView(header);
+
+			txtTag = (TextView)header.findViewById(R.id.txtTag);
+			try{
+				parallaxHeader.removeAllViews();
+			}
+			catch (Exception e){}
+			try{
+				parallaxHeader.addView(header);
+			}
+			catch (Exception e){}
+
 		}
 	}
 }

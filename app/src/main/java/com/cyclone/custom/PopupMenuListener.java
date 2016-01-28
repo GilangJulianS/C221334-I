@@ -10,9 +10,10 @@ import android.widget.Toast;
 import com.cyclone.DrawerActivity;
 import com.cyclone.MasterActivity;
 import com.cyclone.R;
+import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.model.Content;
-import com.cyclone.model.Playlist;
-import com.cyclone.model.PlaylistData;
+
+import java.util.ArrayList;
 
 /**
  * Created by gilang on 12/12/2015.
@@ -35,6 +36,23 @@ public class PopupMenuListener implements PopupMenu.OnMenuItemClickListener {
 		switch (item.getItemId()) {
 			case R.id.menu_add_queue:
 				Toast.makeText(activity, "Add to Queue Clicked", Toast.LENGTH_SHORT).show();
+				String[] s = {"as","qw","fg","rt","hj"};
+				ArrayList<String> l = new ArrayList<>();
+				l.add("as");
+				l.add("qw");
+				l.add("fg");
+				l.add("rt");
+				l.add("jh");
+
+				String parm;
+				parm = "{";
+				for(int j = 0; j < l.size(); j++){
+					parm = parm + l.get(j);
+					if(j < l.size()-1) parm = parm + ",";
+					else parm = parm +"}";
+				}
+
+				System.out.println("list : "+ parm);
 				return true;
 			case R.id.menu_add_favorites:
 				Toast.makeText(activity, "Add to Favorites Clicked", Toast.LENGTH_SHORT).show();
@@ -42,9 +60,13 @@ public class PopupMenuListener implements PopupMenu.OnMenuItemClickListener {
 			case R.id.menu_add_playlist:
 				PopupMenu menu = new PopupMenu(activity, anchorView);
 				menu.getMenu().add("New Playlist");
-				for(Playlist p : PlaylistData.playlists){
+				/*for(Playlist p : PlaylistData.playlists){
 					menu.getMenu().add(p.name);
+				}*/
+				for(int j = 0; j < UtilArrayData.PlaylistAccount.size(); j++){
+					menu.getMenu().add(0, j, j, UtilArrayData.PlaylistAccount.get(j).getName());
 				}
+
 				menu.setOnMenuItemClickListener(new PopupPlaylistListener(activity, content, anchorView));
 				menu.show();
 				return true;

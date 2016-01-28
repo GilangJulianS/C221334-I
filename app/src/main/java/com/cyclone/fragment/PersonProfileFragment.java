@@ -14,13 +14,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cyclone.DrawerActivity;
 import com.cyclone.MasterActivity;
 import com.cyclone.R;
+import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.custom.Tools;
 import com.cyclone.model.Post;
+import com.strongloop.android.remoting.adapters.Adapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,12 +118,26 @@ public class PersonProfileFragment extends RecyclerFragment{
 		TextView txtContent = (TextView) header.findViewById(R.id.txt_contents_count);
 		TextView txtFollower = (TextView) header.findViewById(R.id.txt_followers_count);
 		TextView txtFollowing = (TextView) header.findViewById(R.id.txt_following_count);
+		final TextView txtUsername = (TextView) header.findViewById(R.id.txt_username);
+		final TextView txtAbout = (TextView) header.findViewById(R.id.txt_about);
 		Button btnAddShowList = (Button) header.findViewById(R.id.btn_add_showlist);
 		Button btnUpload = (Button) header.findViewById(R.id.btn_upload);
 		Button btnFollow = (Button) header.findViewById(R.id.btn_follow);
 		ImageView imgUser = (ImageView) header.findViewById(R.id.img_user);
 
 		setupBackground(header);
+		getDataProfile(new Adapter.Callback() {
+			@Override
+			public void onSuccess(String response) {
+				txtUsername.setText(UtilArrayData.CurrentProfile.getUsername());
+				txtAbout.setText(UtilArrayData.CurrentProfile.getAbout());
+			}
+
+			@Override
+			public void onError(Throwable t) {
+
+			}
+		});
 
 		if(mode == MODE_OWN_PROFILE){
 			header.findViewById(R.id.btn_follow).setVisibility(View.GONE);

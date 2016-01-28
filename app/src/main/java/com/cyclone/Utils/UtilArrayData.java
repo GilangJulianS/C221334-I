@@ -1,6 +1,7 @@
 package com.cyclone.Utils;
 
 import com.cyclone.loopback.model.FeedTimeline;
+import com.cyclone.loopback.model.PlaylistAccount;
 import com.cyclone.loopback.model.Profile;
 import com.cyclone.loopback.model.RadioContent;
 import com.cyclone.loopback.model.comment;
@@ -61,6 +62,7 @@ public class UtilArrayData {
     public static List<FeedTimeline> feedTimelines = new ArrayList<>();
     public static List<radioProgram> radioPrograms = new ArrayList<>();
     public static List<comment> commentList = new ArrayList<>();
+    public static List<PlaylistAccount> PlaylistAccount = new ArrayList<>();
     public static RunningProgram program = null;
     public static Profile CurrentProfile = null;
     public static radioProfile rdioProfile = null;

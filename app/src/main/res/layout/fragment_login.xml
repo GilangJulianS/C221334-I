@@ -84,8 +84,14 @@
 			android:layout_height="wrap_content"
 			android:gravity="center_vertical"
 			android:orientation="horizontal">
-
-			<ImageView
+			<com.facebook.login.widget.LoginButton
+				android:id="@+id/login_button"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_horizontal"
+				android:layout_marginTop="0dp"
+				android:layout_marginBottom="0dp" />
+			<!--<ImageView
 				android:layout_width="30dp"
 				android:layout_height="30dp"
 				android:src="@drawable/logo_facebook_white"/>
@@ -95,7 +101,7 @@
 				android:layout_height="wrap_content"
 				android:layout_marginLeft="10dp"
 				android:text="Log In With Facebook"
-				android:textColor="#fff"/>
+				android:textColor="#fff"/>-->
 
 		</LinearLayout>
 

@@ -1,14 +1,15 @@
 package com.cyclone.custom;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.cyclone.DrawerActivity;
 import com.cyclone.R;
+import com.cyclone.Utils.UtilArrayData;
+import com.cyclone.fragment.LiveStreamFragment;
 import com.cyclone.model.RunningProgram;
+import com.cyclone.service.ServicePlayOnHolder;
 
 /**
  * Created by gilang on 07/11/2015.
@@ -38,10 +39,8 @@ public class RunningProgramHolder extends UniversalHolder {
 		btnPlay.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(activity, DrawerActivity.class);
-				i.putExtra("title", "Live Stream");
-				i.putExtra("fragmentType", DrawerActivity.FRAGMENT_STREAM_PLAYER);
-				activity.startActivity(i);
+				ServicePlayOnHolder servicePlayOnHolder = new ServicePlayOnHolder();
+				servicePlayOnHolder.startPlayOnFragment(v.getContext(), LiveStreamFragment.getInsane(), UtilArrayData.CATEGORY_LIVE_STREAMING, 0);
 			}
 		});
 	}

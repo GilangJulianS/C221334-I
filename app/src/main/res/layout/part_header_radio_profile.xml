@@ -7,33 +7,22 @@
 	<ImageView
 		android:id="@+id/img_cover"
 		android:layout_width="match_parent"
-		android:layout_height="250dp"
-		android:src="@drawable/wallpaper"
+		android:layout_height="210dp"
+		android:src="@drawable/header"
 		android:scaleType="centerCrop"/>
 
 	<View
 		android:layout_width="match_parent"
-		android:layout_height="250dp"
+		android:layout_height="210dp"
 		android:background="@color/dim_filter"/>
-
-	<TextView
-		android:id="@+id/txt_radio_name"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_centerHorizontal="true"
-		android:layout_marginTop="40dp"
-		android:textColor="#fff"
-		android:textSize="16sp"
-		android:text="Prambors FM Jakarta"/>
 
 	<de.hdodenhof.circleimageview.CircleImageView
 		android:id="@+id/img_radio_logo"
 		android:layout_width="80dp"
 		android:layout_height="80dp"
 		android:layout_centerHorizontal="true"
-		android:layout_below="@id/txt_radio_name"
-		android:layout_marginTop="10dp"
-		android:src="@drawable/background_login"/>
+		android:layout_marginTop="40dp"
+		android:src="@drawable/radio_logo_2"/>
 
 	<LinearLayout
 		android:layout_width="match_parent"
@@ -48,7 +37,8 @@
 			android:layout_height="wrap_content"
 			android:text="Bandung's Inspiring Sound"
 			android:textColor="#fff"
-			android:textSize="16sp"/>
+			android:textSize="16sp"
+			android:id="@+id/txtTag"/>
 
 		<TextView
 			android:layout_width="wrap_content"

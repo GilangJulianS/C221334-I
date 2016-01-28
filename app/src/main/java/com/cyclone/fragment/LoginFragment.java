@@ -17,8 +17,17 @@ import com.cyclone.R;
 import com.cyclone.Utils.ServerUrl;
 import com.cyclone.Utils.UtilUser;
 import com.cyclone.loopback.UserClass;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.strongloop.android.loopback.AccessToken;
 import com.strongloop.android.loopback.RestAdapter;
+
+import java.util.Arrays;
 
 /**
  * Created by gilang on 09/10/2015.
@@ -29,19 +38,25 @@ public class LoginFragment extends Fragment {
 	private Button btnForget;
 	private ProgressBar progressBar;
 	int cntLogin = 0;
-
 	EditText editTextEmail, editTextPassword;
+
+	CallbackManager callbackManager;
+	LoginButton loginButton ;
+	static LoginFragment fragment;
 
 	public LoginFragment(){}
 
 	public static LoginFragment newInstance(){
-		LoginFragment fragment = new LoginFragment();
+		fragment = new LoginFragment();
 		return fragment;
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
 		View v = inflater.inflate(R.layout.fragment_login, parent, false);
+
+		callbackManager = CallbackManager.Factory.create();
+
 		btnLogin = (Button) v.findViewById(R.id.btn_login);
 		btnForget = (Button) v.findViewById(R.id.btn_forget_password);
 		progressBar = (ProgressBar) v.findViewById(R.id.progressbar);
@@ -62,6 +77,28 @@ public class LoginFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				Toast.makeText(getActivity(), "Forget Password Clicked", Toast.LENGTH_SHORT).show();
+			}
+		});
+
+		loginButton = (LoginButton) v.findViewById(R.id.login_button);
+		loginButton.setReadPermissions("user_friends");
+		// If using in a fragment
+		loginButton.setFragment(this);
+		LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends"));
+		loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+			@Override
+			public void onSuccess(LoginResult loginResult) {
+				Profile profile = Profile.getCurrentProfile();
+			}
+
+			@Override
+			public void onCancel() {
+
+			}
+
+			@Override
+			public void onError(FacebookException error) {
+
 			}
 		});
 

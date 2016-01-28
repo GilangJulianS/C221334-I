@@ -84,7 +84,6 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 	private boolean hasExtras;
 	private String title;
 	private static int fragmentType;
-	private int mode;
 	private int menuId;
 	private String transitionId;
 
@@ -190,7 +189,6 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 			isParentView = caller.getExtras().getBoolean("parent", false);
 			title = caller.getExtras().getString("title", "");
 			fragmentType = caller.getExtras().getInt("fragmentType", FRAGMENT_RADIO_PROFILE);
-			mode = caller.getExtras().getInt("mode", -1);
 			menuId = caller.getExtras().getInt("menuId", 0);
 			transitionId = caller.getExtras().getString("transition", "profile");
 
@@ -278,8 +276,8 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 				manager.beginTransaction().replace(R.id.container, ProgramPageFragment
 						.newInstance()).commit();
 			} else if (fragmentType == FRAGMENT_PERSON_PROFILE) {
-				PersonProfileFragment fragment = PersonProfileFragment.newInstance(mode,
-						transitionId, "");
+				PersonProfileFragment fragment = PersonProfileFragment.newInstance(caller.getExtras().getInt("mode", PersonProfileFragment.MODE_OWN_PROFILE),
+						transitionId, caller.getExtras().getString("id", UtilUser.currentUser.getId()));
 				callback = fragment;
 				manager.beginTransaction().replace(R.id.container, fragment).commit();
 			} else if (fragmentType == FRAGMENT_PLAYER) {
@@ -550,7 +548,9 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 				break;
 			case R.id.nav_profile:
 				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_PERSON_PROFILE);
-				intent.putExtra("title", "Dimas Danang");
+				intent.putExtra("title", UtilUser.currentUser.getUsername());
+				intent.putExtra("mode", PersonProfileFragment.MODE_OWN_PROFILE);
+				intent.putExtra("id", UtilUser.currentUser.getId());
 				intent.putExtra("menuId", 3);
 				startActivity(intent);
 				finish();

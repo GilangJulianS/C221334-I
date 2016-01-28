@@ -8,7 +8,7 @@ import com.strongloop.android.loopback.Model;
 public class PlaylistAccount extends Model {
     String name;
     String caption;
-    //String private;
+    String Private;
     String id;
     String createdAt;
     String accountId;
@@ -52,5 +52,13 @@ public class PlaylistAccount extends Model {
 
     public void setAccountId(String accountId) {
         this.accountId = accountId;
+    }
+
+    public String getPrivate() {
+        return Private;
+    }
+
+    public void setPrivate(String aPrivate) {
+        Private = aPrivate;
     }
 }

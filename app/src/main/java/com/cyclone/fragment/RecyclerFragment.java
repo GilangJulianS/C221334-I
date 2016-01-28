@@ -3,7 +3,6 @@ package com.cyclone.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -25,6 +24,7 @@ import com.cyclone.custom.OnOffsetChangedListener;
 import com.cyclone.custom.SnapGestureListener;
 import com.cyclone.custom.UniversalAdapter;
 import com.cyclone.interfaces.getData;
+import com.cyclone.loopback.GetJsonFragment;
 import com.cyclone.loopback.model.FeedTimeline;
 import com.cyclone.loopback.model.Profile;
 import com.cyclone.loopback.model.comment;
@@ -37,6 +37,7 @@ import com.cyclone.loopback.repository.ProfileRepository;
 import com.cyclone.loopback.repository.RadioContentRepository;
 import com.cyclone.loopback.repository.radioProfileRepository;
 import com.cyclone.loopback.repository.radioProgramRepository;
+import com.cyclone.service.ServiceGetData;
 import com.strongloop.android.loopback.RestAdapter;
 import com.strongloop.android.loopback.callbacks.ListCallback;
 import com.strongloop.android.loopback.callbacks.ObjectCallback;
@@ -50,7 +51,7 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 /**
  * Created by gilang on 20/11/2015.
  */
-public abstract class RecyclerFragment extends Fragment implements OnOffsetChangedListener, SwipeRefreshLayout.OnRefreshListener {
+public abstract class RecyclerFragment extends GetJsonFragment implements OnOffsetChangedListener, SwipeRefreshLayout.OnRefreshListener {
 
 	protected RecyclerView recyclerView;
 	protected RecyclerView.LayoutManager layoutManager;
@@ -124,7 +125,7 @@ public abstract class RecyclerFragment extends Fragment implements OnOffsetChang
 			}
 		}
 		//Sementara matiin karenga fungsi belum jalan
-		/*else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_PLAYER){
+		else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_PLAYER){
 			if (datas != null && datas.size() > 0){
 				if(progressBar != null)
 					progressBar.setVisibility(View.GONE);
@@ -135,11 +136,10 @@ public abstract class RecyclerFragment extends Fragment implements OnOffsetChang
 			cnt = 0;
 			if(progressBar != null)
 				progressBar.setVisibility(View.VISIBLE);
+			onRefresh();
+		}else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_SUBCATEGORY){
 
-
-		}/else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_SUBCATEGORY){
-
-		}*/else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_CLUB){
+		}else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_CLUB){
 			if(UtilArrayData.feedTimelines.size() > 0){
 				progressBar.setVisibility(View.GONE);
 				cnt = 0;
@@ -154,16 +154,14 @@ public abstract class RecyclerFragment extends Fragment implements OnOffsetChang
 				onRefresh();
 			}
 
+		} else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_PERSON_PROFILE){
+			cnt = 0;
+			if(progressBar != null)
+				progressBar.setVisibility(View.VISIBLE);
+			//getDataProfile();
 		}
 		//Sementara matiin karenga fungsi belum jalan
-		/*else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_PERSON_PROFILE){
-			progressBar.setVisibility(View.GONE);
-			cnt = 0;
-			datas.clear();
-			prepareDatas();
-			animate(datas.get(0));
-			getDataProfile();
-		}else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_PROGRAMS){
+		/*else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_PROGRAMS){
 			if(UtilArrayData.radioPrograms.size()>0){
 				progressBar.setVisibility(View.GONE);
 				cnt = 0;
@@ -189,11 +187,12 @@ public abstract class RecyclerFragment extends Fragment implements OnOffsetChang
 			cnt = 0;
 			try{
 				datas.clear();
+				prepareDatas();
+				if(datas.size()>0)
+					animate(datas.get(0));
 			}catch (Exception e){}
 
-			prepareDatas();
-			if(datas.size()>0)
-				animate(datas.get(0));
+
 		}
 
 		onCreateView(v, parent, savedInstanceState);
@@ -448,7 +447,14 @@ public abstract class RecyclerFragment extends Fragment implements OnOffsetChang
 	}
 
 	public void getDataLive(){
-
+		try {
+			ServiceGetData serviceGetData = new ServiceGetData();
+			serviceGetData.getDataStream(recuclerContext, mGetData);
+		} catch (Exception e) {
+			if(progressBar != null)
+				progressBar.setVisibility(View.GONE);
+			//onRefresh();
+		}
 	}
 
 	public void getDataClub(){
@@ -472,16 +478,18 @@ public abstract class RecyclerFragment extends Fragment implements OnOffsetChang
 		});
 	}
 
-	public void getDataProfile(){
+	public void getDataProfile(final Adapter.Callback callback){
 		final RestAdapter restAdapter = new RestAdapter(getContext(), ServerUrl.API_URL);
 		final ProfileRepository profileRepository = restAdapter.createRepository(ProfileRepository.class);
 
-		profileRepository.get("566f9561bf285a0273dada45", new ListCallback<Profile>() {
+		profileRepository.get(DataId, new ListCallback<Profile>() {
 
 			@Override
 			public void onSuccess(List<Profile> objects) {
 				//UtilArrayData.CurrentProfile = objects.get(0);
 				//System.out.println(UtilArrayData.CurrentProfile.getUsername()+"}}}}}}}}}}}}}}}}}}}");
+				//showData();
+				callback.onSuccess("");
 			}
 
 			@Override

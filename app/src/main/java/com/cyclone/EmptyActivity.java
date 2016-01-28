@@ -1,13 +1,12 @@
 package com.cyclone;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.cyclone.fragment.GetStartedFragment;
-import com.cyclone.fragment.LoginFragment;
 import com.cyclone.fragment.TocFragment;
+import com.facebook.FacebookSdk;
 
 public class EmptyActivity extends AppCompatActivity {
 
@@ -19,7 +18,7 @@ public class EmptyActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_empty);
-
+		FacebookSdk.sdkInitialize(getApplicationContext());
 		fragmentType = getIntent().getExtras().getInt("fragmentType");
 		FragmentManager manager = getSupportFragmentManager();
 		switch (fragmentType) {

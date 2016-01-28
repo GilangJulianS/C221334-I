@@ -15,9 +15,12 @@ import android.widget.TextView;
 import com.cyclone.DrawerActivity;
 import com.cyclone.MasterActivity;
 import com.cyclone.R;
+import com.cyclone.Utils.ServerUrl;
+import com.cyclone.Utils.UtilUser;
 import com.cyclone.fragment.CategoryFragment;
 import com.cyclone.fragment.HomeFragment;
 import com.cyclone.interfaces.PlayOnHolder;
+import com.cyclone.loopback.repository.PlaylistAccountRepository;
 import com.cyclone.model.Content;
 import com.cyclone.model.Contents;
 import com.cyclone.model.Data;
@@ -25,6 +28,8 @@ import com.cyclone.model.MasterModel;
 import com.cyclone.service.ServicePlayOnHolder;
 import com.koushikdutta.urlimageviewhelper.UrlImageViewCallback;
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
+import com.strongloop.android.loopback.RestAdapter;
+import com.strongloop.android.remoting.adapters.Adapter;
 
 /**
  * Created by gilang on 21/11/2015.
@@ -103,6 +108,19 @@ public class ContentsHolder extends UniversalHolder {
 			btnMenu.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					final RestAdapter restAdapter = new RestAdapter(activity, ServerUrl.API_URL);
+					final PlaylistAccountRepository playlistAccountRepository = restAdapter.createRepository(PlaylistAccountRepository.class);
+					playlistAccountRepository.get(UtilUser.currentUser.getId(), new Adapter.Callback() {
+						@Override
+						public void onSuccess(String response) {
+
+						}
+
+						@Override
+						public void onError(Throwable t) {
+							System.out.println("error : "+t);
+						}
+					});
 					PopupMenu menu = new PopupMenu(activity, btnMenu);
 					menu.inflate(temp.getMenuResId());
 					menu.setOnMenuItemClickListener(new PopupMenuListener(activity, temp, btnMenu));

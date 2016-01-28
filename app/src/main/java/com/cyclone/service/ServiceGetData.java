@@ -63,6 +63,8 @@ public class ServiceGetData extends IntentService {
     public static ArrayList<getData> mCallbacksGetDataHome = new ArrayList<getData>();
     public static ArrayList<IgetCoverUrl> callbackCover = new ArrayList<IgetCoverUrl>();
 
+    public static getData getData;
+
 
     public static Context CoverContext;
 
@@ -107,6 +109,8 @@ public class ServiceGetData extends IntentService {
     public static void getDataStream(Context context, getData client) {
         if (!mCallbacksGetDataHome.contains(client))
             mCallbacksGetDataHome.add(client);
+
+        getData = client;
 
         System.out.println("dalam callback : " + mCallbacksGetDataHome.size());
         Intent intent = new Intent(context, ServiceGetData.class);
@@ -458,7 +462,7 @@ public class ServiceGetData extends IntentService {
             if (jsonStrRuning != null) {
                 try {
                     JSONArray mJsonArray = new JSONArray(jsonStrRuning);
-                    // looping through All Contacts
+
                     for (int i = 0; i < mJsonArray.length(); i++) {
                         System.out.println("added from JSON  running item");
                         JSONObject mJsonObject = mJsonArray.getJSONObject(i);
@@ -480,7 +484,10 @@ public class ServiceGetData extends IntentService {
                 try {
                     JSONArray mJsonArray = new JSONArray(jsonStrRunDown);
                     // looping through All Contacts
-                    for (int i = 0; i < mJsonArray.length(); i++) {
+                    int pjg = 5;
+                    if(mJsonArray.length() < 5)
+                        pjg = mJsonArray.length();
+                    for (int i = 0; i < pjg; i++) {
                         System.out.println("added from JSON  news item");
                         JSONObject mJsonObject = mJsonArray.getJSONObject(i);
                         String type = mJsonObject.getString("log_group");
@@ -520,16 +527,13 @@ public class ServiceGetData extends IntentService {
                 UtilArrayData.ContentLiveStreaming.clear();
                 UtilArrayData.ContentLiveStreaming = datas;
             }
-
-            for(getData dataCallback : mCallbacksGetDataHome)
-                dataCallback.onDataLoadedLiveStreaming(datas);
+            getData.onDataLoadedLiveStreaming(datas);
         }
 
         @Override
         protected void onCancelled() {
             super.onCancelled();
-            for(getData dataCallback : mCallbacksGetDataHome)
-                dataCallback.onDataLoadedHomeCancel();
+                getData.onDataLoadedHomeCancel();
             //dataCallback.onDataLoadedHome(mapList);
 
         }
