@@ -123,7 +123,11 @@ public class ClubFeedHolder extends UniversalHolder{
 		btnShare.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-
+				Intent i = new Intent(Intent.ACTION_SEND);
+				i.setType("text/plain");
+				i.putExtra(Intent.EXTRA_SUBJECT, "Test Subject");
+				i.putExtra(Intent.EXTRA_TEXT, p.postContent);
+				activity.startActivity(Intent.createChooser(i, "Share via"));
 			}
 		});
 		btnComment.setOnClickListener(new View.OnClickListener() {
