@@ -9,6 +9,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -275,7 +277,7 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 
 	protected void animate(final Object o){
 		cnt ++;
-		System.out.println("Count nimate : "+cnt);
+//		System.out.println("Count nimate : "+cnt);
 		int delay = 0;
 		if(getColumnNumber() == 1)
 			delay = 200;
@@ -290,12 +292,12 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 				datas.remove(o);
 				adapter.notifyItemInserted(adapter.datas.size() - 1);
 				if (!datas.isEmpty()) {
-					System.out.println("Count data ada !!");
+//					System.out.println("Count data ada !!");
 					isAnimate = false;
 					animate(datas.get(0));
 					swipeLayout.setEnabled(false);
 				} else {
-					System.out.println("Count data habis");
+//					System.out.println("Count data habis");
 					isAnimate = false;
 					swipeLayout.setEnabled(true);
 				}

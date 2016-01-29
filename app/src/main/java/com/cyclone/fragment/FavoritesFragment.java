@@ -77,6 +77,7 @@ public class FavoritesFragment extends RecyclerFragment {
 	public List<Object> parse(String json){
 		List<Object> datas = new ArrayList<>();
 		List<Content> contentList;
+		completeList = new ArrayList<>();
 		Contents contents;
 
 		contentList = new ArrayList<>();

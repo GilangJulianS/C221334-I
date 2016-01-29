@@ -1,16 +1,23 @@
 package com.cyclone.fragment;
 
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.cyclone.MasterActivity;
+import com.cyclone.R;
 import com.cyclone.custom.ContentsHolder;
+import com.cyclone.custom.UniversalAdapter;
 import com.cyclone.model.Categories;
 import com.cyclone.model.Category;
 import com.cyclone.model.Content;
 import com.cyclone.model.Contents;
 import com.cyclone.model.Data;
+import com.cyclone.model.Mix;
+import com.cyclone.model.Mixes;
 import com.cyclone.model.Section;
 
 import java.util.ArrayList;
@@ -22,6 +29,7 @@ import java.util.List;
 public class AddPlaylistFragment extends RecyclerFragment {
 
 	private List<Content> dataHolder;
+	private List<Content> completeContent;
 
 	public AddPlaylistFragment(){}
 
@@ -29,6 +37,7 @@ public class AddPlaylistFragment extends RecyclerFragment {
 		AddPlaylistFragment fragment = new AddPlaylistFragment();
 		fragment.json = json;
 		fragment.dataHolder = new ArrayList<>();
+		fragment.completeContent = new ArrayList<>();
 		return fragment;
 	}
 
@@ -39,7 +48,7 @@ public class AddPlaylistFragment extends RecyclerFragment {
 
 	@Override
 	public void onCreateView(View v, ViewGroup parent, Bundle savedInstanceState) {
-
+		setHasOptionsMenu(true);
 	}
 
 	@Override
@@ -92,6 +101,7 @@ public class AddPlaylistFragment extends RecyclerFragment {
 		List<Object> datas = new ArrayList<>();
 		List<Category> categoryList;
 		List<Content> contentList;
+		completeContent = new ArrayList<>();
 
 		categoryList = new ArrayList<>();
 		categoryList.add(new Category("Radio Content", "Radio Content"));
@@ -108,6 +118,7 @@ public class AddPlaylistFragment extends RecyclerFragment {
 		contentList.add(new Content("", "Latest News", Content.FAVORITABLE, "Melawan Asap", "Prambors FM Jakarta", "17 Sept 2015 - 10:05",false, Content.TYPE_RADIO_CONTENT,"", 0, ""));
 		dataHolder.addAll(contentList);
 		contents = new Contents(contentList);
+		completeContent.addAll(contentList);
 		datas.add(contents);
 
 		datas.add(new Section("Talk", "talk", MasterActivity.FRAGMENT_SUBCATEGORY));
@@ -116,6 +127,7 @@ public class AddPlaylistFragment extends RecyclerFragment {
 		contentList.add(new Content("", "Talk", Content.FAVORITABLE, "Hampir 30 film", "Prambors FM Jakarta", null,false, Content.TYPE_RADIO_CONTENT,"", 0, ""));
 		dataHolder.addAll(contentList);
 		contents = new Contents(contentList);
+		completeContent.addAll(contentList);
 		datas.add(contents);
 
 		datas.add(new Section("New Release", "release", MasterActivity.FRAGMENT_SUBCATEGORY));
@@ -125,6 +137,7 @@ public class AddPlaylistFragment extends RecyclerFragment {
 		contentList.add(new Content("", "New Release", Content.FAVORITABLE, "Smells like te", "Nirvana", null,false, Content.TYPE_TRACKS,"", 0, ""));
 		dataHolder.addAll(contentList);
 		contents = new Contents(contentList);
+		completeContent.addAll(contentList);
 		datas.add(contents);
 
 		datas.add(new Section("Recommended Music", "recommended", MasterActivity.FRAGMENT_SUBCATEGORY));
@@ -133,6 +146,7 @@ public class AddPlaylistFragment extends RecyclerFragment {
 		contentList.add(new Content("", "Recommended Music", Content.FAVORITABLE, "Don't Look Back", "Oasis", null,false, Content.TYPE_TRACKS,"", 0, ""));
 		dataHolder.addAll(contentList);
 		contents = new Contents(contentList);
+		completeContent.addAll(contentList);
 		datas.add(contents);
 
 		datas.add(new Section("Hits Playlist", "hits", MasterActivity.FRAGMENT_SUBCATEGORY));
@@ -142,6 +156,7 @@ public class AddPlaylistFragment extends RecyclerFragment {
 		contentList.add(new Content("", "Hits Playlist", Content.FAVORITABLE, "HipHopYo!", "Desta", null,false, Content.TYPE_PLAYLIST,"", 0, ""));
 		dataHolder.addAll(contentList);
 		contents = new Contents(contentList);
+		completeContent.addAll(contentList);
 		datas.add(contents);
 
 		datas.add(new Section("Top mix", "mix", MasterActivity.FRAGMENT_SUBCATEGORY));
@@ -150,6 +165,7 @@ public class AddPlaylistFragment extends RecyclerFragment {
 		contentList.add(new Content("", "Top mix", Content.FAVORITABLE, "DUbldbldb", "Julio", null,false, Content.TYPE_MIX,"", 0, ""));
 		dataHolder.addAll(contentList);
 		contents = new Contents(contentList);
+		completeContent.addAll(contentList);
 		datas.add(contents);
 
 		datas.add(new Section("Most Played Upload", "popular_upload", MasterActivity.FRAGMENT_SUBCATEGORY));
@@ -159,6 +175,7 @@ public class AddPlaylistFragment extends RecyclerFragment {
 		contentList.add(new Content("", "Most Played Upload", Content.FAVORITABLE, "Cover Smells Like", "Desta", null,false, Content.TYPE_UPLOADED,"", 0, ""));
 		dataHolder.addAll(contentList);
 		contents = new Contents(contentList);
+		completeContent.addAll(contentList);
 		datas.add(contents);
 
 		datas.add(new Section("Newly Uploaded", "new_upload", MasterActivity.FRAGMENT_SUBCATEGORY));
@@ -167,8 +184,77 @@ public class AddPlaylistFragment extends RecyclerFragment {
 		contentList.add(new Content("", "Newly Uploaded", Content.FAVORITABLE, "Cover Don't Look Back", "Julio", null,false, Content.TYPE_UPLOADED,"", 0, ""));
 		dataHolder.addAll(contentList);
 		contents = new Contents(contentList);
+		completeContent.addAll(contentList);
 		datas.add(contents);
 
 		return datas;
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.search, menu);
+
+		SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+			UniversalAdapter newAdapter;
+
+			@Override
+			public boolean onQueryTextSubmit(String query) {
+				return false;
+			}
+
+			@Override
+			public boolean onQueryTextChange(String newText) {
+				processQuery(newText, newAdapter);
+				return true;
+			}
+		});
+
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	public void processQuery(String newText, UniversalAdapter newAdapter){
+		if(!newText.equals("")) {
+			newAdapter = new UniversalAdapter(activity);
+			List<Content> contentList;
+			List<Content> searchResult = search(newText);
+			String currentType = "";
+			System.out.println("size " + searchResult.size());
+			while(searchResult.size() > 0){
+				currentType = searchResult.get(0).tag;
+				contentList = new ArrayList<Content>();
+				contentList.add(searchResult.get(0));
+				searchResult.remove(0);
+				for(int i=0; i<searchResult.size() && contentList.size() < 3; i++){
+					if(searchResult.get(i).tag.equals(currentType)){
+						contentList.add(searchResult.get(i));
+						searchResult.remove(i);
+						i--;
+					}
+				}
+				if(contentList.size() >= 3){
+					newAdapter.add(new Section(currentType, currentType, Section.TYPE_TRANSPARENT, MasterActivity.FRAGMENT_GRID_MIX));
+				}else{
+					newAdapter.add(new Section(currentType, currentType, Section.TYPE_NONE, MasterActivity.FRAGMENT_GRID_MIX));
+				}
+				newAdapter.add(new Contents(contentList));
+				System.out.println("iteration size " + contentList.size());
+			}
+
+			recyclerView.setAdapter(newAdapter);
+		}else{
+			adapter.notifyDataSetChanged();
+			recyclerView.setAdapter(adapter);
+		}
+	}
+
+	public List<Content> search(String query){
+		List<Content> result = new ArrayList<>();
+		for(Content c : completeContent){
+			if(c.txtPrimary.toLowerCase().contains(query.toLowerCase()) || c.txtSecondary.contains(query.toLowerCase())){
+				result.add(c);
+			}
+		}
+		return result;
 	}
 }

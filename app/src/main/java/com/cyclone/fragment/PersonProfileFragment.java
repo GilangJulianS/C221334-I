@@ -9,6 +9,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -20,7 +23,9 @@ import com.cyclone.MasterActivity;
 import com.cyclone.R;
 import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.custom.Tools;
+import com.cyclone.custom.UniversalAdapter;
 import com.cyclone.model.Post;
+import com.cyclone.model.Song;
 import com.strongloop.android.remoting.adapters.Adapter;
 
 import java.util.ArrayList;
@@ -35,6 +40,7 @@ public class PersonProfileFragment extends RecyclerFragment{
 	public static final int MODE_OTHERS_PROFILE = 102;
 	private String transitionId;
 	private int mode;
+	private List<Post> completePost;
 
 	public PersonProfileFragment(){}
 
@@ -43,6 +49,7 @@ public class PersonProfileFragment extends RecyclerFragment{
 		fragment.json = json;
 		fragment.mode = mode;
 		fragment.transitionId = transitionId;
+		fragment.completePost = new ArrayList<>();
 		return fragment;
 	}
 
@@ -53,7 +60,7 @@ public class PersonProfileFragment extends RecyclerFragment{
 
 	@Override
 	public void onCreateView(View v, ViewGroup parent, Bundle savedInstanceState) {
-
+		setHasOptionsMenu(true);
 	}
 
 	@Override
@@ -88,6 +95,7 @@ public class PersonProfileFragment extends RecyclerFragment{
 
 	public List<Object> parse(String json){
 		List<Object> datas = new ArrayList<>();
+		completePost = new ArrayList<>();
 		datas.add(new Post("", "<b>Imam Darto</b> created new <b>Mix</b>", "1 Hour ago", "Mix",
 				"", "Funky Sunshine", "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST, false));
 		datas.add(new Post("", "<b>Desta</b> liked a Playlist", "2 Hour ago", "Playlist",
@@ -106,6 +114,9 @@ public class PersonProfileFragment extends RecyclerFragment{
 				.TYPE_POST, false));
 		datas.add(new Post("", "<b>Desta</b> shared a <b>Playlist</b>", "4 Hour ago", "Playlist",
 				"", "Pop 2015", "2015 top hits", "20 tracks", 1024, 56, Post.TYPE_POST, false));
+		for(Object o : datas){
+			completePost.add((Post)o);
+		}
 		return datas;
 	}
 
@@ -249,5 +260,52 @@ public class PersonProfileFragment extends RecyclerFragment{
 		bitmap = Tools.blur(bitmap, 0.5f, 10);
 		bitmap = Tools.crop(bitmap);
 		imgHeader.setImageBitmap(bitmap);
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.search, menu);
+
+		SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+			UniversalAdapter newAdapter;
+
+			@Override
+			public boolean onQueryTextSubmit(String query) {
+				return false;
+			}
+
+			@Override
+			public boolean onQueryTextChange(String newText) {
+				processQuery(newText, newAdapter);
+				return true;
+			}
+		});
+
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	public void processQuery(String newText, UniversalAdapter newAdapter){
+		if(!newText.equals("")) {
+			newAdapter = new UniversalAdapter(activity);
+			List<Post> searchResult = search(newText);
+			for(Post p : searchResult){
+				newAdapter.add(p);
+			}
+			recyclerView.setAdapter(newAdapter);
+		}else{
+			adapter.notifyDataSetChanged();
+			recyclerView.setAdapter(adapter);
+		}
+	}
+
+	public List<Post> search(String query){
+		List<Post> result = new ArrayList<>();
+		for(Post p : completePost){
+			if(p.postTitle.toLowerCase().contains(query.toLowerCase()) || p.postContent.contains(query.toLowerCase())){
+				result.add(p);
+			}
+		}
+		return result;
 	}
 }

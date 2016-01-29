@@ -2,6 +2,9 @@ package com.cyclone.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -9,6 +12,8 @@ import android.widget.ImageButton;
 import com.cyclone.DrawerActivity;
 import com.cyclone.MasterActivity;
 import com.cyclone.R;
+import com.cyclone.custom.UniversalAdapter;
+import com.cyclone.model.Queue;
 import com.cyclone.model.SubcategoryItem;
 
 import java.util.ArrayList;
@@ -19,11 +24,14 @@ import java.util.List;
  */
 public class PlaylistFragment extends RecyclerFragment {
 
+	private List<SubcategoryItem> completeItem;
+
 	public PlaylistFragment(){}
 
 	public static PlaylistFragment newInstance(String json){
 		PlaylistFragment fragment = new PlaylistFragment();
 		fragment.json = json;
+		fragment.completeItem = new ArrayList<>();
 		return fragment;
 	}
 
@@ -34,7 +42,7 @@ public class PlaylistFragment extends RecyclerFragment {
 
 	@Override
 	public void onCreateView(View v, ViewGroup parent, Bundle savedInstanceState) {
-
+		setHasOptionsMenu(true);
 	}
 
 	@Override
@@ -102,6 +110,7 @@ public class PlaylistFragment extends RecyclerFragment {
 
 	public List<Object> parse(String json){
 		List<Object> datas = new ArrayList<>();
+		completeItem = new ArrayList<>();
 		datas.add(new SubcategoryItem("", "Could it Be", "Raisa"));
 		datas.add(new SubcategoryItem("", "Something About Us", "Daft Punk"));
 		datas.add(new SubcategoryItem("", "Sugar", "Maroon 5"));
@@ -114,6 +123,56 @@ public class PlaylistFragment extends RecyclerFragment {
 		datas.add(new SubcategoryItem("", "Something About Us", "Daft Punk"));
 		datas.add(new SubcategoryItem("", "Sugar", "Maroon 5"));
 		datas.add(new SubcategoryItem("", "Get Lucky", "Daft Punk"));
+		for(Object o : datas){
+			completeItem.add((SubcategoryItem)o);
+		}
 		return datas;
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.main, menu);
+
+		SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+			UniversalAdapter newAdapter;
+
+			@Override
+			public boolean onQueryTextSubmit(String query) {
+				return false;
+			}
+
+			@Override
+			public boolean onQueryTextChange(String newText) {
+				processQuery(newText, newAdapter);
+				return true;
+			}
+		});
+
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	public void processQuery(String newText, UniversalAdapter newAdapter){
+		if(!newText.equals("")) {
+			newAdapter = new UniversalAdapter(activity);
+			List<SubcategoryItem> searchResult = search(newText);
+			for(SubcategoryItem s : searchResult){
+				newAdapter.add(s);
+			}
+			recyclerView.setAdapter(newAdapter);
+		}else{
+			adapter.notifyDataSetChanged();
+			recyclerView.setAdapter(adapter);
+		}
+	}
+
+	public List<SubcategoryItem> search(String query){
+		List<SubcategoryItem> result = new ArrayList<>();
+		for(SubcategoryItem s : completeItem){
+			if(s.txtPrimary.toLowerCase().contains(query.toLowerCase()) || s.txtSecondary.contains(query.toLowerCase())){
+				result.add(s);
+			}
+		}
+		return result;
 	}
 }

@@ -97,7 +97,7 @@ public class Content extends MasterModel{
 			case TYPE_RADIO_CONTENT: return R.menu.popup_radio_content;
 			case TYPE_TRACKS: return R.menu.popup_tracks;
 			case TYPE_UPLOADED: return R.menu.popup_uploaded;
-			default: return R.menu.global;
+			default: return R.menu.empty;
 		}
 	}
 }

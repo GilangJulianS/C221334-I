@@ -10,7 +10,10 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,12 +44,14 @@ public class ArtistFragment extends RecyclerFragment {
 	private ImageButton btnMenu;
 	private Button btnPlay;
 	private Button btnAddShowlist;
+	private List<Song> completeSong;
 
 	public ArtistFragment(){}
 
 	public static ArtistFragment newInstance(String json){
 		ArtistFragment fragment = new ArtistFragment();
 		fragment.json = json;
+		fragment.completeSong = new ArrayList<>();
 		return fragment;
 	}
 
@@ -115,12 +120,16 @@ public class ArtistFragment extends RecyclerFragment {
 
 	public List<Object> parse(String json){
 		List<Object> datas = new ArrayList<>();
+		completeSong = new ArrayList<>();
 		datas.add(new Section("Popular Tracks", null));
 		datas.add(new Song("Counting Stars", "389,233"));
 		datas.add(new Song("Love Runs Out", "210,321"));
 		datas.add(new Song("If I Lose Myself", "231,312"));
 		datas.add(new Song("Feel Again", "255,912"));
 		datas.add(new Song("What You Wanted", "187,512"));
+		for(Object o : datas){
+			completeSong.add((Song)o);
+		}
 		datas.add(new Section("Albums", null));
 		datas.add(new Album("", "Native", "2014"));
 		datas.add(new Album("", "Waking Up", "2009"));
@@ -130,5 +139,52 @@ public class ArtistFragment extends RecyclerFragment {
 		datas.add(new Album("", "Funky Sunshine", "Playlist - By Imam Darto"));
 		datas.add(new Album("", "Waking Up", "Mix - By Dimas Danang"));
 		return datas;
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.search, menu);
+
+		SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+			UniversalAdapter newAdapter;
+
+			@Override
+			public boolean onQueryTextSubmit(String query) {
+				return false;
+			}
+
+			@Override
+			public boolean onQueryTextChange(String newText) {
+				processQuery(newText, newAdapter);
+				return true;
+			}
+		});
+
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	public void processQuery(String newText, UniversalAdapter newAdapter){
+		if(!newText.equals("")) {
+			newAdapter = new UniversalAdapter(activity);
+			List<Song> searchResult = search(newText);
+			for(Song s : searchResult){
+				newAdapter.add(s);
+			}
+			recyclerView.setAdapter(newAdapter);
+		}else{
+			adapter.notifyDataSetChanged();
+			recyclerView.setAdapter(adapter);
+		}
+	}
+
+	public List<Song> search(String query){
+		List<Song> result = new ArrayList<>();
+		for(Song s : completeSong){
+			if(s.primary.toLowerCase().contains(query.toLowerCase()) || s.secondary.contains(query.toLowerCase())){
+				result.add(s);
+			}
+		}
+		return result;
 	}
 }
