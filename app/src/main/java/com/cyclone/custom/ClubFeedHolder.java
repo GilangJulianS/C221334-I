@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.cyclone.DrawerActivity;
@@ -39,6 +40,7 @@ public class ClubFeedHolder extends UniversalHolder{
 	public ImageButton btnShare;
 	public ImageButton btnComment;
 	public ViewGroup container;
+	public ImageButton btnMenu;
 	private Activity activity;
 	private int transitionId;
 	public static int autoId = 0;
@@ -56,6 +58,7 @@ public class ClubFeedHolder extends UniversalHolder{
 		btnLike = (ImageButton) v.findViewById(R.id.btn_like);
 		btnShare = (ImageButton) v.findViewById(R.id.btn_share);
 		btnComment = (ImageButton) v.findViewById(R.id.btn_comment);
+		btnMenu = (ImageButton) v.findViewById(R.id.btn_menu);
 		if(v instanceof ViewGroup)
 			container = (ViewGroup) v;
 		transitionId = autoId;
@@ -84,6 +87,17 @@ public class ClubFeedHolder extends UniversalHolder{
 			btnLike.setColorFilter(Color.parseColor("#E91E63"));
 		else
 			btnLike.setColorFilter(null);
+
+		btnMenu.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				PopupMenu menu = new PopupMenu(activity, btnMenu);
+				menu.inflate(R.menu.popup_default);
+				menu.setOnMenuItemClickListener(new PopupMenuListener(activity, null, btnMenu));
+				menu.show();
+			}
+		});
+
 		btnLike.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
