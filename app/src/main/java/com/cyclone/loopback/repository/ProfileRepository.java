@@ -73,7 +73,7 @@ public class ProfileRepository extends ModelRepository<Profile> {
                     try{profile.setId(result.getString("id"));}catch (Exception e){profile.setId("");}
                     try{profile.setProfile_picture(result.getString("profile_picture"));}catch (Exception e){profile.setProfile_picture("");}
 
-                    UtilArrayData.CurrentProfile = profile;
+                    UtilArrayData.currentProfile = profile;
 
 
                 } catch (JSONException e) {

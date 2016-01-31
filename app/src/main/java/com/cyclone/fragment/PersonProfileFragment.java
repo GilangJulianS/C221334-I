@@ -25,7 +25,6 @@ import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.custom.Tools;
 import com.cyclone.custom.UniversalAdapter;
 import com.cyclone.model.Post;
-import com.cyclone.model.Song;
 import com.strongloop.android.remoting.adapters.Adapter;
 
 import java.util.ArrayList;
@@ -140,8 +139,8 @@ public class PersonProfileFragment extends RecyclerFragment{
 		getDataProfile(new Adapter.Callback() {
 			@Override
 			public void onSuccess(String response) {
-				txtUsername.setText(UtilArrayData.CurrentProfile.getUsername());
-				txtAbout.setText(UtilArrayData.CurrentProfile.getAbout());
+				txtUsername.setText(UtilArrayData.currentProfile.getUsername());
+				txtAbout.setText(UtilArrayData.currentProfile.getAbout());
 			}
 
 			@Override

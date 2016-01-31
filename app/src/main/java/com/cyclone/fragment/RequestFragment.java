@@ -93,8 +93,8 @@ public class RequestFragment extends PlaybackServiceRecyclerFragment {
 
 	public List<Object> parse(String json){
 		List<Object> datas = new ArrayList<>();
-		if(UtilArrayData.RequestList.size()>0){
-			datas = UtilArrayData.RequestList;
+		if(UtilArrayData.requestList.size()>0){
+			datas = UtilArrayData.requestList;
 		}
 		return datas;
 	}

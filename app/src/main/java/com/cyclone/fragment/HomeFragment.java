@@ -130,7 +130,8 @@ public class HomeFragment extends PlaybackServiceRecyclerFragment implements Ige
 
 	public List<Object> parse(String json){
 		//ambil data dari class GetData
-		return GetData.getInstance().showData(GetData.DATA_HOME);
+		List<Object> datas = GetData.getInstance().showData(GetData.DATA_HOME);
+		return datas;
 	}
 
 	public static HomeFragment getInsane(){

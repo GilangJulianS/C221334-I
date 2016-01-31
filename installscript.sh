@@ -1,0 +1,1 @@
+adb -s F8AZCY061501 install -r app/build/outputs/apk/app-debug.apk

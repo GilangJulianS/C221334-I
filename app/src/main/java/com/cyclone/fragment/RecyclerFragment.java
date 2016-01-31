@@ -9,8 +9,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,13 +99,13 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 		prepareViews(v);
 
 		//Check data radio profil
-		if(UtilArrayData.rdioProfile == null){
+		if(UtilArrayData.radioProfile == null){
 			//jika radio profil null ambil data radio rofile
 			getRadioProfile();
 		}
 
 		if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_HOME || DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_SUBCATEGORY){
-			if(UtilArrayData.AllRadioContent.size() > 0){
+			if(UtilArrayData.allRadioContent.size() > 0){
 				if (datas != null && datas.size() > 0) {
 					try{
 						progressBar.setVisibility(View.GONE);
@@ -564,7 +562,7 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 		profileRepository.get(ServerUrl.RADIO_ID, new ObjectCallback<radioProfile>() {
 			@Override
 			public void onSuccess(radioProfile object) {
-				UtilArrayData.rdioProfile = object;
+				UtilArrayData.radioProfile = object;
 			}
 
 			@Override

@@ -63,8 +63,8 @@ public class PopupMenuListener implements PopupMenu.OnMenuItemClickListener {
 				/*for(Playlist p : PlaylistData.playlists){
 					menu.getMenu().add(p.name);
 				}*/
-				for(int j = 0; j < UtilArrayData.PlaylistAccount.size(); j++){
-					menu.getMenu().add(0, j, j, UtilArrayData.PlaylistAccount.get(j).getName());
+				for(int j = 0; j < UtilArrayData.playlistAccount.size(); j++){
+					menu.getMenu().add(0, j, j, UtilArrayData.playlistAccount.get(j).getName());
 				}
 
 				menu.setOnMenuItemClickListener(new PopupPlaylistListener(activity, content, anchorView));

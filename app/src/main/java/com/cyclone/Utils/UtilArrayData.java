@@ -42,31 +42,31 @@ public class UtilArrayData {
 
     public static final String NAMA_RADIO= "K-Lite FM";
 
-    public static List<RadioContent> AllRadioContent = new ArrayList<>();
-    public static List<RadioContent> LatestContent = new ArrayList<>();
-    public static List<RadioContent> News = new ArrayList<>();
-    public static List<RadioContent> Info = new ArrayList<>();
-    public static List<RadioContent> Variety = new ArrayList<>();
-    public static List<RadioContent> Travel = new ArrayList<>();
-    public static List<RadioContent> Advertorial = new ArrayList<>();
+    public static List<RadioContent> allRadioContent = new ArrayList<>();
+    public static List<RadioContent> latestContent = new ArrayList<>();
+    public static List<RadioContent> news = new ArrayList<>();
+    public static List<RadioContent> info = new ArrayList<>();
+    public static List<RadioContent> variety = new ArrayList<>();
+    public static List<RadioContent> travel = new ArrayList<>();
+    public static List<RadioContent> advertorial = new ArrayList<>();
 
-    public static List<Music> Music = new ArrayList<>();
-    public static List<Music> Pop = new ArrayList<>();
-    public static List<Music> Indo_Pop = new ArrayList<>();
-    public static List<Music> Dance = new ArrayList<>();
-    public static List<Music> Hip_Hop_Rap = new ArrayList<>();
+    public static List<Music> music = new ArrayList<>();
+    public static List<Music> pop = new ArrayList<>();
+    public static List<Music> indoPop = new ArrayList<>();
+    public static List<Music> dance = new ArrayList<>();
+    public static List<Music> hipHopRap = new ArrayList<>();
 
-    public static List<Content> ContentNews = new ArrayList<>();
-    public static List<Content> ContentTalk = new ArrayList<>();
-    public static List<Object> ContentLiveStreaming = new ArrayList<>();
+    public static List<Content> contentNews = new ArrayList<>();
+    public static List<Content> contentTalk = new ArrayList<>();
+    public static List<Object> contentLiveStreaming = new ArrayList<>();
     public static List<FeedTimeline> feedTimelines = new ArrayList<>();
     public static List<radioProgram> radioPrograms = new ArrayList<>();
     public static List<comment> commentList = new ArrayList<>();
-    public static List<Object> RequestList = new ArrayList<>();
-    public static List<PlaylistAccount> PlaylistAccount = new ArrayList<>();
+    public static List<Object> requestList = new ArrayList<>();
+    public static List<PlaylistAccount> playlistAccount = new ArrayList<>();
     public static RunningProgram program = null;
-    public static Profile CurrentProfile = null;
-    public static radioProfile rdioProfile = null;
+    public static Profile currentProfile = null;
+    public static radioProfile radioProfile = null;
 
     public static int curPosPlaying = 0;
 
