@@ -105,6 +105,7 @@ public class LiveStreamFragment extends PlaybackServiceRecyclerFragment implemen
 		recyclerView.addOnScrollListener(new OnScrollListener() {
 			@Override
 			public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+				super.onScrolled(recyclerView, dx, dy);
 				checkLoad();
 			}
 		});
@@ -113,7 +114,8 @@ public class LiveStreamFragment extends PlaybackServiceRecyclerFragment implemen
 	private void checkLoad(){
 //		System.out.println(((LinearLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition() + " " + adapter.datas.size());
 //		System.out.println(maxData + " " + UtilArrayData.contentLiveStreaming.size());
-		if (((LinearLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition() == adapter.datas.size() - 1 && !isLoading && maxData < UtilArrayData.contentLiveStreaming.size()) {
+		LinearLayoutManager lm = (LinearLayoutManager) layoutManager;
+		if ((lm.findLastVisibleItemPosition() + 1 >= lm.getItemCount()  && !isLoading && maxData < UtilArrayData.contentLiveStreaming.size())) {
 			isLoading = true;
 			adapter.datas.add(new Loading());
 			adapter.notifyItemInserted(adapter.datas.size() - 1);
@@ -121,6 +123,7 @@ public class LiveStreamFragment extends PlaybackServiceRecyclerFragment implemen
 				@Override
 				public void run() {
 					maxData += pageSize;
+					datas = parse(json);
 					showData();
 					isLoading = false;
 				}
@@ -165,11 +168,9 @@ public class LiveStreamFragment extends PlaybackServiceRecyclerFragment implemen
 		} catch (Exception e){}
 
 		if(UtilArrayData.contentLiveStreaming.size() > 0){
-			datas.addAll(UtilArrayData.contentLiveStreaming);
-		}
-
-		while(datas.size() > maxData){
-			datas.remove(datas.size() - 1);
+			for(int i=0; i<maxData; i++) {
+				datas.add(UtilArrayData.contentLiveStreaming.get(i));
+			}
 		}
 		/*else {
 			List<Program> programs = new ArrayList<>();
