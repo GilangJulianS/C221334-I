@@ -416,7 +416,8 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 		adapter.notifyDataSetChanged();
 
 		prepareDatas();
-		animate(datas.get(0));
+		if(datas.size() > 0)
+			animate(datas.get(0));
 	}
 
 	public void getDataHome(){

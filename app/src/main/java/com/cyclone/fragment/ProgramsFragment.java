@@ -117,7 +117,7 @@ public class ProgramsFragment extends RecyclerFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.main, menu);
+		inflater.inflate(R.menu.search, menu);
 
 		SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
 		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
