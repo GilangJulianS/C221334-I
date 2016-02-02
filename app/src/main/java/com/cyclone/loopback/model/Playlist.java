@@ -8,10 +8,15 @@ import com.strongloop.android.loopback.Model;
 public class Playlist extends Model {
     String name;
     String caption;
-    String created_at;
-    String updated_at;
+    String Private;
+    String playCount;
+    String favoriteCount;
+    String image;
+    String contentCount;
     String id;
-    String userId;
+    String createdAt;
+    String updatedAt;
+    String accountId;
 
     public String getName() {
         return name;
@@ -29,20 +34,44 @@ public class Playlist extends Model {
         this.caption = caption;
     }
 
-    public String getCreated_at() {
-        return created_at;
+    public String getPrivate() {
+        return Private;
     }
 
-    public void setCreated_at(String created_at) {
-        this.created_at = created_at;
+    public void setPrivate(String aPrivate) {
+        Private = aPrivate;
     }
 
-    public String getUpdated_at() {
-        return updated_at;
+    public String getPlayCount() {
+        return playCount;
     }
 
-    public void setUpdated_at(String updated_at) {
-        this.updated_at = updated_at;
+    public void setPlayCount(String playCount) {
+        this.playCount = playCount;
+    }
+
+    public String getFavoriteCount() {
+        return favoriteCount;
+    }
+
+    public void setFavoriteCount(String favoriteCount) {
+        this.favoriteCount = favoriteCount;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getContentCount() {
+        return contentCount;
+    }
+
+    public void setContentCount(String contentCount) {
+        this.contentCount = contentCount;
     }
 
     @Override
@@ -54,11 +83,27 @@ public class Playlist extends Model {
         this.id = id;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(String accountId) {
+        this.accountId = accountId;
     }
 }
