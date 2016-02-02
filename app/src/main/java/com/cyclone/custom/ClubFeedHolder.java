@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.text.Html;
 import android.view.View;
@@ -36,6 +37,7 @@ public class ClubFeedHolder extends UniversalHolder{
 	public TextView txtPostContent;
 	public TextView txtPostInfo;
 	public TextView txtLikesInfo;
+	public TextView txtCommentInfo;
 	public ImageButton btnLike;
 	public ImageButton btnShare;
 	public ImageButton btnComment;
@@ -55,6 +57,7 @@ public class ClubFeedHolder extends UniversalHolder{
 		txtPostContent = (TextView) v.findViewById(R.id.txt_post_content);
 		txtPostInfo = (TextView) v.findViewById(R.id.txt_post_info);
 		txtLikesInfo = (TextView) v.findViewById(R.id.txt_likes_info);
+		txtCommentInfo = (TextView) v.findViewById(R.id.txt_comment_info);
 		btnLike = (ImageButton) v.findViewById(R.id.btn_like);
 		btnShare = (ImageButton) v.findViewById(R.id.btn_share);
 		btnComment = (ImageButton) v.findViewById(R.id.btn_comment);
@@ -82,12 +85,33 @@ public class ClubFeedHolder extends UniversalHolder{
 		txtPostTitle.setText(p.postTitle);
 		txtPostContent.setText(p.postContent);
 		txtPostInfo.setText(p.postInfo);
-		txtLikesInfo.setText(p.likesCount + " likes • " + p.commentCount + " comments");
+		txtLikesInfo.setText(p.likesCount + " likes • ");
+		txtCommentInfo.setText(" " + p.commentCount + " comments");
 		if(p.isLiked)
 			btnLike.setColorFilter(Color.parseColor("#E91E63"));
 		else
 			btnLike.setColorFilter(null);
 
+		txtLikesInfo.setClickable(true);
+		txtLikesInfo.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Snackbar.make(v, "Like Clicked", Snackbar.LENGTH_SHORT).show();
+			}
+		});
+
+		txtCommentInfo.setClickable(true);
+		txtCommentInfo.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(activity, DrawerActivity.class);
+				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_COMMENT);
+				intent.putExtra("mode", CommentFragment.MODE_READ_WRITE);
+				intent.putExtra("title", "Comments");
+				intent.putExtra("contentId", p.FeedId);
+				activity.startActivity(intent);
+			}
+		});
 		btnMenu.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

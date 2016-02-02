@@ -13,7 +13,6 @@ import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -21,7 +20,6 @@ import com.cyclone.DrawerActivity;
 import com.cyclone.R;
 import com.cyclone.Utils.ServerUrl;
 import com.cyclone.Utils.UtilArrayData;
-import com.cyclone.custom.OnOffsetChangedListener;
 import com.cyclone.interfaces.PlayOnHolder;
 import com.cyclone.model.Loading;
 import com.cyclone.model.RunningProgram;
@@ -169,7 +167,11 @@ public class LiveStreamFragment extends PlaybackServiceRecyclerFragment implemen
 
 		if(UtilArrayData.contentLiveStreaming.size() > 0){
 			for(int i=0; i<maxData; i++) {
-				datas.add(UtilArrayData.contentLiveStreaming.get(i));
+				//try jika data kurang dari max data tidak Close.
+				try{
+					datas.add(UtilArrayData.contentLiveStreaming.get(i));
+				}catch (Exception e){}
+
 			}
 		}
 		/*else {

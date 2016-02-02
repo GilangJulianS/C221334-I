@@ -26,8 +26,7 @@ public class PlaylistRepository extends ModelRepository<Playlist> {
     }
 
     public void creat(Map<String, String> parm, final Adapter.Callback callback) {
-
-
+        createContract();
         invokeStaticMethod("creat", parm, new Adapter.Callback() {
 
             @Override

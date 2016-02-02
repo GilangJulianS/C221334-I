@@ -98,8 +98,15 @@ public class GetData {
                 datas.add(new Section("Advertorial", UtilArrayData.CATEGORY_Advertorial, MasterActivity.FRAGMENT_SUBCATEGORY));
                 contentList = new ArrayList<>();
                 for(int i = 0; i < 3; i++){
-                    RadioContent radioContent = UtilArrayData.advertorial.get(i);
-                    contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_Advertorial, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.radioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
+                    try{
+                        RadioContent radioContent = UtilArrayData.advertorial.get(i);
+                        contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_Advertorial,
+                                Content.NOT_FAVORITABLE, radioContent.getName(),
+                                UtilArrayData.radioProfile.getName(),
+                                radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT,
+                                radioContent.getAudio(),i, radioContent.getId()));
+                    }catch (Exception e){}
+
                 }
                 contents = new Contents(contentList);
                 datas.add(contents);
@@ -109,8 +116,10 @@ public class GetData {
                 datas.add(new Section("Pop", UtilArrayData.CATEGORY_POP, MasterActivity.FRAGMENT_SUBCATEGORY));
                 contentList = new ArrayList<>();
                 for(int i = 0; i < 3; i++){
-                    Music music = UtilArrayData.pop.get(i);
-                    contentList.add(new Content(music.getCoverArt(), UtilArrayData.CATEGORY_POP, Content.NOT_FAVORITABLE, music.getName(), music.getArtist(), music.getAlbum(), false, Content.TYPE_RADIO_CONTENT, music.getAudio(),i, music.getId()));
+                    try{
+                        Music music = UtilArrayData.pop.get(i);
+                        contentList.add(new Content(music.getCoverArt(), UtilArrayData.CATEGORY_POP, Content.NOT_FAVORITABLE, music.getName(), music.getArtist(), music.getAlbum(), false, Content.TYPE_RADIO_CONTENT, music.getAudio(),i, music.getId()));
+                    }catch (Exception e){}
                 }
                 contents = new Contents(contentList);
                 datas.add(contents);
@@ -120,8 +129,10 @@ public class GetData {
                 datas.add(new Section("Pop Indo", UtilArrayData.CATEGORY_POP_INDO, MasterActivity.FRAGMENT_SUBCATEGORY));
                 contentList = new ArrayList<>();
                 for(int i = 0; i < 3; i++){
-                    Music music = UtilArrayData.indoPop.get(i);
-                    contentList.add(new Content(music.getCoverArt(), UtilArrayData.CATEGORY_POP_INDO, Content.NOT_FAVORITABLE, music.getName(), music.getArtist(), music.getAlbum(), false, Content.TYPE_RADIO_CONTENT, music.getAudio(),i, music.getId()));
+                    try{
+                        Music music = UtilArrayData.indoPop.get(i);
+                        contentList.add(new Content(music.getCoverArt(), UtilArrayData.CATEGORY_POP_INDO, Content.NOT_FAVORITABLE, music.getName(), music.getArtist(), music.getAlbum(), false, Content.TYPE_RADIO_CONTENT, music.getAudio(),i, music.getId()));
+                    }catch (Exception e){}
                 }
                 contents = new Contents(contentList);
                 datas.add(contents);

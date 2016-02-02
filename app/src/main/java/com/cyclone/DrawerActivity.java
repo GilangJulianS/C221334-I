@@ -62,6 +62,7 @@ import com.cyclone.fragment.UploadFinishedFragment;
 import com.cyclone.fragment.UploadFragment;
 import com.cyclone.fragment.VirtualCardFragment;
 import com.cyclone.loopback.UserClass;
+import com.cyclone.model.AddPlaylist;
 import com.cyclone.player.media.MediaDatabase;
 import com.cyclone.player.media.MediaLibrary;
 import com.cyclone.player.preferences.PreferencesActivity;
@@ -335,7 +336,7 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 			}else if(fragmentType == FRAGMENT_ADD_PLAYLIST){
 				callback = null;
 
-				manager.beginTransaction().replace(R.id.container, AddPlaylistFragment.newInstance(""))
+				manager.beginTransaction().replace(R.id.container, AddPlaylistFragment.newInstance("", new AddPlaylist()))
 						.commit();
 			}else if(fragmentType == FRAGMENT_ADD_MIX_FORM){
 				callback = null;

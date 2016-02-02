@@ -32,5 +32,6 @@ public class UserClass {
         public UserRepository() {
             super("account", null, User.class);
         }
+
     }
 }

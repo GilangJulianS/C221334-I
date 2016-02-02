@@ -1,6 +1,7 @@
 package com.cyclone.custom;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.design.widget.Snackbar;
@@ -12,16 +13,20 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cyclone.DrawerActivity;
 import com.cyclone.MasterActivity;
 import com.cyclone.R;
 import com.cyclone.Utils.ServerUrl;
 import com.cyclone.Utils.UtilUser;
+import com.cyclone.fragment.AddPlaylistFragment;
 import com.cyclone.fragment.CategoryFragment;
 import com.cyclone.fragment.HomeFragment;
 import com.cyclone.interfaces.PlayOnHolder;
 import com.cyclone.loopback.repository.PlaylistAccountRepository;
+import com.cyclone.loopback.repository.PlaylistRepository;
+import com.cyclone.model.AddPlaylist;
 import com.cyclone.model.Content;
 import com.cyclone.model.Contents;
 import com.cyclone.model.Data;
@@ -32,6 +37,9 @@ import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.strongloop.android.loopback.RestAdapter;
 import com.strongloop.android.remoting.adapters.Adapter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by gilang on 21/11/2015.
  */
@@ -39,6 +47,7 @@ public class ContentsHolder extends UniversalHolder {
 
 	public ViewGroup container;
 	Bitmap mCover;
+	static AddPlaylist addPlaylist;
 
 	public ContentsHolder(View v, Activity activity, UniversalAdapter adapter) {
 		super(v, activity, adapter);
@@ -157,13 +166,47 @@ public class ContentsHolder extends UniversalHolder {
 	}
 
 	public static Snackbar createSnackBar(final Activity activity){
+		addPlaylist = AddPlaylistFragment.getAddPlaylist();
 		Snackbar snackbar =
 				Snackbar.make(((DrawerActivity) activity).coordinatorLayout, Data.getData().size()
 						+ " items added", Snackbar.LENGTH_INDEFINITE)
 						.setAction("Done", new View.OnClickListener() {
 							@Override
 							public void onClick(View v) {
-								activity.onBackPressed();
+								if (DrawerActivity.getFragmentType() == DrawerActivity.FRAGMENT_ADD_PLAYLIST_FORM) {
+									if (UtilUser.currentUser != null) {
+										Map<String, String> parm = new HashMap<String, String>();
+										//parm.put("id", UtilUser.currentUser.getId().toString());
+										parm.put("name", addPlaylist.getTitle());
+										parm.put("caption", addPlaylist.getCaption());
+										parm.put("private", "false");
+										parm.put("image", "");
+										System.out.println(addPlaylist.getTitle() + " | " + addPlaylist.getCaption());
+										final RestAdapter restAdapter = new RestAdapter(activity.getBaseContext(), ServerUrl.API_URL);
+										PlaylistRepository playlistRepository = restAdapter.createRepository(PlaylistRepository.class);
+
+										final ProgressDialog dialog = ProgressDialog.show(activity, "",
+												"Loading...", true);
+										dialog.show();
+
+										playlistRepository.creat(parm, new Adapter.Callback() {
+											@Override
+											public void onSuccess(String response) {
+												System.out.println("saved success : " + response);
+												dialog.dismiss();
+												activity.onBackPressed();
+											}
+
+											@Override
+											public void onError(Throwable t) {
+												//activity.onBackPressed();
+												dialog.dismiss();
+												Toast.makeText(activity, "Failed to creat Playlist", Toast.LENGTH_SHORT).show();
+												System.out.println(t);
+											}
+										});
+									}
+								}
 							}
 						});
 		View snack = snackbar.getView();

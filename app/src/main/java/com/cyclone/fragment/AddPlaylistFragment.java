@@ -11,13 +11,12 @@ import com.cyclone.MasterActivity;
 import com.cyclone.R;
 import com.cyclone.custom.ContentsHolder;
 import com.cyclone.custom.UniversalAdapter;
+import com.cyclone.model.AddPlaylist;
 import com.cyclone.model.Categories;
 import com.cyclone.model.Category;
 import com.cyclone.model.Content;
 import com.cyclone.model.Contents;
 import com.cyclone.model.Data;
-import com.cyclone.model.Mix;
-import com.cyclone.model.Mixes;
 import com.cyclone.model.Section;
 
 import java.util.ArrayList;
@@ -30,15 +29,22 @@ public class AddPlaylistFragment extends RecyclerFragment {
 
 	private List<Content> dataHolder;
 	private List<Content> completeContent;
+	private static AddPlaylist addPlaylist;
+	private static AddPlaylistFragment fragment;
 
 	public AddPlaylistFragment(){}
 
-	public static AddPlaylistFragment newInstance(String json){
-		AddPlaylistFragment fragment = new AddPlaylistFragment();
+	public static AddPlaylistFragment newInstance(String json, AddPlaylist addPlaylist){
+		fragment = new AddPlaylistFragment();
 		fragment.json = json;
 		fragment.dataHolder = new ArrayList<>();
 		fragment.completeContent = new ArrayList<>();
+		fragment.addPlaylist = addPlaylist;
 		return fragment;
+	}
+
+	public static AddPlaylist getAddPlaylist() {
+		return addPlaylist;
 	}
 
 	@Override

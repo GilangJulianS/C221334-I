@@ -172,10 +172,20 @@
 			<TextView
 				android:id="@+id/txt_likes_info"
 				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_gravity="bottom"
+				android:layout_height="match_parent"
+				android:layout_gravity="center"
+				android:gravity="center"
 				android:textSize="12sp"
-				android:text="8237 likes | 20 comments"/>
+				android:text="8237 likes |" />
+
+			<TextView
+				android:id="@+id/txt_comment_info"
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:layout_gravity="center"
+				android:gravity="center"
+				android:textSize="12sp"
+				android:text=" 20 comments" />
 
 		</LinearLayout>
 
