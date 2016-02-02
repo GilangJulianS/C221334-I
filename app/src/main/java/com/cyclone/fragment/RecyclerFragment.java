@@ -99,13 +99,13 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 		prepareViews(v);
 
 		//Check data radio profil
-		if(UtilArrayData.rdioProfile == null){
+		if(UtilArrayData.radioProfile == null){
 			//jika radio profil null ambil data radio rofile
 			getRadioProfile();
 		}
 
 		if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_HOME || DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_SUBCATEGORY){
-			if(UtilArrayData.AllRadioContent.size() > 0){
+			if(UtilArrayData.allRadioContent.size() > 0){
 				if (datas != null && datas.size() > 0) {
 					try{
 						progressBar.setVisibility(View.GONE);
@@ -275,7 +275,7 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 
 	protected void animate(final Object o){
 		cnt ++;
-		System.out.println("Count nimate : "+cnt);
+//		System.out.println("Count nimate : "+cnt);
 		int delay = 0;
 		if(getColumnNumber() == 1)
 			delay = 200;
@@ -290,12 +290,12 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 				datas.remove(o);
 				adapter.notifyItemInserted(adapter.datas.size() - 1);
 				if (!datas.isEmpty()) {
-					System.out.println("Count data ada !!");
+//					System.out.println("Count data ada !!");
 					isAnimate = false;
 					animate(datas.get(0));
 					swipeLayout.setEnabled(false);
 				} else {
-					System.out.println("Count data habis");
+//					System.out.println("Count data habis");
 					isAnimate = false;
 					swipeLayout.setEnabled(true);
 				}
@@ -416,7 +416,8 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 		adapter.notifyDataSetChanged();
 
 		prepareDatas();
-		animate(datas.get(0));
+		if(datas.size() > 0)
+			animate(datas.get(0));
 	}
 
 	public void getDataHome(){
@@ -562,7 +563,7 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 		profileRepository.get(ServerUrl.RADIO_ID, new ObjectCallback<radioProfile>() {
 			@Override
 			public void onSuccess(radioProfile object) {
-				UtilArrayData.rdioProfile = object;
+				UtilArrayData.radioProfile = object;
 			}
 
 			@Override

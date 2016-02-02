@@ -36,7 +36,7 @@ public class MixFragment extends RecyclerFragment {
 
 	@Override
 	public void onCreateView(View v, ViewGroup parent, Bundle savedInstanceState) {
-
+		setHasOptionsMenu(true);
 	}
 
 	@Override

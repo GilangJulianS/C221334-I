@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -147,12 +148,12 @@ public class ContentsHolder extends UniversalHolder {
 			counter++;
 		}
 
-//    while(counter < 3){
-//      LayoutInflater inflater = activity.getLayoutInflater();
-//      View v = inflater.inflate(R.layout.view_filler_horizontal_full, container, false);
-//      container.addView(v);
-//      counter++;
-//    }
+		while(counter < 3){
+		  LayoutInflater inflater = activity.getLayoutInflater();
+		  View v = inflater.inflate(R.layout.view_filler_horizontal_full, container, false);
+		  container.addView(v);
+		  counter++;
+		}
 	}
 
 	public static Snackbar createSnackBar(final Activity activity){

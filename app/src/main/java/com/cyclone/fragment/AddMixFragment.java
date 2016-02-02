@@ -74,6 +74,7 @@ public class AddMixFragment extends RecyclerFragment {
 	}
 
 	public List<Object> parse(String json){
+		completeMix = new ArrayList<>();
 		List<Object> datas = new ArrayList<>();
 		List<Mix> mixList;
 		Mixes mixes;

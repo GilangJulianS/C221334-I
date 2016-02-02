@@ -13,6 +13,7 @@ import com.cyclone.model.Announcer;
 import com.cyclone.model.Categories;
 import com.cyclone.model.Comment;
 import com.cyclone.model.Contents;
+import com.cyclone.model.Loading;
 import com.cyclone.model.Mix;
 import com.cyclone.model.Mixes;
 import com.cyclone.model.Notification;
@@ -55,6 +56,7 @@ public class UniversalAdapter extends Adapter<UniversalHolder> {
 	public static final int TYPE_MIXES = 117;
 	public static final int TYPE_MIX = 118;
 	public static final int TYPE_COMMENT = 119;
+	public static final int TYPE_LOADING = 120;
 
 	public List<Object> datas;
 	private SparseBooleanArray selectedItems;
@@ -113,6 +115,7 @@ public class UniversalAdapter extends Adapter<UniversalHolder> {
 		else if(o instanceof Mixes) return TYPE_MIXES;
 		else if(o instanceof Mix) return TYPE_MIX;
 		else if(o instanceof Comment) return TYPE_COMMENT;
+		else if(o instanceof Loading) return TYPE_LOADING;
 		return -1;
 	}
 
@@ -137,6 +140,7 @@ public class UniversalAdapter extends Adapter<UniversalHolder> {
 			case TYPE_MIXES: return R.layout.card_contents;
 			case TYPE_MIX: return R.layout.card_mix;
 			case TYPE_COMMENT: return R.layout.card_comment;
+			case TYPE_LOADING: return R.layout.card_loading;
 			default: return -1;
 		}
 	}
@@ -163,6 +167,7 @@ public class UniversalAdapter extends Adapter<UniversalHolder> {
 			case TYPE_MIXES: holder = new MixesHolder(v, activity, this); break;
 			case TYPE_MIX: holder = new MixHolder(v, activity, this); break;
 			case TYPE_COMMENT: holder = new CommentHolder(v, activity, this); break;
+			case TYPE_LOADING: holder = new LoadingHolder(v, activity, this); break;
 		}
 		return holder;
 	}

@@ -61,78 +61,78 @@ public class GetData {
             categories = new Categories(categoryList);
             datas.add(categories);
 
-            if(UtilArrayData.LatestContent.size() > 0){
+            if(UtilArrayData.latestContent.size() > 0){
                 datas.add(new Section("Latest Content", UtilArrayData.CATEGORY_LatestContent, MasterActivity.FRAGMENT_SUBCATEGORY));
                 contentList = new ArrayList<>();
-                for(int i = 0; i < 2; i++){
-                    RadioContent radioContent = UtilArrayData.LatestContent.get(i);
-                    contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_LatestContent, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.rdioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
+                for(int i = 0; i < 3; i++){
+                    RadioContent radioContent = UtilArrayData.latestContent.get(i);
+                    contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_LatestContent, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.radioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
                 }
                 contents = new Contents(contentList);
                 datas.add(contents);
             }
 
-            if(UtilArrayData.News.size() > 0){
+            if(UtilArrayData.news.size() > 0){
                 datas.add(new Section("News", UtilArrayData.CATEGORY_NEWS, MasterActivity.FRAGMENT_SUBCATEGORY));
                 contentList = new ArrayList<>();
-                for(int i = 0; i < 2; i++){
-                    RadioContent radioContent = UtilArrayData.News.get(i);
-                    contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_NEWS, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.rdioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
+                for(int i = 0; i < 3; i++){
+                    RadioContent radioContent = UtilArrayData.news.get(i);
+                    contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_NEWS, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.radioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
                 }
                 contents = new Contents(contentList);
                 datas.add(contents);
             }
 
-            if(UtilArrayData.Info.size() > 0){
+            if(UtilArrayData.info.size() > 0){
                 datas.add(new Section("Info", UtilArrayData.CATEGORY_Info, MasterActivity.FRAGMENT_SUBCATEGORY));
                 contentList = new ArrayList<>();
-                for(int i = 0; i < 2; i++){
-                    RadioContent radioContent = UtilArrayData.Info.get(i);
-                    contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_Info, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.rdioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
+                for(int i = 0; i < 3; i++){
+                    RadioContent radioContent = UtilArrayData.info.get(i);
+                    contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_Info, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.radioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
                 }
                 contents = new Contents(contentList);
                 datas.add(contents);
             }
 
-            if(UtilArrayData.Advertorial.size() > 0){
+            if(UtilArrayData.advertorial.size() > 0){
                 datas.add(new Section("Advertorial", UtilArrayData.CATEGORY_Advertorial, MasterActivity.FRAGMENT_SUBCATEGORY));
                 contentList = new ArrayList<>();
-                for(int i = 0; i < 2; i++){
-                    RadioContent radioContent = UtilArrayData.Advertorial.get(i);
-                    contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_Advertorial, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.rdioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
+                for(int i = 0; i < 3; i++){
+                    RadioContent radioContent = UtilArrayData.advertorial.get(i);
+                    contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_Advertorial, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.radioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
                 }
                 contents = new Contents(contentList);
                 datas.add(contents);
             }
 
-            if(UtilArrayData.Pop.size() > 0){
+            if(UtilArrayData.pop.size() > 0){
                 datas.add(new Section("Pop", UtilArrayData.CATEGORY_POP, MasterActivity.FRAGMENT_SUBCATEGORY));
                 contentList = new ArrayList<>();
-                for(int i = 0; i < 2; i++){
-                    Music music = UtilArrayData.Pop.get(i);
+                for(int i = 0; i < 3; i++){
+                    Music music = UtilArrayData.pop.get(i);
                     contentList.add(new Content(music.getCoverArt(), UtilArrayData.CATEGORY_POP, Content.NOT_FAVORITABLE, music.getName(), music.getArtist(), music.getAlbum(), false, Content.TYPE_RADIO_CONTENT, music.getAudio(),i, music.getId()));
                 }
                 contents = new Contents(contentList);
                 datas.add(contents);
             }
 
-            if(UtilArrayData.Indo_Pop.size() > 0){
+            if(UtilArrayData.indoPop.size() > 0){
                 datas.add(new Section("Pop Indo", UtilArrayData.CATEGORY_POP_INDO, MasterActivity.FRAGMENT_SUBCATEGORY));
                 contentList = new ArrayList<>();
-                for(int i = 0; i < 2; i++){
-                    Music music = UtilArrayData.Indo_Pop.get(i);
+                for(int i = 0; i < 3; i++){
+                    Music music = UtilArrayData.indoPop.get(i);
                     contentList.add(new Content(music.getCoverArt(), UtilArrayData.CATEGORY_POP_INDO, Content.NOT_FAVORITABLE, music.getName(), music.getArtist(), music.getAlbum(), false, Content.TYPE_RADIO_CONTENT, music.getAudio(),i, music.getId()));
                 }
                 contents = new Contents(contentList);
                 datas.add(contents);
             }
 
-            if(UtilArrayData.Hip_Hop_Rap.size() > 0){
+            if(UtilArrayData.hipHopRap.size() > 0){
                 datas.add(new Section("Hip Hop/Rap", UtilArrayData.CATEGORY_HIP_HOP_RAP, MasterActivity.FRAGMENT_SUBCATEGORY));
                 contentList = new ArrayList<>();
-                for(int i = 0; i < 2; i++){
+                for(int i = 0; i < 3; i++){
                     try{
-                        Music music = UtilArrayData.Hip_Hop_Rap.get(i);
+                        Music music = UtilArrayData.hipHopRap.get(i);
                         contentList.add(new Content(music.getCoverArt(), UtilArrayData.CATEGORY_HIP_HOP_RAP, Content.NOT_FAVORITABLE, music.getName(), music.getArtist(), music.getAlbum(), false, Content.TYPE_RADIO_CONTENT, music.getAudio(),i, music.getId()));
                     }catch (Exception e){
 
@@ -148,91 +148,91 @@ public class GetData {
             System.out.println("category : "+category);
             List<Object> datas = new ArrayList<>();
             if(category.equalsIgnoreCase(UtilArrayData.CATEGORY_LatestContent)){
-                if(UtilArrayData.LatestContent.size() > 0){
-                    for(int i = 0; i < UtilArrayData.LatestContent.size(); i++){
-                        RadioContent radioContent = UtilArrayData.LatestContent.get(i);
+                if(UtilArrayData.latestContent.size() > 0){
+                    for(int i = 0; i < UtilArrayData.latestContent.size(); i++){
+                        RadioContent radioContent = UtilArrayData.latestContent.get(i);
                         datas.add(new SubcategoryItem(radioContent.getCoverArt(), radioContent.getName(),
-                                UtilArrayData.rdioProfile.getName(), SubcategoryItem.TYPE_NORMAL, category,
+                                UtilArrayData.radioProfile.getName(), SubcategoryItem.TYPE_NORMAL, category,
                                 radioContent.getAudio(), i,radioContent.getId()));
                         System.out.println("judul : " + radioContent.getName());
                     }
                 }
             }else if(category.equalsIgnoreCase(UtilArrayData.CATEGORY_NEWS)){
-                if(UtilArrayData.News.size() > 0){
-                    for(int i = 0; i < UtilArrayData.News.size(); i++){
-                        RadioContent radioContent = UtilArrayData.News.get(i);
+                if(UtilArrayData.news.size() > 0){
+                    for(int i = 0; i < UtilArrayData.news.size(); i++){
+                        RadioContent radioContent = UtilArrayData.news.get(i);
                         datas.add(new SubcategoryItem(radioContent.getCoverArt(), radioContent.getName(),
-                                UtilArrayData.rdioProfile.getName(), SubcategoryItem.TYPE_NORMAL, category,
+                                UtilArrayData.radioProfile.getName(), SubcategoryItem.TYPE_NORMAL, category,
                                 radioContent.getAudio(), i,radioContent.getId()));
                     }
                 }
             }else if(category.equalsIgnoreCase(UtilArrayData.CATEGORY_Info)){
-                if(UtilArrayData.Info.size() > 0){
-                    for(int i = 0; i < UtilArrayData.Info.size(); i++){
-                        RadioContent radioContent = UtilArrayData.Info.get(i);
+                if(UtilArrayData.info.size() > 0){
+                    for(int i = 0; i < UtilArrayData.info.size(); i++){
+                        RadioContent radioContent = UtilArrayData.info.get(i);
                         datas.add(new SubcategoryItem(radioContent.getCoverArt(), radioContent.getName(),
-                                UtilArrayData.rdioProfile.getName(), SubcategoryItem.TYPE_NORMAL, category,
+                                UtilArrayData.radioProfile.getName(), SubcategoryItem.TYPE_NORMAL, category,
                                 radioContent.getAudio(), i,radioContent.getId()));
                     }
                 }
             }else if(category.equalsIgnoreCase(UtilArrayData.CATEGORY_Variety)){
-                if(UtilArrayData.Variety.size() > 0){
-                    for(int i = 0; i < UtilArrayData.Variety.size(); i++){
-                        RadioContent radioContent = UtilArrayData.Variety.get(i);
+                if(UtilArrayData.variety.size() > 0){
+                    for(int i = 0; i < UtilArrayData.variety.size(); i++){
+                        RadioContent radioContent = UtilArrayData.variety.get(i);
                         datas.add(new SubcategoryItem(radioContent.getCoverArt(), radioContent.getName(),
-                                UtilArrayData.rdioProfile.getName(), SubcategoryItem.TYPE_NORMAL, category,
+                                UtilArrayData.radioProfile.getName(), SubcategoryItem.TYPE_NORMAL, category,
                                 radioContent.getAudio(), i,radioContent.getId()));
                     }
                 }
             }else if(category.equalsIgnoreCase(UtilArrayData.CATEGORY_Travel)){
-                if(UtilArrayData.Travel.size() > 0){
-                    for(int i = 0; i < UtilArrayData.Travel.size(); i++){
-                        RadioContent radioContent = UtilArrayData.Travel.get(i);
+                if(UtilArrayData.travel.size() > 0){
+                    for(int i = 0; i < UtilArrayData.travel.size(); i++){
+                        RadioContent radioContent = UtilArrayData.travel.get(i);
                         datas.add(new SubcategoryItem(radioContent.getCoverArt(), radioContent.getName(),
-                                UtilArrayData.rdioProfile.getName(), SubcategoryItem.TYPE_NORMAL, category,
+                                UtilArrayData.radioProfile.getName(), SubcategoryItem.TYPE_NORMAL, category,
                                 radioContent.getAudio(), i,radioContent.getId()));
                     }
                 }
             }else if(category.equalsIgnoreCase(UtilArrayData.CATEGORY_Advertorial)){
-                if(UtilArrayData.Advertorial.size() > 0){
-                    for(int i = 0; i < UtilArrayData.Advertorial.size(); i++){
-                        RadioContent radioContent = UtilArrayData.Advertorial.get(i);
+                if(UtilArrayData.advertorial.size() > 0){
+                    for(int i = 0; i < UtilArrayData.advertorial.size(); i++){
+                        RadioContent radioContent = UtilArrayData.advertorial.get(i);
                         datas.add(new SubcategoryItem(radioContent.getCoverArt(), radioContent.getName(),
-                                UtilArrayData.rdioProfile.getName(), SubcategoryItem.TYPE_NORMAL, category,
+                                UtilArrayData.radioProfile.getName(), SubcategoryItem.TYPE_NORMAL, category,
                                 radioContent.getAudio(), i,radioContent.getId()));
                     }
                 }
             }else if(category.equalsIgnoreCase(UtilArrayData.CATEGORY_POP)){
-                if(UtilArrayData.Pop.size() > 0){
-                    for(int i = 0; i < UtilArrayData.Pop.size(); i++){
-                        Music music = UtilArrayData.Pop.get(i);
+                if(UtilArrayData.pop.size() > 0){
+                    for(int i = 0; i < UtilArrayData.pop.size(); i++){
+                        Music music = UtilArrayData.pop.get(i);
                         datas.add(new SubcategoryItem(music.getCoverArt(), music.getName(),
                                 music.getArtist(), SubcategoryItem.TYPE_NORMAL, category,
                                 music.getAudio(), i,music.getId()));
                     }
                 }
             }else if(category.equalsIgnoreCase(UtilArrayData.CATEGORY_POP_INDO)){
-                if(UtilArrayData.Indo_Pop.size() > 0){
-                    for(int i = 0; i < UtilArrayData.Indo_Pop.size(); i++){
-                        Music music = UtilArrayData.Indo_Pop.get(i);
+                if(UtilArrayData.indoPop.size() > 0){
+                    for(int i = 0; i < UtilArrayData.indoPop.size(); i++){
+                        Music music = UtilArrayData.indoPop.get(i);
                         datas.add(new SubcategoryItem(music.getCoverArt(), music.getName(),
                                 music.getArtist(), SubcategoryItem.TYPE_NORMAL, category,
                                 music.getAudio(), i,music.getId()));
                     }
                 }
             }else if(category.equalsIgnoreCase(UtilArrayData.CATEGORY_DANCE)){
-                if(UtilArrayData.Dance.size() > 0){
-                    for(int i = 0; i < UtilArrayData.Dance.size(); i++){
-                        Music music = UtilArrayData.Dance.get(i);
+                if(UtilArrayData.dance.size() > 0){
+                    for(int i = 0; i < UtilArrayData.dance.size(); i++){
+                        Music music = UtilArrayData.dance.get(i);
                         datas.add(new SubcategoryItem(music.getCoverArt(), music.getName(),
                                 music.getArtist(), SubcategoryItem.TYPE_NORMAL, category,
                                 music.getAudio(), i,music.getId()));
                     }
                 }
             }else if(category.equalsIgnoreCase(UtilArrayData.CATEGORY_HIP_HOP_RAP)){
-                if(UtilArrayData.Hip_Hop_Rap.size() > 0){
-                    for(int i = 0; i < UtilArrayData.Hip_Hop_Rap.size(); i++){
-                        Music music = UtilArrayData.Hip_Hop_Rap.get(i);
+                if(UtilArrayData.hipHopRap.size() > 0){
+                    for(int i = 0; i < UtilArrayData.hipHopRap.size(); i++){
+                        Music music = UtilArrayData.hipHopRap.get(i);
                         datas.add(new SubcategoryItem(music.getCoverArt(), music.getName(),
                                 music.getArtist(), SubcategoryItem.TYPE_NORMAL, category,
                                 music.getAudio(), i,music.getId()));
@@ -247,67 +247,67 @@ public class GetData {
                 Contents contents;
                 List<Object> datas = new ArrayList<>();
                 List<Content> contentList;
-                if(UtilArrayData.LatestContent.size() > 0){
+                if(UtilArrayData.latestContent.size() > 0){
                     datas.add(new Section("Latest Content", UtilArrayData.CATEGORY_LatestContent, MasterActivity.FRAGMENT_SUBCATEGORY));
                     contentList = new ArrayList<>();
                     for(int i = 0; i < 2; i++){
-                        RadioContent radioContent = UtilArrayData.LatestContent.get(i);
-                        contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_LatestContent, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.rdioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
+                        RadioContent radioContent = UtilArrayData.latestContent.get(i);
+                        contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_LatestContent, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.radioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
                     }
                     contents = new Contents(contentList);
                     datas.add(contents);
                 }
 
-                if(UtilArrayData.News.size() > 0){
+                if(UtilArrayData.news.size() > 0){
                     datas.add(new Section("News", UtilArrayData.CATEGORY_NEWS, MasterActivity.FRAGMENT_SUBCATEGORY));
                     contentList = new ArrayList<>();
                     for(int i = 0; i < 2; i++){
-                        RadioContent radioContent = UtilArrayData.News.get(i);
-                        contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_NEWS, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.rdioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
+                        RadioContent radioContent = UtilArrayData.news.get(i);
+                        contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_NEWS, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.radioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
                     }
                     contents = new Contents(contentList);
                     datas.add(contents);
                 }
 
-                if(UtilArrayData.Info.size() > 0){
+                if(UtilArrayData.info.size() > 0){
                     datas.add(new Section("Info", UtilArrayData.CATEGORY_Info, MasterActivity.FRAGMENT_SUBCATEGORY));
                     contentList = new ArrayList<>();
                     for(int i = 0; i < 2; i++){
-                        RadioContent radioContent = UtilArrayData.Info.get(i);
-                        contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_Info, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.rdioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
+                        RadioContent radioContent = UtilArrayData.info.get(i);
+                        contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_Info, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.radioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
                     }
                     contents = new Contents(contentList);
                     datas.add(contents);
                 }
 
-                if(UtilArrayData.Variety.size() > 0){
+                if(UtilArrayData.variety.size() > 0){
                     datas.add(new Section("Variety", UtilArrayData.CATEGORY_Variety, MasterActivity.FRAGMENT_SUBCATEGORY));
                     contentList = new ArrayList<>();
                     for(int i = 0; i < 2; i++){
-                        RadioContent radioContent = UtilArrayData.Variety.get(i);
-                        contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_Variety, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.rdioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
+                        RadioContent radioContent = UtilArrayData.variety.get(i);
+                        contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_Variety, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.radioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
                     }
                     contents = new Contents(contentList);
                     datas.add(contents);
                 }
 
-                if(UtilArrayData.Travel.size() > 0){
+                if(UtilArrayData.travel.size() > 0){
                     datas.add(new Section("Travel", UtilArrayData.CATEGORY_Travel, MasterActivity.FRAGMENT_SUBCATEGORY));
                     contentList = new ArrayList<>();
                     for(int i = 0; i < 2; i++){
-                        RadioContent radioContent = UtilArrayData.Travel.get(i);
-                        contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_Travel, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.rdioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
+                        RadioContent radioContent = UtilArrayData.travel.get(i);
+                        contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_Travel, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.radioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
                     }
                     contents = new Contents(contentList);
                     datas.add(contents);
                 }
 
-                if(UtilArrayData.Advertorial.size() > 0){
+                if(UtilArrayData.advertorial.size() > 0){
                     datas.add(new Section("Advertorial", UtilArrayData.CATEGORY_Advertorial, MasterActivity.FRAGMENT_SUBCATEGORY));
                     contentList = new ArrayList<>();
                     for(int i = 0; i < 2; i++){
-                        RadioContent radioContent = UtilArrayData.Advertorial.get(i);
-                        contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_Advertorial, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.rdioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
+                        RadioContent radioContent = UtilArrayData.advertorial.get(i);
+                        contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_Advertorial, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.radioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
                     }
                     contents = new Contents(contentList);
                     datas.add(contents);
@@ -318,45 +318,45 @@ public class GetData {
                 List<Object> datas = new ArrayList<>();
                 List<Content> contentList;
 
-                if(UtilArrayData.Pop.size() > 0){
+                if(UtilArrayData.pop.size() > 0){
                     datas.add(new Section("Pop", UtilArrayData.CATEGORY_POP, MasterActivity.FRAGMENT_SUBCATEGORY));
                     contentList = new ArrayList<>();
                     for(int i = 0; i < 2; i++){
-                        Music music = UtilArrayData.Pop.get(i);
+                        Music music = UtilArrayData.pop.get(i);
                         contentList.add(new Content(music.getCoverArt(), UtilArrayData.CATEGORY_POP, Content.NOT_FAVORITABLE, music.getName(), music.getArtist(), music.getAlbum(), false, Content.TYPE_RADIO_CONTENT, music.getAudio(),i, music.getId()));
                     }
                     contents = new Contents(contentList);
                     datas.add(contents);
                 }
 
-                if(UtilArrayData.Indo_Pop.size() > 0){
+                if(UtilArrayData.indoPop.size() > 0){
                     datas.add(new Section("Pop Indo", UtilArrayData.CATEGORY_POP_INDO, MasterActivity.FRAGMENT_SUBCATEGORY));
                     contentList = new ArrayList<>();
                     for(int i = 0; i < 2; i++){
-                        Music music = UtilArrayData.Indo_Pop.get(i);
+                        Music music = UtilArrayData.indoPop.get(i);
                         contentList.add(new Content(music.getCoverArt(), UtilArrayData.CATEGORY_POP_INDO, Content.NOT_FAVORITABLE, music.getName(), music.getArtist(), music.getAlbum(), false, Content.TYPE_RADIO_CONTENT, music.getAudio(),i, music.getId()));
                     }
                     contents = new Contents(contentList);
                     datas.add(contents);
                 }
 
-                if(UtilArrayData.Dance.size() > 0){
+                if(UtilArrayData.dance.size() > 0){
                     datas.add(new Section("Dance", UtilArrayData.CATEGORY_DANCE, MasterActivity.FRAGMENT_SUBCATEGORY));
                     contentList = new ArrayList<>();
                     for(int i = 0; i < 2; i++){
-                        Music music = UtilArrayData.Dance.get(i);
+                        Music music = UtilArrayData.dance.get(i);
                         contentList.add(new Content(music.getCoverArt(), UtilArrayData.CATEGORY_DANCE, Content.NOT_FAVORITABLE, music.getName(), music.getArtist(), music.getAlbum(), false, Content.TYPE_RADIO_CONTENT, music.getAudio(),i, music.getId()));
                     }
                     contents = new Contents(contentList);
                     datas.add(contents);
                 }
 
-                if(UtilArrayData.Hip_Hop_Rap.size() > 0){
+                if(UtilArrayData.hipHopRap.size() > 0){
                     datas.add(new Section("Hip Hop/Rap", UtilArrayData.CATEGORY_HIP_HOP_RAP, MasterActivity.FRAGMENT_SUBCATEGORY));
                     contentList = new ArrayList<>();
                     for(int i = 0; i < 2; i++){
                         try{
-                            Music music = UtilArrayData.Hip_Hop_Rap.get(i);
+                            Music music = UtilArrayData.hipHopRap.get(i);
                             contentList.add(new Content(music.getCoverArt(), UtilArrayData.CATEGORY_HIP_HOP_RAP, Content.NOT_FAVORITABLE, music.getName(), music.getArtist(), music.getAlbum(), false, Content.TYPE_RADIO_CONTENT, music.getAudio(),i, music.getId()));
                         }catch (Exception e){
 

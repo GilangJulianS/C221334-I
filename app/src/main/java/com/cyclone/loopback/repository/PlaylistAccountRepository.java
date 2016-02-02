@@ -52,7 +52,7 @@ public class PlaylistAccountRepository extends ModelRepository<PlaylistAccount> 
 
                 try {
                     jsonArray = new JSONArray(response);
-                    UtilArrayData.PlaylistAccount.clear();
+                    UtilArrayData.playlistAccount.clear();
                     for (int i = 0; i < jsonArray.length(); i++){
                         playlistAccount = new PlaylistAccount();
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -63,7 +63,7 @@ public class PlaylistAccountRepository extends ModelRepository<PlaylistAccount> 
                         playlistAccount.setAccountId(jsonObject.getString("accountId"));
                         playlistAccount.setPrivate(jsonObject.getString("private"));
 
-                        UtilArrayData.PlaylistAccount.add(playlistAccount);
+                        UtilArrayData.playlistAccount.add(playlistAccount);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

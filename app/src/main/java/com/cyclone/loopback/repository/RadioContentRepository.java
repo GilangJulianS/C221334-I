@@ -42,12 +42,12 @@ public class RadioContentRepository extends ModelRepository<RadioContent> {
                 RadioContent radioContent;
                 try {
                     jsonArray = new JSONArray(response);
-                    UtilArrayData.LatestContent.clear();
-                    UtilArrayData.News.clear();
-                    UtilArrayData.Info.clear();
-                    UtilArrayData.Variety.clear();
-                    UtilArrayData.Travel.clear();
-                    UtilArrayData.Advertorial.clear();
+                    UtilArrayData.latestContent.clear();
+                    UtilArrayData.news.clear();
+                    UtilArrayData.info.clear();
+                    UtilArrayData.variety.clear();
+                    UtilArrayData.travel.clear();
+                    UtilArrayData.advertorial.clear();
 
                     for(int i = 0; i < jsonArray.length(); i++){
                         JSONObject jsonObject = new JSONObject(String.valueOf(jsonArray.getJSONObject(i)));
@@ -66,13 +66,13 @@ public class RadioContentRepository extends ModelRepository<RadioContent> {
                         radioContent.setRadioId(jsonObject.getString("radioId"));
                         radioContent.setAccountId(jsonObject.getString("accountId"));
 
-                        UtilArrayData.AllRadioContent.add(radioContent);
-                        if(radioContent.getCategory().equalsIgnoreCase("Latest Content")) UtilArrayData.LatestContent.add(radioContent);
-                        else if(radioContent.getCategory().equalsIgnoreCase("News")) UtilArrayData.News.add(radioContent);
-                        else if(radioContent.getCategory().equalsIgnoreCase("Info")) UtilArrayData.Info.add(radioContent);
-                        else if(radioContent.getCategory().equalsIgnoreCase("Variety")) UtilArrayData.Variety.add(radioContent);
-                        else if(radioContent.getCategory().equalsIgnoreCase("Travel")) UtilArrayData.Travel.add(radioContent);
-                        else if(radioContent.getCategory().equalsIgnoreCase("Advertorial")) UtilArrayData.Advertorial.add(radioContent);
+                        UtilArrayData.allRadioContent.add(radioContent);
+                        if(radioContent.getCategory().equalsIgnoreCase("Latest Content")) UtilArrayData.latestContent.add(radioContent);
+                        else if(radioContent.getCategory().equalsIgnoreCase("News")) UtilArrayData.news.add(radioContent);
+                        else if(radioContent.getCategory().equalsIgnoreCase("Info")) UtilArrayData.info.add(radioContent);
+                        else if(radioContent.getCategory().equalsIgnoreCase("Variety")) UtilArrayData.variety.add(radioContent);
+                        else if(radioContent.getCategory().equalsIgnoreCase("Travel")) UtilArrayData.travel.add(radioContent);
+                        else if(radioContent.getCategory().equalsIgnoreCase("Advertorial")) UtilArrayData.advertorial.add(radioContent);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

@@ -11,8 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,11 +30,14 @@ import com.cyclone.R;
 import com.cyclone.custom.SnapGestureListener;
 import com.cyclone.custom.UniversalAdapter;
 import com.cyclone.model.Album;
+import com.cyclone.model.Content;
+import com.cyclone.model.Contents;
 import com.cyclone.model.Section;
 import com.cyclone.model.Song;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
@@ -43,11 +49,14 @@ public class AlbumFragment extends RecyclerFragment {
 	private ImageButton btnMenu;
 	private Button btnPlay;
 	private Button btnAddShowlist;
+	private List<Song> completeSong;
+
 	public AlbumFragment(){}
 
 	public static AlbumFragment newInstance(String json){
 		AlbumFragment fragment = new AlbumFragment();
 		fragment.json = json;
+		fragment.completeSong = new ArrayList<>();
 		return fragment;
 	}
 
@@ -58,7 +67,7 @@ public class AlbumFragment extends RecyclerFragment {
 
 	@Override
 	public void onCreateView(View v, ViewGroup parent, Bundle savedInstanceState) {
-
+		setHasOptionsMenu(true);
 	}
 
 	@Override
@@ -115,6 +124,7 @@ public class AlbumFragment extends RecyclerFragment {
 	}
 
 	public List<Object> parse(String json){
+		completeSong = new ArrayList<>();
 		List<Object> datas = new ArrayList<>();
 		datas.add(new Song("Counting Stars", "OneRepublic"));
 		datas.add(new Song("Love Runs Out", "OneRepublic"));
@@ -132,11 +142,62 @@ public class AlbumFragment extends RecyclerFragment {
 		datas.add(new Song("I Lived", "OneRepublic"));
 		datas.add(new Song("Light It Up", "OneRepublic"));
 		datas.add(new Song("Life In Color", "OneRepublic"));
+		for(Object o : datas){
+			completeSong.add((Song)o);
+		}
+
 		datas.add(new Section("More By OneRepublic", null));
 		datas.add(new Album("", "Native", "2014"));
 		datas.add(new Album("", "Waking Up", "2009"));
 		datas.add(new Album("", "Native", "2014"));
 		datas.add(new Album("", "Waking Up", "2009"));
 		return datas;
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.search, menu);
+
+		SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+			UniversalAdapter newAdapter;
+
+			@Override
+			public boolean onQueryTextSubmit(String query) {
+				return false;
+			}
+
+			@Override
+			public boolean onQueryTextChange(String newText) {
+				processQuery(newText, newAdapter);
+				return true;
+			}
+		});
+
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	public void processQuery(String newText, UniversalAdapter newAdapter){
+		if(!newText.equals("")) {
+			newAdapter = new UniversalAdapter(activity);
+			List<Song> searchResult = search(newText);
+			for(Song s : searchResult){
+				newAdapter.add(s);
+			}
+			recyclerView.setAdapter(newAdapter);
+		}else{
+			adapter.notifyDataSetChanged();
+			recyclerView.setAdapter(adapter);
+		}
+	}
+
+	public List<Song> search(String query){
+		List<Song> result = new ArrayList<>();
+		for(Song s : completeSong){
+			if(s.primary.toLowerCase().contains(query.toLowerCase()) || s.secondary.contains(query.toLowerCase())){
+				result.add(s);
+			}
+		}
+		return result;
 	}
 }

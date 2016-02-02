@@ -270,7 +270,9 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 			}else if(fragmentType == FRAGMENT_SETTINGS){
 				manager.beginTransaction().replace(R.id.container, SettingsFragment.newInstance()).commit();
 			}else if(fragmentType == FRAGMENT_LIVE){
-				manager.beginTransaction().replace(R.id.container, LiveStreamFragment.newInstance("")).commit();
+				LiveStreamFragment fragment = LiveStreamFragment.newInstance("");
+				callback = fragment;
+				manager.beginTransaction().replace(R.id.container, fragment).commit();
 			}else if (fragmentType == FRAGMENT_PROGRAM_PAGE) {
 				callback = null;
 				manager.beginTransaction().replace(R.id.container, ProgramPageFragment

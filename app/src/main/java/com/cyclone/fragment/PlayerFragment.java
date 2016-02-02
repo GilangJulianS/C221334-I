@@ -17,6 +17,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,8 +32,10 @@ import android.widget.TextView;
 
 import com.cyclone.DrawerActivity;
 import com.cyclone.R;
+import com.cyclone.custom.UniversalAdapter;
 import com.cyclone.interfaces.PlayOnHolder;
 import com.cyclone.model.Queue;
+import com.cyclone.model.Song;
 import com.cyclone.player.PlaybackService;
 import com.cyclone.player.VLCApplication;
 import com.cyclone.player.gui.PlaybackServiceRecyclerFragment;
@@ -67,6 +70,7 @@ public class PlayerFragment extends PlaybackServiceRecyclerFragment implements P
 	private SeekBar seekbar;
 	private boolean mPreviewingSeek = false;
 	private MenuItem btnCollapse;
+	private List<Queue> completeQueue;
 
 	static PlayerFragment fragment;
 	public PlayerFragment(){}
@@ -76,6 +80,7 @@ public class PlayerFragment extends PlaybackServiceRecyclerFragment implements P
 	public static PlayerFragment newInstance(String json){
 		fragment = new PlayerFragment();
 		fragment.json = json;
+		fragment.completeQueue = new ArrayList<>();
 		return fragment;
 	}
 
@@ -152,13 +157,6 @@ public class PlayerFragment extends PlaybackServiceRecyclerFragment implements P
 				activity.startActivity(i);
 			}
 		});
-	}
-
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.player, menu);
-		super.onCreateOptionsMenu(menu, inflater);
-		btnCollapse = menu.findItem(R.id.btn_collapse);
 	}
 
 	@Override
@@ -375,6 +373,7 @@ public class PlayerFragment extends PlaybackServiceRecyclerFragment implements P
 
 	public List<Object> parse(String json){
 		List<Object> playlists = new ArrayList<>();
+		completeQueue = new ArrayList<>();
 		/*playlists.add(new Queue("The Celestials", "The Smashing Pumpkins", "03:20",0));
 		playlists.add(new Queue("Track 5 of 30 Playlist", "Morning Songs", "1:08:20",1));
 		playlists.add(new Queue("Drones", "Muse", "05:45",2));
@@ -411,6 +410,9 @@ public class PlayerFragment extends PlaybackServiceRecyclerFragment implements P
 				playlists.add(new Queue(mediaWrapper.getTitle(), mediaWrapper.getArtist(), Strings.millisToString(mediaWrapper.getLength()), i));
 				System.out.println("tampil di queue : "+mediaWrapper.getTitle());
 			}
+		}
+		for(Object o : playlists){
+			completeQueue.add((Queue)o);
 		}
 		return playlists;
 	}
@@ -925,6 +927,54 @@ public class PlayerFragment extends PlaybackServiceRecyclerFragment implements P
 		super.onDestroy();
 		fragment = null;
 
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.player, menu);
+
+		btnCollapse = menu.findItem(R.id.btn_collapse);
+		SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+			UniversalAdapter newAdapter;
+
+			@Override
+			public boolean onQueryTextSubmit(String query) {
+				return false;
+			}
+
+			@Override
+			public boolean onQueryTextChange(String newText) {
+				processQuery(newText, newAdapter);
+				return true;
+			}
+		});
+
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	public void processQuery(String newText, UniversalAdapter newAdapter){
+		if(!newText.equals("")) {
+			newAdapter = new UniversalAdapter(activity);
+			List<Queue> searchResult = search(newText);
+			for(Queue q : searchResult){
+				newAdapter.add(q);
+			}
+			recyclerView.setAdapter(newAdapter);
+		}else{
+			adapter.notifyDataSetChanged();
+			recyclerView.setAdapter(adapter);
+		}
+	}
+
+	public List<Queue> search(String query){
+		List<Queue> result = new ArrayList<>();
+		for(Queue q : completeQueue){
+			if(q.artist.toLowerCase().contains(query.toLowerCase()) || q.title.contains(query.toLowerCase())){
+				result.add(q);
+			}
+		}
+		return result;
 	}
 
 	/*public static PlaybackService getService(){

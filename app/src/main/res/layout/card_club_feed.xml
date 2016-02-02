@@ -59,6 +59,13 @@
 
 			</RelativeLayout>
 
+			<ImageButton
+				android:id="@+id/btn_menu"
+				android:layout_width="25dp"
+				android:layout_height="25dp"
+				android:src="@drawable/ic_more_vert_black_24dp"
+				android:background="@drawable/btn_flat_transparent_oval"/>
+
 		</LinearLayout>
 
 		<RelativeLayout

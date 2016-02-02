@@ -7,9 +7,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -17,7 +21,9 @@ import com.cyclone.DrawerActivity;
 import com.cyclone.R;
 import com.cyclone.Utils.ServerUrl;
 import com.cyclone.Utils.UtilArrayData;
+import com.cyclone.custom.OnOffsetChangedListener;
 import com.cyclone.interfaces.PlayOnHolder;
+import com.cyclone.model.Loading;
 import com.cyclone.model.RunningProgram;
 import com.cyclone.player.gui.PlaybackServiceRecyclerFragment;
 import com.cyclone.player.media.MediaCustom;
@@ -40,6 +46,11 @@ public class LiveStreamFragment extends PlaybackServiceRecyclerFragment implemen
 	List<MediaWrapper> mAudioList;
 	MediaWrapperList mwl;
 	View mView;
+	private boolean isLoading;
+	private int maxData;
+	private static final int pageSize = 5;
+
+
 	public LiveStreamFragment(){}
 
 	@Override
@@ -52,6 +63,7 @@ public class LiveStreamFragment extends PlaybackServiceRecyclerFragment implemen
 		recuclerContext = mContext;
 
 		mGetData = this;
+
 
 		//getDataLive();
 		//handler.postDelayed(runnable, 40000);
@@ -72,6 +84,8 @@ public class LiveStreamFragment extends PlaybackServiceRecyclerFragment implemen
 	public static LiveStreamFragment newInstance(String json){
 		fragment = new LiveStreamFragment();
 		fragment.json = json;
+		fragment.isLoading = false;
+		fragment.maxData = pageSize;
 		//playbackService = PlaybackService.getInstance();
 		return fragment;
 	}
@@ -88,6 +102,33 @@ public class LiveStreamFragment extends PlaybackServiceRecyclerFragment implemen
 	@Override
 	public void onCreateView(View v, ViewGroup parent, Bundle savedInstanceState) {
 		setHasOptionsMenu(true);
+		recyclerView.addOnScrollListener(new OnScrollListener() {
+			@Override
+			public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+				super.onScrolled(recyclerView, dx, dy);
+				checkLoad();
+			}
+		});
+	}
+
+	private void checkLoad(){
+//		System.out.println(((LinearLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition() + " " + adapter.datas.size());
+//		System.out.println(maxData + " " + UtilArrayData.contentLiveStreaming.size());
+		LinearLayoutManager lm = (LinearLayoutManager) layoutManager;
+		if ((lm.findLastVisibleItemPosition() + 1 >= lm.getItemCount()  && !isLoading && maxData < UtilArrayData.contentLiveStreaming.size())) {
+			isLoading = true;
+			adapter.datas.add(new Loading());
+			adapter.notifyItemInserted(adapter.datas.size() - 1);
+			new Handler().postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					maxData += pageSize;
+					datas = parse(json);
+					showData();
+					isLoading = false;
+				}
+			}, 3000);
+		}
 	}
 
 	@Override
@@ -126,10 +167,11 @@ public class LiveStreamFragment extends PlaybackServiceRecyclerFragment implemen
 			adapter.datas.clear();
 		} catch (Exception e){}
 
-		if(UtilArrayData.ContentLiveStreaming.size() > 0){
-			datas = UtilArrayData.ContentLiveStreaming;
+		if(UtilArrayData.contentLiveStreaming.size() > 0){
+			for(int i=0; i<maxData; i++) {
+				datas.add(UtilArrayData.contentLiveStreaming.get(i));
+			}
 		}
-
 		/*else {
 			List<Program> programs = new ArrayList<>();
 			programs.add(new Program("", "The Dandees", "9am-12am", 5f));
@@ -233,7 +275,7 @@ public class LiveStreamFragment extends PlaybackServiceRecyclerFragment implemen
 	public void onLoadedPlayOnHolder(String category, int position) {
 		if(mService != null) {
 			mAudioList = MediaLibrary.getInstance().getAudioItems();
-			Object object = UtilArrayData.ContentLiveStreaming;
+			Object object = UtilArrayData.contentLiveStreaming;
 			RunningProgram program = UtilArrayData.program;
 			if (mService != null) {
 				MediaWrapper mMedia;

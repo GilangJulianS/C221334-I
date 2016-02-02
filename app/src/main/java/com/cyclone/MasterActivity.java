@@ -203,7 +203,7 @@ public abstract class MasterActivity extends AudioPlayerContainerActivity implem
 //					System.out.println("collapsed blalbla");
 				}
 				if(percent == 100 || percent == 0){
-					System.out.println("finish");
+//					System.out.println("finish");
 				}
 				if(callback != null) {
 					callback.onChanged(percent);

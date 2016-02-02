@@ -7,6 +7,8 @@ import android.database.Cursor;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -73,7 +75,7 @@ public class UploadFragment extends Fragment{
 					Uri uri = data.getData();
 					try {
 						String path = getPath(getContext(), uri);
-						Toast.makeText(getContext(), "File path : " + path, Toast.LENGTH_SHORT).show();
+						Toast.makeText(getContext(), "File path : " + uri.toString(), Toast.LENGTH_SHORT).show();
 						Intent i = new Intent(getContext(), DrawerActivity.class);
 						i.putExtra("fragmentType", MasterActivity.FRAGMENT_UPLOAD_FINISHED);
 						i.putExtra("title", "Content Uploaded");

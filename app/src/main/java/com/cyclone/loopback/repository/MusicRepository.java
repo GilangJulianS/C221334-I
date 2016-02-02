@@ -43,11 +43,11 @@ public class MusicRepository extends ModelRepository<Music> {
                 JSONArray jsonArray;
                 try {
                     jsonArray = new JSONArray(response);
-                    UtilArrayData.Music.clear();
-                    UtilArrayData.Pop.clear();
-                    UtilArrayData.Indo_Pop.clear();
-                    UtilArrayData.Dance.clear();
-                    UtilArrayData.Hip_Hop_Rap.clear();
+                    UtilArrayData.music.clear();
+                    UtilArrayData.pop.clear();
+                    UtilArrayData.indoPop.clear();
+                    UtilArrayData.dance.clear();
+                    UtilArrayData.hipHopRap.clear();
                     for(int i = 0; i < jsonArray.length(); i++){
                         JSONObject jsonObject = new JSONObject(String.valueOf(jsonArray.getJSONObject(i)));
                         music = new Music();
@@ -75,11 +75,11 @@ public class MusicRepository extends ModelRepository<Music> {
                             music.setArtist("Anknown Artist");
                         }
 
-                        UtilArrayData.Music.add(music);
-                        if(music.getGenre().equalsIgnoreCase("Pop")) UtilArrayData.Pop.add(music);
-                        else if(music.getGenre().equalsIgnoreCase("Indo Pop")) UtilArrayData.Indo_Pop.add(music);
-                        else if(music.getGenre().equalsIgnoreCase("Dance")) UtilArrayData.Dance.add(music);
-                        else if(music.getGenre().equalsIgnoreCase("Hip Hop/Rap")) UtilArrayData.Hip_Hop_Rap.add(music);
+                        UtilArrayData.music.add(music);
+                        if(music.getGenre().equalsIgnoreCase("Pop")) UtilArrayData.pop.add(music);
+                        else if(music.getGenre().equalsIgnoreCase("Indo Pop")) UtilArrayData.indoPop.add(music);
+                        else if(music.getGenre().equalsIgnoreCase("Dance")) UtilArrayData.dance.add(music);
+                        else if(music.getGenre().equalsIgnoreCase("Hip Hop/Rap")) UtilArrayData.hipHopRap.add(music);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

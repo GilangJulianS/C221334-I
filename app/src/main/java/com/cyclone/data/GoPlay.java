@@ -61,13 +61,13 @@ public class GoPlay {
             MediaWrapper mMedia;
 
             if(category.equals(UtilArrayData.CATEGORY_LatestContent)){
-                content = UtilArrayData.LatestContent;
+                content = UtilArrayData.latestContent;
                 for (int i = 0; i<content.size(); i++){
                     myUri = Uri.parse(content.get(i).getAudio());
                     MC = new MediaCustom();
                     MC.setUri(myUri);
                     MC.setTitle(content.get(i).getName());
-                    MC.setArtist(UtilArrayData.rdioProfile.getName());
+                    MC.setArtist(UtilArrayData.radioProfile.getName());
                     MC.setAlbum(content.get(i).getName());
                     MC.setAlbumArtist(content.get(i).getCategory());
                     MC.setArtworkURL(content.get(i).getCoverArt());
@@ -80,13 +80,13 @@ public class GoPlay {
                 }
 
             }else if(category.equals(UtilArrayData.CATEGORY_NEWS)){
-                content = UtilArrayData.News;
+                content = UtilArrayData.news;
                 for (int i = 0; i<content.size(); i++){
                     myUri = Uri.parse(content.get(i).getAudio());
                     MC = new MediaCustom();
                     MC.setUri(myUri);
                     MC.setTitle("ke" + i + content.get(i).getName());
-                    MC.setArtist(UtilArrayData.rdioProfile.getName());
+                    MC.setArtist(UtilArrayData.radioProfile.getName());
                     MC.setAlbum(content.get(i).getName());
                     MC.setAlbumArtist(content.get(i).getCategory());
                     MC.setArtworkURL(content.get(i).getCoverArt());
@@ -98,14 +98,14 @@ public class GoPlay {
                     media.add(mMedia);
                 }
             }else if(category.equals(UtilArrayData.CATEGORY_Info)){
-                content = UtilArrayData.Info;
+                content = UtilArrayData.info;
                 System.out.println(category +" : "+UtilArrayData.CATEGORY_Info);
                 for (int i = 0; i<content.size(); i++){
                     myUri = Uri.parse(content.get(i).getAudio());
                     MC = new MediaCustom();
                     MC.setUri(myUri);
                     MC.setTitle(content.get(i).getName());
-                    MC.setArtist(UtilArrayData.rdioProfile.getName());
+                    MC.setArtist(UtilArrayData.radioProfile.getName());
                     MC.setAlbum(content.get(i).getName());
                     MC.setAlbumArtist(content.get(i).getCategory());
                     MC.setArtworkURL(content.get(i).getCoverArt());
@@ -117,14 +117,14 @@ public class GoPlay {
                     media.add(mMedia);
                 }
             }else if(category.equals(UtilArrayData.CATEGORY_Variety)){
-                content = UtilArrayData.Variety;
+                content = UtilArrayData.variety;
                 System.out.println(category +" : "+UtilArrayData.CATEGORY_Variety);
                 for (int i = 0; i<content.size(); i++){
                     myUri = Uri.parse(content.get(i).getAudio());
                     MC = new MediaCustom();
                     MC.setUri(myUri);
                     MC.setTitle(content.get(i).getName());
-                    MC.setArtist(UtilArrayData.rdioProfile.getName());
+                    MC.setArtist(UtilArrayData.radioProfile.getName());
                     MC.setAlbum(content.get(i).getName());
                     MC.setAlbumArtist(content.get(i).getCategory());
                     MC.setArtworkURL(content.get(i).getCoverArt());
@@ -136,14 +136,14 @@ public class GoPlay {
                     media.add(mMedia);
                 }
             }else if(category.equals(UtilArrayData.CATEGORY_Travel)){
-                content = UtilArrayData.Travel;
+                content = UtilArrayData.travel;
                 System.out.println(category +" : "+UtilArrayData.CATEGORY_Travel);
                 for (int i = 0; i<content.size(); i++){
                     myUri = Uri.parse(content.get(i).getAudio());
                     MC = new MediaCustom();
                     MC.setUri(myUri);
                     MC.setTitle(content.get(i).getName());
-                    MC.setArtist(UtilArrayData.rdioProfile.getName());
+                    MC.setArtist(UtilArrayData.radioProfile.getName());
                     MC.setAlbum(content.get(i).getName());
                     MC.setAlbumArtist(content.get(i).getCategory());
                     MC.setArtworkURL(content.get(i).getCoverArt());
@@ -155,14 +155,14 @@ public class GoPlay {
                     media.add(mMedia);
                 }
             }else if(category.equals(UtilArrayData.CATEGORY_Advertorial)){
-                content = UtilArrayData.Advertorial;
+                content = UtilArrayData.advertorial;
                 System.out.println(category +" : "+UtilArrayData.CATEGORY_Advertorial);
                 for (int i = 0; i<content.size(); i++){
                     myUri = Uri.parse(content.get(i).getAudio());
                     MC = new MediaCustom();
                     MC.setUri(myUri);
                     MC.setTitle(content.get(i).getName());
-                    MC.setArtist(UtilArrayData.rdioProfile.getName());
+                    MC.setArtist(UtilArrayData.radioProfile.getName());
                     MC.setAlbum(content.get(i).getName());
                     MC.setAlbumArtist(content.get(i).getCategory());
                     MC.setArtworkURL(content.get(i).getCoverArt());
@@ -174,7 +174,7 @@ public class GoPlay {
                     media.add(mMedia);
                 }
             }else if(category.equals(UtilArrayData.CATEGORY_POP)){
-                listMusic = UtilArrayData.Pop;
+                listMusic = UtilArrayData.pop;
                 System.out.println(category +" : "+UtilArrayData.CATEGORY_Advertorial);
                 for (int i = 0; i<listMusic.size(); i++){
                     myUri = Uri.parse(listMusic.get(i).getAudio());
@@ -193,7 +193,7 @@ public class GoPlay {
                     media.add(mMedia);
                 }
             }else if(category.equals(UtilArrayData.CATEGORY_POP_INDO)){
-                listMusic = UtilArrayData.Indo_Pop;
+                listMusic = UtilArrayData.indoPop;
                 System.out.println(category +" : "+UtilArrayData.CATEGORY_Advertorial);
                 for (int i = 0; i<listMusic.size(); i++){
                     myUri = Uri.parse(listMusic.get(i).getAudio());
@@ -212,7 +212,7 @@ public class GoPlay {
                     media.add(mMedia);
                 }
             }else if(category.equals(UtilArrayData.CATEGORY_DANCE)){
-                listMusic = UtilArrayData.Dance;
+                listMusic = UtilArrayData.dance;
                 System.out.println(category +" : "+UtilArrayData.CATEGORY_Advertorial);
                 for (int i = 0; i<listMusic.size(); i++){
                     myUri = Uri.parse(listMusic.get(i).getAudio());
@@ -231,7 +231,7 @@ public class GoPlay {
                     media.add(mMedia);
                 }
             }else if(category.equals(UtilArrayData.CATEGORY_HIP_HOP_RAP)){
-                listMusic = UtilArrayData.Hip_Hop_Rap;
+                listMusic = UtilArrayData.hipHopRap;
                 System.out.println(category +" : "+UtilArrayData.CATEGORY_Advertorial);
                 for (int i = 0; i<listMusic.size(); i++){
                     myUri = Uri.parse(listMusic.get(i).getAudio());

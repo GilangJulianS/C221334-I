@@ -423,12 +423,12 @@ public class ServiceGetData extends IntentService {
             System.out.println("onPostExecute");
             System.out.println("jumlah list : " + list.size());
 
-            UtilArrayData.ContentTalk.clear();
-            UtilArrayData.ContentTalk = mapList.get("talk");
-            System.out.println("content talk size: "+ UtilArrayData.ContentTalk.size());
-            UtilArrayData.ContentNews.clear();
-            UtilArrayData.ContentNews = mapList.get("news");
-            System.out.println("content news size : " + UtilArrayData.ContentNews.size());
+            UtilArrayData.contentTalk.clear();
+            UtilArrayData.contentTalk = mapList.get("talk");
+            System.out.println("content talk size: "+ UtilArrayData.contentTalk.size());
+            UtilArrayData.contentNews.clear();
+            UtilArrayData.contentNews = mapList.get("news");
+            System.out.println("content news size : " + UtilArrayData.contentNews.size());
 
             for(getData dataCallback : mCallbacksGetDataHome)
                 dataCallback.onDataLoadedHome(mapList);
@@ -545,8 +545,8 @@ public class ServiceGetData extends IntentService {
             System.out.println("jumlah list : " + datas.size());
 
             if(datas.size() > 0){
-                UtilArrayData.ContentLiveStreaming.clear();
-                UtilArrayData.ContentLiveStreaming = datas;
+                UtilArrayData.contentLiveStreaming.clear();
+                UtilArrayData.contentLiveStreaming = datas;
             }
             getData.onDataLoadedLiveStreaming(datas);
         }
@@ -621,8 +621,8 @@ public class ServiceGetData extends IntentService {
             System.out.println("jumlah list : " + datas.size());
 
             if(datas.size() > 0){
-                UtilArrayData.RequestList.clear();
-                UtilArrayData.RequestList = datas;
+                UtilArrayData.requestList.clear();
+                UtilArrayData.requestList = datas;
             }
             getData.onDataLoadedLiveStreaming(datas);
         }
