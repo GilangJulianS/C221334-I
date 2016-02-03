@@ -380,7 +380,7 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 						.commit();
 			}else if(fragmentType == FRAGMENT_PLAYLIST){
 				callback = null;
-				manager.beginTransaction().replace(R.id.container, PlaylistFragment.newInstance(""))
+				manager.beginTransaction().replace(R.id.container, PlaylistFragment.newInstance("", caller.getExtras().getString("id")))
 						.commit();
 			}else if(fragmentType == FRAGMENT_UPLOAD){
 				callback = null;

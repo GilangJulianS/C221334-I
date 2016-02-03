@@ -131,14 +131,14 @@ public class ClubFeedHolder extends UniversalHolder{
 					btnLike.setColorFilter(Color.parseColor("#E91E63"));
 					p.isLiked = true;
 					p.likesCount++;
-					txtLikesInfo.setText(p.likesCount + " likes • " + p.commentCount + " comments");
+					txtLikesInfo.setText(p.likesCount + " likes • ");
 					System.out.println("on holder id : " + p.FeedId);
 					feedLikeRepository.like(p.FeedId);
 				} else {
 					btnLike.setColorFilter(null);
 					p.isLiked = false;
 					p.likesCount--;
-					txtLikesInfo.setText(p.likesCount + " likes • " + p.commentCount + " comments");
+					txtLikesInfo.setText(p.likesCount + " likes • ");
 					System.out.println("on holder id : " + p.FeedId);
 					feedLikeRepository.unlike(p.FeedId);
 				}
@@ -207,7 +207,8 @@ public class ClubFeedHolder extends UniversalHolder{
 					public void onClick(View v) {
 						Intent i = new Intent(activity, DrawerActivity.class);
 						i.putExtra("fragmentType", MasterActivity.FRAGMENT_PLAYLIST);
-						i.putExtra("title", "Funky Sunshine");
+						i.putExtra("title", p.postTitle);
+						i.putExtra("id", p.FeedId);
 						activity.startActivity(i);
 					}
 				});

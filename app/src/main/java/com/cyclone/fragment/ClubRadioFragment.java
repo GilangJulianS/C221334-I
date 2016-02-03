@@ -1,5 +1,6 @@
 package com.cyclone.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
@@ -9,12 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.cyclone.DrawerActivity;
+import com.cyclone.MasterActivity;
 import com.cyclone.R;
 import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.custom.UniversalAdapter;
 import com.cyclone.loopback.model.FeedTimeline;
 import com.cyclone.model.Post;
-import com.cyclone.model.Song;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -67,7 +69,11 @@ public class ClubRadioFragment extends RecyclerFragment {
 		fabPlaylist.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(activity, "fab playlist clicked", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(activity, "fab playlist clicked", Toast.LENGTH_SHORT).show();
+				Intent i = new Intent(activity, DrawerActivity.class);
+				i.putExtra("title", "Create New Playlist");
+				i.putExtra("fragmentType", MasterActivity.FRAGMENT_ADD_PLAYLIST_FORM);
+				activity.startActivity(i);
 			}
 		});
 		fabContainer.addView(fab);
@@ -114,8 +120,8 @@ public class ClubRadioFragment extends RecyclerFragment {
 				System.out.println("name : " + feedTimeline.getTypePost().get("name"));
 				/*datas.add(new Post("", "<b>" + feedTimeline.getOwner().get("username") + "</b> " + feedTimeline.getTypePost().get("caption") + " <b>" + feedTimeline.getType() + "</b>", feedTimeline.getUpdated_at(), feedTimeline.getType(),
 						"", feedTimeline.getTypePost().get("name"), "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST, false));*/
-				datas.add(new Post("", "<b>"+feedTimeline.getOwner().get("username")+"</b> "+feedTimeline.getTypePost().get("caption")+" <b>"+feedTimeline.getType()+"</b>", feedTimeline.getCreated_at(), feedTimeline.getType(),
-						"", feedTimeline.getTypePost().get("name"), "New playlist by me", "40 tracks", feedTimeline.getLikesCount(), feedTimeline.getCommentsCount(), Post.TYPE_POST, feedTimeline.isLiked(), feedTimeline.getOwner().get("id"),feedTimeline.getOwner().get("username"), feedTimeline.getId()));
+				datas.add(new Post("", "<b>" + feedTimeline.getOwner().get("username") + "</b><b>" + feedTimeline.getType() + "</b>", feedTimeline.getCreated_at(), feedTimeline.getType(),
+						"", feedTimeline.getTypePost().get("name"), feedTimeline.getTypePost().get("caption"), feedTimeline.getTypePost().get("contentCount"), feedTimeline.getLikesCount(), feedTimeline.getCommentsCount(), Post.TYPE_POST, feedTimeline.isLiked(), feedTimeline.getOwner().get("id"), feedTimeline.getOwner().get("username"), feedTimeline.getId()));
 
 			}
 		}

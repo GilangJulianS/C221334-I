@@ -187,8 +187,12 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 			if(progressBar != null)
 				progressBar.setVisibility(View.VISIBLE);
 			onRefresh();
-		}
-		else{
+		} else if (DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_PLAYLIST) {
+			cnt = 0;
+			if (progressBar != null)
+				progressBar.setVisibility(View.VISIBLE);
+			onRefresh();
+		} else {
 			progressBar.setVisibility(View.GONE);
 			cnt = 0;
 			try{
@@ -400,6 +404,8 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 			getDataComment();
 		}else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_REQUEST){
 			getRequest();
+		} else if (DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_PLAYLIST) {
+			getDataPlaylist();
 		}
 		else{
 			showData();
@@ -564,6 +570,41 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 			@Override
 			public void onSuccess(radioProfile object) {
 				UtilArrayData.radioProfile = object;
+			}
+
+			@Override
+			public void onError(Throwable t) {
+
+			}
+		});
+	}
+
+	public void getDataPlaylist() {
+		System.out.println("on getdata home");
+		final RestAdapter restAdapter = new RestAdapter(activity.getBaseContext(), ServerUrl.API_URL);
+		final RadioContentRepository radioContentRepository = restAdapter.createRepository(RadioContentRepository.class);
+		final MusicRepository musicRepository = restAdapter.createRepository(MusicRepository.class);
+		scc = 0;
+		radioContentRepository.get(new Adapter.Callback() {
+			@Override
+			public void onSuccess(String response) {
+				scc++;
+				System.out.println("scc : " + scc + " | " + response);
+				if (scc == 2) showData();
+			}
+
+			@Override
+			public void onError(Throwable t) {
+				onRefresh();
+			}
+		});
+
+		musicRepository.get(new Adapter.Callback() {
+			@Override
+			public void onSuccess(String response) {
+				scc++;
+				System.out.println("scc : " + scc + " | " + response);
+				if (scc == 2) showData();
 			}
 
 			@Override

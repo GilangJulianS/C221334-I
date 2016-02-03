@@ -6,6 +6,8 @@ import com.strongloop.android.remoting.adapters.Adapter;
 import com.strongloop.android.remoting.adapters.RestContract;
 import com.strongloop.android.remoting.adapters.RestContractItem;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,6 +23,8 @@ public class PlaylistRepository extends ModelRepository<Playlist> {
 
         contract.addItem(new RestContractItem("/" + getNameForRestUrl() , "POST"),
                 getClassName() + ".creat");
+        contract.addItem(new RestContractItem("/" + getNameForRestUrl() + "/:id/contents", "POST"),
+                getClassName() + ".input");
 
         return contract;
     }
@@ -41,5 +45,31 @@ public class PlaylistRepository extends ModelRepository<Playlist> {
                 callback.onSuccess(response);
             }
         });
+    }
+
+    public void addToPlaylist(String id, List<String> list, final Adapter.Callback callback) {
+
+        String content = list.get(0);
+
+        Map<String, Object> parm = new HashMap<>();
+        parm.put("id", id);
+        parm.put("contents", list);
+        System.out.println("list : " + list.toString());
+        createContract();
+        invokeStaticMethod("input", parm, new Adapter.Callback() {
+
+            @Override
+            public void onError(Throwable t) {
+                System.out.println("error");
+                callback.onError(t);
+            }
+
+            @Override
+            public void onSuccess(String response) {
+                System.out.println("respon : " + response);
+                callback.onSuccess(response);
+            }
+        });
+
     }
 }

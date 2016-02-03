@@ -2,7 +2,6 @@ package com.cyclone.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -13,7 +12,6 @@ import com.cyclone.DrawerActivity;
 import com.cyclone.MasterActivity;
 import com.cyclone.R;
 import com.cyclone.custom.UniversalAdapter;
-import com.cyclone.model.Queue;
 import com.cyclone.model.SubcategoryItem;
 
 import java.util.ArrayList;
@@ -26,13 +24,21 @@ public class PlaylistFragment extends RecyclerFragment {
 
 	private List<SubcategoryItem> completeItem;
 
+	private static String Id;
+	static PlaylistFragment fragment;
+
 	public PlaylistFragment(){}
 
-	public static PlaylistFragment newInstance(String json){
-		PlaylistFragment fragment = new PlaylistFragment();
+	public static PlaylistFragment newInstance(String json, String id) {
+		fragment = new PlaylistFragment();
 		fragment.json = json;
 		fragment.completeItem = new ArrayList<>();
+		fragment.Id = id;
 		return fragment;
+	}
+
+	public String getIdFeed() {
+		return Id;
 	}
 
 	@Override
@@ -133,7 +139,9 @@ public class PlaylistFragment extends RecyclerFragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.main, menu);
 
-		SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+		//ini masih forceclose
+
+		/*SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
 		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 			UniversalAdapter newAdapter;
 
@@ -147,7 +155,7 @@ public class PlaylistFragment extends RecyclerFragment {
 				processQuery(newText, newAdapter);
 				return true;
 			}
-		});
+		});*/
 
 		super.onCreateOptionsMenu(menu, inflater);
 	}
