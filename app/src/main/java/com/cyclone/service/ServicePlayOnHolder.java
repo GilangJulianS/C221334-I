@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 
+import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.interfaces.PlayOnHolder;
 import com.cyclone.player.media.MediaWrapper;
 
@@ -143,7 +144,9 @@ public class ServicePlayOnHolder extends IntentService {
        /* for (PlayOnHolder poh : mCallBackPlay)
             poh.onLoadedPlayOnHolder(position);*/
            // poh.onLoadedPlayOnHolder(category, position);
-        playOnHolder.onLoadedPlayOnHolder(category,position);
+        if (category.equalsIgnoreCase(UtilArrayData.CATEGORY_PLAYLIST))
+            playOnHolder.onLoadedPlayOnHolder(position);
+        else playOnHolder.onLoadedPlayOnHolder(category, position);
 
     }
 

@@ -2,6 +2,7 @@ package com.cyclone.Utils;
 
 import com.cyclone.loopback.model.FeedTimeline;
 import com.cyclone.loopback.model.PlaylistAccount;
+import com.cyclone.loopback.model.PlaylistData;
 import com.cyclone.loopback.model.Profile;
 import com.cyclone.loopback.model.RadioContent;
 import com.cyclone.loopback.model.comment;
@@ -39,6 +40,7 @@ public class UtilArrayData {
     public static final String CATEGORY_RADIO_CONTENT = "cyclone.radio_content";
     public static final String CATEGORY_SHOWLIST = "cyclone.showlist";
     public static final String CATEGORY_UPLOAD = "cyclone.upload";
+    public static final String CATEGORY_PLAYLIST = "cyclone.playlist";
 
     public static final String NAMA_RADIO= "K-Lite FM";
 
@@ -64,6 +66,7 @@ public class UtilArrayData {
     public static List<comment> commentList = new ArrayList<>();
     public static List<Object> requestList = new ArrayList<>();
     public static List<PlaylistAccount> playlistAccount = new ArrayList<>();
+    public static List<PlaylistData> playlistData = new ArrayList<>();
     public static RunningProgram program = null;
     public static Profile currentProfile = null;
     public static radioProfile radioProfile = null;

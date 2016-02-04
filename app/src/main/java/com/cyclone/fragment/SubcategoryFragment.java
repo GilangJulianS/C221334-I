@@ -7,6 +7,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.cyclone.DrawerActivity;
 import com.cyclone.R;
 import com.cyclone.custom.UniversalAdapter;
 import com.cyclone.data.GetData;
@@ -35,6 +36,7 @@ public class SubcategoryFragment extends PlaybackServiceRecyclerFragment impleme
 		fragment.json = json;
 		fragment.category = category;
 		fragment.completeItem = new ArrayList<>();
+		fragment.playOnHolder = fragment;
 		System.out.println("subfragment category : "+ category);
 		return fragment;
 	}
@@ -50,6 +52,12 @@ public class SubcategoryFragment extends PlaybackServiceRecyclerFragment impleme
 	@Override
 	public void onCreateView(View v, ViewGroup parent, Bundle savedInstanceState) {
 		setHasOptionsMenu(true);
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		DrawerActivity.setFragmentType(DrawerActivity.FRAGMENT_SUBCATEGORY);
 	}
 
 	@Override

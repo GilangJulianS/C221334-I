@@ -9,7 +9,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.cyclone.R;
-import com.cyclone.fragment.SubcategoryFragment;
+import com.cyclone.interfaces.PlayOnHolder;
 import com.cyclone.model.Content;
 import com.cyclone.model.Data;
 import com.cyclone.model.SubcategoryItem;
@@ -28,8 +28,9 @@ public class SubcategoryHolder extends UniversalHolder {
 	public ImageButton btnDelete;
 	public CheckBox checkbox;
 	public View card;
+	PlayOnHolder playOnHolder;
 
-	public SubcategoryHolder(View v, Activity activity, UniversalAdapter adapter) {
+	public SubcategoryHolder(View v, Activity activity, UniversalAdapter adapter, PlayOnHolder playOnHolder) {
 		super(v, activity, adapter);
 		imgCover = (ImageView) v.findViewById(R.id.img_cover);
 		txtPrimary = (TextView) v.findViewById(R.id.txt_primary);
@@ -38,6 +39,7 @@ public class SubcategoryHolder extends UniversalHolder {
 		btnDelete = (ImageButton) v.findViewById(R.id.btn_delete);
 		checkbox = (CheckBox) v.findViewById(R.id.checkbox);
 		card = (View)v.findViewById(R.id.card);
+		this.playOnHolder = playOnHolder;
 	}
 
 	@Override
@@ -80,8 +82,12 @@ public class SubcategoryHolder extends UniversalHolder {
 		card.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				/*PlayOnHolder playOnHolder = null;
+				if(DrawerActivity.getFragmentType() == DrawerActivity.FRAGMENT_SUBCATEGORY) playOnHolder = SubcategoryFragment.getInstance();
+				if(DrawerActivity.getFragmentType() == DrawerActivity.FRAGMENT_PLAYLIST) playOnHolder = PlaylistFragment.getInstance();
+			*/
 				ServicePlayOnHolder servicePlayOnHolder = new ServicePlayOnHolder();
-				servicePlayOnHolder.startPlayOnFragment(v.getContext(), SubcategoryFragment.getInstance(), subcategoryItem.category, subcategoryItem.posisi);
+				servicePlayOnHolder.startPlayOnFragment(v.getContext(), playOnHolder, subcategoryItem.category, subcategoryItem.posisi);
 			}
 		});
 	}

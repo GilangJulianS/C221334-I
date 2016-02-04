@@ -6,13 +6,19 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.cyclone.DrawerActivity;
 import com.cyclone.MasterActivity;
 import com.cyclone.R;
 import com.cyclone.custom.UniversalAdapter;
+import com.cyclone.data.GetData;
+import com.cyclone.data.GoPlay;
+import com.cyclone.interfaces.PlayOnHolder;
 import com.cyclone.model.SubcategoryItem;
+import com.cyclone.player.gui.PlaybackServiceRecyclerFragment;
+import com.cyclone.player.media.MediaWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +26,12 @@ import java.util.List;
 /**
  * Created by gilang on 10/12/2015.
  */
-public class PlaylistFragment extends RecyclerFragment {
+public class PlaylistFragment extends PlaybackServiceRecyclerFragment implements PlayOnHolder {
 
 	private List<SubcategoryItem> completeItem;
 
 	private static String Id;
-	static PlaylistFragment fragment;
+	private static PlaylistFragment fragment;
 
 	public PlaylistFragment(){}
 
@@ -34,10 +40,22 @@ public class PlaylistFragment extends RecyclerFragment {
 		fragment.json = json;
 		fragment.completeItem = new ArrayList<>();
 		fragment.Id = id;
+		fragment.playOnHolder = fragment;
+
 		return fragment;
 	}
 
-	public String getIdFeed() {
+	public static PlaylistFragment getInstance() {
+		return fragment;
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		DrawerActivity.setFragmentType(DrawerActivity.FRAGMENT_PLAYLIST);
+	}
+
+	public static String getIdPlaylist() {
 		return Id;
 	}
 
@@ -85,6 +103,20 @@ public class PlaylistFragment extends RecyclerFragment {
 		ViewGroup groupLikes = (ViewGroup) v.findViewById(R.id.group_likes);
 		ViewGroup groupComments = (ViewGroup) v.findViewById(R.id.group_comments);
 		ImageButton btnMenu = (ImageButton) v.findViewById(R.id.btn_menu);
+		Button btnPLayyAll = (Button) v.findViewById(R.id.btn_play_all);
+		Button btnLike = (Button) v.findViewById(R.id.btn_like);
+
+		btnPLayyAll.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (mService != null) {
+					mService.load(GoPlay.getInstance().getMedia(GoPlay.HOME_PLAY_ON_HOLDER), 0);
+					mService.playIndex(0);
+				} else {
+					System.out.println("service null");
+				}
+			}
+		});
 
 		groupLikes.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -115,9 +147,11 @@ public class PlaylistFragment extends RecyclerFragment {
 	}
 
 	public List<Object> parse(String json){
-		List<Object> datas = new ArrayList<>();
+		List<Object> datas = GetData.getInstance().showData(GetData.DATA_PLAYLIST);
+
+//		System.out.println("ambillllll : "+ datas.get(0).toString());
 		completeItem = new ArrayList<>();
-		datas.add(new SubcategoryItem("", "Could it Be", "Raisa"));
+		/*datas.add(new SubcategoryItem("", "Could it Be", "Raisa"));
 		datas.add(new SubcategoryItem("", "Something About Us", "Daft Punk"));
 		datas.add(new SubcategoryItem("", "Sugar", "Maroon 5"));
 		datas.add(new SubcategoryItem("", "Get Lucky", "Daft Punk"));
@@ -128,10 +162,14 @@ public class PlaylistFragment extends RecyclerFragment {
 		datas.add(new SubcategoryItem("", "Could it Be", "Raisa"));
 		datas.add(new SubcategoryItem("", "Something About Us", "Daft Punk"));
 		datas.add(new SubcategoryItem("", "Sugar", "Maroon 5"));
-		datas.add(new SubcategoryItem("", "Get Lucky", "Daft Punk"));
-		for(Object o : datas){
-			completeItem.add((SubcategoryItem)o);
+		datas.add(new SubcategoryItem("", "Get Lucky", "Daft Punk"));*/
+		try {
+			for (Object o : datas) {
+				completeItem.add((SubcategoryItem) o);
+			}
+		} catch (Exception e) {
 		}
+
 		return datas;
 	}
 
@@ -182,5 +220,26 @@ public class PlaylistFragment extends RecyclerFragment {
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public void onLoadedPlayOnHolder(List<MediaWrapper> media) {
+
+	}
+
+	@Override
+	public void onLoadedPlayOnHolder(int position) {
+		if (mService != null) {
+			mService.load(GoPlay.getInstance().getMedia(GoPlay.HOME_PLAY_ON_HOLDER), 0);
+			mService.playIndex(position);
+		} else {
+			System.out.println("service null");
+		}
+
+	}
+
+	@Override
+	public void onLoadedPlayOnHolder(String category, int position) {
+
 	}
 }

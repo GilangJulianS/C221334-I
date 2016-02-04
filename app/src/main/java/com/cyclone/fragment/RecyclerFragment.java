@@ -23,6 +23,7 @@ import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.custom.OnOffsetChangedListener;
 import com.cyclone.custom.SnapGestureListener;
 import com.cyclone.custom.UniversalAdapter;
+import com.cyclone.interfaces.PlayOnHolder;
 import com.cyclone.interfaces.getData;
 import com.cyclone.loopback.GetJsonFragment;
 import com.cyclone.loopback.model.FeedTimeline;
@@ -33,6 +34,7 @@ import com.cyclone.loopback.model.radioProgram;
 import com.cyclone.loopback.repository.CommentRepository;
 import com.cyclone.loopback.repository.FeedTimelineRepository;
 import com.cyclone.loopback.repository.MusicRepository;
+import com.cyclone.loopback.repository.PlaylistDataRepository;
 import com.cyclone.loopback.repository.ProfileRepository;
 import com.cyclone.loopback.repository.RadioContentRepository;
 import com.cyclone.loopback.repository.radioProfileRepository;
@@ -70,6 +72,7 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 	protected Context recuclerContext;
 	protected getData mGetData;
 	protected String DataId;
+	protected PlayOnHolder playOnHolder = null;
 
 	public int scc = 0;
 
@@ -255,7 +258,7 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 	}
 
 	private void setupAdapter(){
-		adapter = new UniversalAdapter(activity);
+		adapter = new UniversalAdapter(activity, playOnHolder);
 		recyclerView.setAdapter(adapter);
 	}
 
@@ -582,35 +585,21 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 	public void getDataPlaylist() {
 		System.out.println("on getdata home");
 		final RestAdapter restAdapter = new RestAdapter(activity.getBaseContext(), ServerUrl.API_URL);
-		final RadioContentRepository radioContentRepository = restAdapter.createRepository(RadioContentRepository.class);
-		final MusicRepository musicRepository = restAdapter.createRepository(MusicRepository.class);
+		final PlaylistDataRepository playlistDataRepository = restAdapter.createRepository(PlaylistDataRepository.class);
 		scc = 0;
-		radioContentRepository.get(new Adapter.Callback() {
+		System.out.println("id Sendded : " + PlaylistFragment.getIdPlaylist());
+		playlistDataRepository.get(PlaylistFragment.getIdPlaylist(), "0", "10", new Adapter.Callback() {
 			@Override
 			public void onSuccess(String response) {
-				scc++;
-				System.out.println("scc : " + scc + " | " + response);
-				if (scc == 2) showData();
+				showData();
 			}
 
 			@Override
 			public void onError(Throwable t) {
-				onRefresh();
+				System.out.println("error anehh : " + t);
 			}
 		});
 
-		musicRepository.get(new Adapter.Callback() {
-			@Override
-			public void onSuccess(String response) {
-				scc++;
-				System.out.println("scc : " + scc + " | " + response);
-				if (scc == 2) showData();
-			}
 
-			@Override
-			public void onError(Throwable t) {
-
-			}
-		});
 	}
 }

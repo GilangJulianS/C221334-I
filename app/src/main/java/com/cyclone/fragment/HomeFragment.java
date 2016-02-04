@@ -54,6 +54,7 @@ public class HomeFragment extends PlaybackServiceRecyclerFragment implements Ige
 		fragment = new HomeFragment();
 		fragment.json = json;
 		fragment.completeList = new ArrayList<>();
+		fragment.playOnHolder = fragment;
 		return fragment;
 	}
 
@@ -195,7 +196,7 @@ public class HomeFragment extends PlaybackServiceRecyclerFragment implements Ige
 		if(query.equals("")){
 			recyclerView.setAdapter(adapter);
 		}else{
-			newAdapter = new UniversalAdapter(activity);
+			newAdapter = new UniversalAdapter(activity, playOnHolder);
 			List<Content> contentList;
 			List<Content> searchResult = search(query);
 			String currentType = "";

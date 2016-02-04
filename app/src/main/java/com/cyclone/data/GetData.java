@@ -3,6 +3,7 @@ package com.cyclone.data;
 import com.cyclone.MasterActivity;
 import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.loopback.model.Music;
+import com.cyclone.loopback.model.PlaylistData;
 import com.cyclone.loopback.model.RadioContent;
 import com.cyclone.model.Categories;
 import com.cyclone.model.Category;
@@ -27,6 +28,7 @@ public class GetData {
     public static int DATA_PLAYER = 0x6083;
     public static int DATA_SUB_CATEGORY = 0x6084;
     public static int DATA_CATEGORY = 0x6085;
+    public static int DATA_PLAYLIST = 0x3c4e2;
 
     private static GetData Instance = null;
 
@@ -46,6 +48,7 @@ public class GetData {
 
     public List<Object> showData(int typedata, String category){
         System.out.println("on get data - showdata");
+        System.out.println("tipe : " + typedata);
         if(typedata == DATA_HOME){
             Contents contents;
             Categories categories;
@@ -381,6 +384,28 @@ public class GetData {
                 List<Object> datas = new ArrayList<>();
                 return datas;
             }
+        } else if (typedata == DATA_PLAYLIST) {
+            System.out.println("sampai di get data playlist");
+            List<Object> datas = new ArrayList<>();
+            List<PlaylistData> list = UtilArrayData.playlistData;
+            for (int i = 0; i < list.size(); i++) {
+                PlaylistData playlistData = list.get(i);
+                if (playlistData.getTypeContent() == PlaylistData.TYPE_RADIOCONTENT) {
+                    com.cyclone.model.RadioContent radioContent = playlistData.getRadioContent();
+                    datas.add(new SubcategoryItem(radioContent.getCoverArt(), radioContent.getName(),
+                            UtilArrayData.radioProfile.getName(), SubcategoryItem.TYPE_NORMAL, UtilArrayData.CATEGORY_PLAYLIST,
+                            radioContent.getAudio(), i, radioContent.getId()));
+                }
+
+                if (playlistData.getTypeContent() == PlaylistData.TYPE_MUSIC) {
+                    com.cyclone.model.Music music = playlistData.getMusic();
+                    datas.add(new SubcategoryItem(music.getCoverArt(), music.getName(),
+                            UtilArrayData.radioProfile.getName(), SubcategoryItem.TYPE_NORMAL, UtilArrayData.CATEGORY_PLAYLIST,
+                            music.getAudio(), i, music.getId()));
+                }
+            }
+
+            return datas;
         }
         return null;
     }

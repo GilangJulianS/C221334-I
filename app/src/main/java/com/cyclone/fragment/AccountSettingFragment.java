@@ -1,6 +1,7 @@
 package com.cyclone.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -14,7 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.cyclone.DrawerActivity;
+import com.cyclone.EmptyActivity;
 import com.cyclone.R;
+import com.cyclone.Utils.ServerUrl;
+import com.cyclone.loopback.UserClass;
+import com.strongloop.android.loopback.RestAdapter;
+import com.strongloop.android.loopback.callbacks.VoidCallback;
 
 /**
  * Created by gilang on 26/10/2015.
@@ -23,12 +30,23 @@ public class AccountSettingFragment extends Fragment {
 
 	private static int LOAD_IMAGE = 0;
 	private ImageView imgUser;
+	static AccountSettingFragment fragment;
+	Context mContext;
+	Activity mActivity;
+	ViewGroup logout;
 
 	public AccountSettingFragment(){}
 
 	public static AccountSettingFragment newInstance(){
-		AccountSettingFragment fragment = new AccountSettingFragment();
+		fragment = new AccountSettingFragment();
 		return fragment;
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		mContext = this.getContext();
+		mActivity = this.getActivity();
 	}
 
 	@Override
@@ -36,6 +54,7 @@ public class AccountSettingFragment extends Fragment {
 		View v = inflater.inflate(R.layout.fragment_setting_account, parent, false);
 
 		imgUser = (ImageView) v.findViewById(R.id.img_user);
+		logout = (ViewGroup) v.findViewById(R.id.logout);
 
 		imgUser.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -43,6 +62,29 @@ public class AccountSettingFragment extends Fragment {
 				Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images
 						.Media.EXTERNAL_CONTENT_URI);
 				startActivityForResult(i, LOAD_IMAGE);
+			}
+		});
+
+		logout.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				RestAdapter restAdapter = new RestAdapter(getContext(), ServerUrl.API_URL);
+				UserClass.UserRepository userRepo = restAdapter.createRepository(UserClass.UserRepository.class);
+
+				userRepo.logout(new VoidCallback() {
+					@Override
+					public void onSuccess() {
+						Intent i = new Intent(mContext, EmptyActivity.class);
+						i.putExtra("fragmentType", EmptyActivity.FRAGMENT_GET_STARTED);
+						mContext.startActivity(i);
+						DrawerActivity.getmActivity().finish();
+					}
+
+					@Override
+					public void onError(Throwable t) {
+						System.out.println("error : " + t);
+					}
+				});
 			}
 		});
 

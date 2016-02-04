@@ -102,6 +102,7 @@ public class FeedTimelineRepository extends ModelRepository<FeedTimeline> {
                             typePost.put("name", type.getString("name"));
                             typePost.put("caption",type.getString("caption"));
                             typePost.put("id", type.getString("id"));
+                            typePost.put("contentCount", type.getString("contentCount"));
                         }
                         else if(tipe.equalsIgnoreCase("content")){
                             type = ObjectResult.getJSONObject("content");

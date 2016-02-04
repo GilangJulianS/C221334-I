@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cyclone.R;
+import com.cyclone.interfaces.PlayOnHolder;
 import com.cyclone.model.Album;
 import com.cyclone.model.Announcer;
 import com.cyclone.model.Categories;
@@ -61,6 +62,14 @@ public class UniversalAdapter extends Adapter<UniversalHolder> {
 	public List<Object> datas;
 	private SparseBooleanArray selectedItems;
 	private Activity activity;
+	private PlayOnHolder playOnHolder;
+
+	public UniversalAdapter(Activity activity, PlayOnHolder playOnHolder) {
+		datas = new ArrayList<>();
+		this.activity = activity;
+		this.playOnHolder = playOnHolder;
+		selectedItems = new SparseBooleanArray();
+	}
 
 	public UniversalAdapter(Activity activity){
 		datas = new ArrayList<>();
@@ -163,7 +172,9 @@ public class UniversalAdapter extends Adapter<UniversalHolder> {
 			case TYPE_REQUEST: holder = new RequestHolder(v, activity, this); break;
 			case TYPE_CATEGORIES: holder = new CategoriesHolder(v, activity, this); break;
 			case TYPE_CONTENTS: holder = new ContentsHolder(v, activity, this); break;
-			case TYPE_SUBCATEGORY_ITEM: holder = new SubcategoryHolder(v, activity, this); break;
+			case TYPE_SUBCATEGORY_ITEM:
+				holder = new SubcategoryHolder(v, activity, this, playOnHolder);
+				break;
 			case TYPE_MIXES: holder = new MixesHolder(v, activity, this); break;
 			case TYPE_MIX: holder = new MixHolder(v, activity, this); break;
 			case TYPE_COMMENT: holder = new CommentHolder(v, activity, this); break;

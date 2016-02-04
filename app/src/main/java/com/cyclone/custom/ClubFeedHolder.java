@@ -3,6 +3,7 @@ package com.cyclone.custom;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -148,8 +149,9 @@ public class ClubFeedHolder extends UniversalHolder{
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(Intent.ACTION_SEND);
-				i.setType("text/plain");
-				i.putExtra(Intent.EXTRA_SUBJECT, "Test Subject");
+				i.setType("image/jpg");
+				Uri path = Uri.parse("android.resource://com.cyclone/" + R.drawable.header);
+				i.putExtra(Intent.EXTRA_STREAM, Uri.parse("" + path));
 				i.putExtra(Intent.EXTRA_TEXT, p.postContent);
 				activity.startActivity(Intent.createChooser(i, "Share via"));
 			}
@@ -208,7 +210,7 @@ public class ClubFeedHolder extends UniversalHolder{
 						Intent i = new Intent(activity, DrawerActivity.class);
 						i.putExtra("fragmentType", MasterActivity.FRAGMENT_PLAYLIST);
 						i.putExtra("title", p.postTitle);
-						i.putExtra("id", p.FeedId);
+						i.putExtra("id", p.TypeId);
 						activity.startActivity(i);
 					}
 				});

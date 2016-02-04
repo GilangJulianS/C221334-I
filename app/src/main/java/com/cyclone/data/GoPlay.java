@@ -5,6 +5,7 @@ import android.net.Uri;
 import com.cyclone.Utils.ServerUrl;
 import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.loopback.model.Music;
+import com.cyclone.loopback.model.PlaylistData;
 import com.cyclone.loopback.model.RadioContent;
 import com.cyclone.player.media.MediaCustom;
 import com.cyclone.player.media.MediaDatabase;
@@ -18,6 +19,7 @@ import java.util.List;
  */
 public class GoPlay {
     public static int HOME_PLAY_ON_HOLDER = 0x607d;
+    private static String NO_CATEGORY = "com.cyclone.no_category";
 
     private static GoPlay Instance = null;
 
@@ -47,6 +49,10 @@ public class GoPlay {
         mDB.addMedia(mMedia);
         mw.add(mMedia);
         return mMedia;
+    }
+
+    public List<MediaWrapper> getMedia(int typemedia) {
+        return getMedia(typemedia, NO_CATEGORY);
     }
 
     public List<MediaWrapper> getMedia(int typemedia, String category){
@@ -248,6 +254,52 @@ public class GoPlay {
                             MC.getDiscNumber(), MC.getLastModified());
                     mDB.addMedia(mMedia);
                     media.add(mMedia);
+                }
+            } else if (category.equals(NO_CATEGORY)) {
+                // listMusic = UtilArrayData.hipHopRap;
+
+                List<PlaylistData> playlistData = UtilArrayData.playlistData;
+
+                System.out.println(category + " : " + UtilArrayData.CATEGORY_Advertorial);
+                for (int i = 0; i < playlistData.size(); i++) {
+                    if (playlistData.get(i).getTypeContent() == PlaylistData.TYPE_RADIOCONTENT) {
+                        com.cyclone.model.RadioContent radioContent = playlistData.get(i).getRadioContent();
+                        myUri = Uri.parse(radioContent.getAudio());
+                        MC = new MediaCustom();
+                        MC.setUri(myUri);
+                        MC.setTitle(radioContent.getName());
+                        if (UtilArrayData.radioProfile != null)
+                            MC.setArtist(UtilArrayData.radioProfile.getName());
+                        else MC.setArtist("Unnamed");
+
+                        MC.setAlbum(radioContent.getName());
+                        MC.setAlbumArtist(radioContent.getName());
+                        MC.setArtworkURL(radioContent.getCoverArt());
+                        mMedia = new MediaWrapper(MC.getUri(), MC.getTime(), MC.getLength(), MC.getType(),
+                                MC.getPicture(), MC.getTitle(), MC.getArtist(), MC.getGenre(), MC.getAlbum(), MC.getAlbumArtist(),
+                                MC.getWidth(), MC.getHeight(), MC.getArtworkURL(), MC.getAudio(), MC.getSpu(), MC.getTrackNumber(),
+                                MC.getDiscNumber(), MC.getLastModified());
+                        mDB.addMedia(mMedia);
+                        media.add(mMedia);
+
+                    } else if (playlistData.get(i).getTypeContent() == PlaylistData.TYPE_MUSIC) {
+                        com.cyclone.model.Music music = playlistData.get(i).getMusic();
+                        myUri = Uri.parse(music.getAudio());
+                        MC = new MediaCustom();
+                        MC.setUri(myUri);
+                        MC.setTitle(music.getName());
+                        MC.setArtist(music.getArtist());
+                        MC.setAlbum(music.getAlbum());
+                        MC.setAlbumArtist(music.getAlbum());
+                        MC.setArtworkURL(music.getCoverArt());
+                        mMedia = new MediaWrapper(MC.getUri(), MC.getTime(), MC.getLength(), MC.getType(),
+                                MC.getPicture(), MC.getTitle(), MC.getArtist(), MC.getGenre(), MC.getAlbum(), MC.getAlbumArtist(),
+                                MC.getWidth(), MC.getHeight(), MC.getArtworkURL(), MC.getAudio(), MC.getSpu(), MC.getTrackNumber(),
+                                MC.getDiscNumber(), MC.getLastModified());
+                        mDB.addMedia(mMedia);
+                        media.add(mMedia);
+                    }
+
                 }
             }
             else{
