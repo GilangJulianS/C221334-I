@@ -121,7 +121,7 @@ public class GetData {
                 for(int i = 0; i < 3; i++){
                     try{
                         Music music = UtilArrayData.pop.get(i);
-                        contentList.add(new Content(music.getCoverArt(), UtilArrayData.CATEGORY_POP, Content.NOT_FAVORITABLE, music.getName(), music.getArtist(), music.getAlbum(), false, Content.TYPE_RADIO_CONTENT, music.getAudio(),i, music.getId()));
+                        contentList.add(new Content(music.getCoverArt(), UtilArrayData.CATEGORY_POP, Content.NOT_FAVORITABLE, music.getName(), music.getArtist(), music.getAlbum(), false, Content.TYPE_TRACKS, music.getAudio(), i, music.getId()));
                     }catch (Exception e){}
                 }
                 contents = new Contents(contentList);
@@ -134,7 +134,7 @@ public class GetData {
                 for(int i = 0; i < 3; i++){
                     try{
                         Music music = UtilArrayData.indoPop.get(i);
-                        contentList.add(new Content(music.getCoverArt(), UtilArrayData.CATEGORY_POP_INDO, Content.NOT_FAVORITABLE, music.getName(), music.getArtist(), music.getAlbum(), false, Content.TYPE_RADIO_CONTENT, music.getAudio(),i, music.getId()));
+                        contentList.add(new Content(music.getCoverArt(), UtilArrayData.CATEGORY_POP_INDO, Content.NOT_FAVORITABLE, music.getName(), music.getArtist(), music.getAlbum(), false, Content.TYPE_TRACKS, music.getAudio(), i, music.getId()));
                     }catch (Exception e){}
                 }
                 contents = new Contents(contentList);
@@ -147,7 +147,7 @@ public class GetData {
                 for(int i = 0; i < 3; i++){
                     try{
                         Music music = UtilArrayData.hipHopRap.get(i);
-                        contentList.add(new Content(music.getCoverArt(), UtilArrayData.CATEGORY_HIP_HOP_RAP, Content.NOT_FAVORITABLE, music.getName(), music.getArtist(), music.getAlbum(), false, Content.TYPE_RADIO_CONTENT, music.getAudio(),i, music.getId()));
+                        contentList.add(new Content(music.getCoverArt(), UtilArrayData.CATEGORY_HIP_HOP_RAP, Content.NOT_FAVORITABLE, music.getName(), music.getArtist(), music.getAlbum(), false, Content.TYPE_TRACKS, music.getAudio(), i, music.getId()));
                     }catch (Exception e){
 
                     }
@@ -167,7 +167,7 @@ public class GetData {
                         RadioContent radioContent = UtilArrayData.latestContent.get(i);
                         datas.add(new SubcategoryItem(radioContent.getCoverArt(), radioContent.getName(),
                                 UtilArrayData.radioProfile.getName(), SubcategoryItem.TYPE_NORMAL, category,
-                                radioContent.getAudio(), i,radioContent.getId()));
+                                radioContent.getAudio(), i, Content.TYPE_RADIO_CONTENT, radioContent.getId()));
                         System.out.println("judul : " + radioContent.getName());
                     }
                 }
@@ -177,7 +177,7 @@ public class GetData {
                         RadioContent radioContent = UtilArrayData.news.get(i);
                         datas.add(new SubcategoryItem(radioContent.getCoverArt(), radioContent.getName(),
                                 UtilArrayData.radioProfile.getName(), SubcategoryItem.TYPE_NORMAL, category,
-                                radioContent.getAudio(), i,radioContent.getId()));
+                                radioContent.getAudio(), i, Content.TYPE_RADIO_CONTENT, radioContent.getId()));
                     }
                 }
             }else if(category.equalsIgnoreCase(UtilArrayData.CATEGORY_Info)){
@@ -186,7 +186,7 @@ public class GetData {
                         RadioContent radioContent = UtilArrayData.info.get(i);
                         datas.add(new SubcategoryItem(radioContent.getCoverArt(), radioContent.getName(),
                                 UtilArrayData.radioProfile.getName(), SubcategoryItem.TYPE_NORMAL, category,
-                                radioContent.getAudio(), i,radioContent.getId()));
+                                radioContent.getAudio(), i, Content.TYPE_RADIO_CONTENT, radioContent.getId()));
                     }
                 }
             }else if(category.equalsIgnoreCase(UtilArrayData.CATEGORY_Variety)){
@@ -195,7 +195,7 @@ public class GetData {
                         RadioContent radioContent = UtilArrayData.variety.get(i);
                         datas.add(new SubcategoryItem(radioContent.getCoverArt(), radioContent.getName(),
                                 UtilArrayData.radioProfile.getName(), SubcategoryItem.TYPE_NORMAL, category,
-                                radioContent.getAudio(), i,radioContent.getId()));
+                                radioContent.getAudio(), i, Content.TYPE_RADIO_CONTENT, radioContent.getId()));
                     }
                 }
             }else if(category.equalsIgnoreCase(UtilArrayData.CATEGORY_Travel)){
@@ -204,7 +204,7 @@ public class GetData {
                         RadioContent radioContent = UtilArrayData.travel.get(i);
                         datas.add(new SubcategoryItem(radioContent.getCoverArt(), radioContent.getName(),
                                 UtilArrayData.radioProfile.getName(), SubcategoryItem.TYPE_NORMAL, category,
-                                radioContent.getAudio(), i,radioContent.getId()));
+                                radioContent.getAudio(), i, Content.TYPE_RADIO_CONTENT, radioContent.getId()));
                     }
                 }
             }else if(category.equalsIgnoreCase(UtilArrayData.CATEGORY_Advertorial)){
@@ -213,7 +213,7 @@ public class GetData {
                         RadioContent radioContent = UtilArrayData.advertorial.get(i);
                         datas.add(new SubcategoryItem(radioContent.getCoverArt(), radioContent.getName(),
                                 UtilArrayData.radioProfile.getName(), SubcategoryItem.TYPE_NORMAL, category,
-                                radioContent.getAudio(), i,radioContent.getId()));
+                                radioContent.getAudio(), i, Content.TYPE_RADIO_CONTENT, radioContent.getId()));
                     }
                 }
             }else if(category.equalsIgnoreCase(UtilArrayData.CATEGORY_POP)){
@@ -222,7 +222,7 @@ public class GetData {
                         Music music = UtilArrayData.pop.get(i);
                         datas.add(new SubcategoryItem(music.getCoverArt(), music.getName(),
                                 music.getArtist(), SubcategoryItem.TYPE_NORMAL, category,
-                                music.getAudio(), i,music.getId()));
+                                music.getAudio(), i, Content.TYPE_TRACKS, music.getId()));
                     }
                 }
             }else if(category.equalsIgnoreCase(UtilArrayData.CATEGORY_POP_INDO)){
@@ -231,7 +231,7 @@ public class GetData {
                         Music music = UtilArrayData.indoPop.get(i);
                         datas.add(new SubcategoryItem(music.getCoverArt(), music.getName(),
                                 music.getArtist(), SubcategoryItem.TYPE_NORMAL, category,
-                                music.getAudio(), i,music.getId()));
+                                music.getAudio(), i, Content.TYPE_TRACKS, music.getId()));
                     }
                 }
             }else if(category.equalsIgnoreCase(UtilArrayData.CATEGORY_DANCE)){
@@ -240,7 +240,7 @@ public class GetData {
                         Music music = UtilArrayData.dance.get(i);
                         datas.add(new SubcategoryItem(music.getCoverArt(), music.getName(),
                                 music.getArtist(), SubcategoryItem.TYPE_NORMAL, category,
-                                music.getAudio(), i,music.getId()));
+                                music.getAudio(), i, Content.TYPE_TRACKS, music.getId()));
                     }
                 }
             }else if(category.equalsIgnoreCase(UtilArrayData.CATEGORY_HIP_HOP_RAP)){
@@ -249,7 +249,7 @@ public class GetData {
                         Music music = UtilArrayData.hipHopRap.get(i);
                         datas.add(new SubcategoryItem(music.getCoverArt(), music.getName(),
                                 music.getArtist(), SubcategoryItem.TYPE_NORMAL, category,
-                                music.getAudio(), i,music.getId()));
+                                music.getAudio(), i, Content.TYPE_TRACKS, music.getId()));
                     }
                 }
             }else{
@@ -394,14 +394,14 @@ public class GetData {
                     com.cyclone.model.RadioContent radioContent = playlistData.getRadioContent();
                     datas.add(new SubcategoryItem(radioContent.getCoverArt(), radioContent.getName(),
                             UtilArrayData.radioProfile.getName(), SubcategoryItem.TYPE_NORMAL, UtilArrayData.CATEGORY_PLAYLIST,
-                            radioContent.getAudio(), i, radioContent.getId()));
+                            radioContent.getAudio(), i, Content.TYPE_RADIO_CONTENT, radioContent.getId()));
                 }
 
                 if (playlistData.getTypeContent() == PlaylistData.TYPE_MUSIC) {
                     com.cyclone.model.Music music = playlistData.getMusic();
                     datas.add(new SubcategoryItem(music.getCoverArt(), music.getName(),
                             UtilArrayData.radioProfile.getName(), SubcategoryItem.TYPE_NORMAL, UtilArrayData.CATEGORY_PLAYLIST,
-                            music.getAudio(), i, music.getId()));
+                            music.getAudio(), i, Content.TYPE_TRACKS, music.getId()));
                 }
             }
 

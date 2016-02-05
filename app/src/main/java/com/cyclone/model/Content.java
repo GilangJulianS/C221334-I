@@ -100,4 +100,25 @@ public class Content extends MasterModel{
 			default: return R.menu.empty;
 		}
 	}
+
+	public static int getMenuResId(Integer contentTypeG) {
+		switch (contentTypeG) {
+			case TYPE_ALBUM:
+				return R.menu.popup_album;
+			case TYPE_ARTIST:
+				return R.menu.popup_artist;
+			case TYPE_MIX:
+				return R.menu.popup_mix;
+			case TYPE_PLAYLIST:
+				return R.menu.popup_playlist;
+			case TYPE_RADIO_CONTENT:
+				return R.menu.popup_radio_content;
+			case TYPE_TRACKS:
+				return R.menu.popup_tracks;
+			case TYPE_UPLOADED:
+				return R.menu.popup_uploaded;
+			default:
+				return R.menu.empty;
+		}
+	}
 }

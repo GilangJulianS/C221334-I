@@ -85,7 +85,8 @@
 			android:text="\@ImamDarto"
 			android:textColor="#888"
 			android:textSize="12sp"
-			android:editable="false"/>
+			android:editable="false"
+			android:id="@+id/txt_username" />
 
 		<TextView
 			android:layout_width="wrap_content"

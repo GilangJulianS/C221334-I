@@ -40,7 +40,7 @@ public class SongHolder extends UniversalHolder {
 			public void onClick(View v) {
 				PopupMenu menu = new PopupMenu(activity, btnMenu);
 				menu.inflate(R.menu.popup_default);
-				menu.setOnMenuItemClickListener(new PopupMenuListener(activity, c, btnMenu));
+				menu.setOnMenuItemClickListener(new PopupMenuListener(activity, c, PopupMenuListener.TYPE_CONTENT, btnMenu));
 				menu.show();
 			}
 		});

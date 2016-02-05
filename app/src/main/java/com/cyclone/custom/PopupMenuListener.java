@@ -12,6 +12,8 @@ import com.cyclone.MasterActivity;
 import com.cyclone.R;
 import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.model.Content;
+import com.cyclone.model.Post;
+import com.cyclone.model.SubcategoryItem;
 
 import java.util.ArrayList;
 
@@ -20,14 +22,40 @@ import java.util.ArrayList;
  */
 public class PopupMenuListener implements PopupMenu.OnMenuItemClickListener {
 
-	private Activity activity;
-	private Content content;
-	private View anchorView;
+	public static int TYPE_CONTENT = 0x3c4d9;
+	public static int TYPE_ALBUM = 0x3c4da;
+	public static int TYPE_CLUB_FEED = 0x3c4db;
+	public static int TYPE_SONG = 0x3c4dc;
+	public static int TYPE_SUB_CATEGORY = 0x3c4dd;
 
-	public PopupMenuListener(Activity activity, Content content, View anchorView){
+	private Activity activity;
+	private View anchorView;
+	private Object object;
+	private int TypeData;
+	private String title;
+	private String dataId;
+
+	public PopupMenuListener(Activity activity, Object object, int TypeData, View anchorView) {
 		this.activity = activity;
-		this.content = content;
+		//this.content = content;
 		this.anchorView = anchorView;
+		this.object = object;
+		if (TypeData == TYPE_CONTENT) {
+			Content content = (Content) object;
+			title = content.txtPrimary;
+			System.out.println("title : " + title);
+			dataId = content.id;
+			System.out.println("data id : " + dataId);
+		} else if (TypeData == TYPE_SUB_CATEGORY) {
+			SubcategoryItem subcategoryItem = (SubcategoryItem) object;
+			title = subcategoryItem.txtPrimary;
+			dataId = subcategoryItem.id;
+		} else if (TypeData == TYPE_CLUB_FEED) {
+			Post post = (Post) object;
+			title = post.postTitle;
+			dataId = post.FeedId;
+		}
+
 	}
 
 	@Override
@@ -67,18 +95,18 @@ public class PopupMenuListener implements PopupMenu.OnMenuItemClickListener {
 					menu.getMenu().add(0, j, j, UtilArrayData.playlistAccount.get(j).getName());
 				}
 
-				menu.setOnMenuItemClickListener(new PopupPlaylistListener(activity, content, anchorView));
+				menu.setOnMenuItemClickListener(new PopupPlaylistListener(activity, dataId, anchorView));
 				menu.show();
 				return true;
 			case R.id.menu_album_page:
 				i = new Intent(activity, DrawerActivity.class);
-				i.putExtra("title", content.txtPrimary);
+				i.putExtra("title", title);
 				i.putExtra("fragmentType", MasterActivity.FRAGMENT_ALBUM);
 				activity.startActivity(i);
 				return true;
 			case R.id.menu_artist_page:
 				i = new Intent(activity, DrawerActivity.class);
-				i.putExtra("title", content.txtPrimary);
+				i.putExtra("title", title);
 				i.putExtra("fragmentType", MasterActivity.FRAGMENT_ARTIST);
 				activity.startActivity(i);
 				return true;

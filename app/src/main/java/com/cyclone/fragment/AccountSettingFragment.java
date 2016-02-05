@@ -13,12 +13,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.cyclone.DrawerActivity;
 import com.cyclone.EmptyActivity;
 import com.cyclone.R;
 import com.cyclone.Utils.ServerUrl;
+import com.cyclone.Utils.UtilUser;
 import com.cyclone.loopback.UserClass;
 import com.strongloop.android.loopback.RestAdapter;
 import com.strongloop.android.loopback.callbacks.VoidCallback;
@@ -34,6 +37,8 @@ public class AccountSettingFragment extends Fragment {
 	Context mContext;
 	Activity mActivity;
 	ViewGroup logout;
+	EditText formUsername;
+	TextView txtName;
 
 	public AccountSettingFragment(){}
 
@@ -53,8 +58,13 @@ public class AccountSettingFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
 		View v = inflater.inflate(R.layout.fragment_setting_account, parent, false);
 
+		formUsername = (EditText) v.findViewById(R.id.txt_username);
+		txtName = (TextView) v.findViewById(R.id.txt_name);
 		imgUser = (ImageView) v.findViewById(R.id.img_user);
 		logout = (ViewGroup) v.findViewById(R.id.logout);
+
+		txtName.setText(UtilUser.currentUser.getUsername());
+		formUsername.setText("@" + UtilUser.currentUser.getUsername());
 
 		imgUser.setOnClickListener(new View.OnClickListener() {
 			@Override

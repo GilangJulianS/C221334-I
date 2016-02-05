@@ -4,13 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +51,7 @@ public class UploadFragment extends Fragment{
 
 	private void showFileChooser() {
 		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-		intent.setType("*/*");
+		intent.setType("audio/*");
 		intent.addCategory(Intent.CATEGORY_OPENABLE);
 
 		try {
@@ -73,6 +69,7 @@ public class UploadFragment extends Fragment{
 			case REQUEST_CODE:
 				if (resultCode == Activity.RESULT_OK) {
 					Uri uri = data.getData();
+
 					try {
 						String path = getPath(getContext(), uri);
 						Toast.makeText(getContext(), "File path : " + uri.toString(), Toast.LENGTH_SHORT).show();

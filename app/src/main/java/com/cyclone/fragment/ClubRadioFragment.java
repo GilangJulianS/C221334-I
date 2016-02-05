@@ -55,7 +55,10 @@ public class ClubRadioFragment extends RecyclerFragment {
 		fabUpload.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(activity, "fab upload clicked", Toast.LENGTH_SHORT).show();
+				Intent i = new Intent(activity, DrawerActivity.class);
+				i.putExtra("fragmentType", MasterActivity.FRAGMENT_UPLOAD);
+				i.putExtra("title", "Upload New Content");
+				startActivity(i);
 			}
 		});
 		fabMix = (FloatingActionButton) fab.findViewById(R.id.fab_mix);

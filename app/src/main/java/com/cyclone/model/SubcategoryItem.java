@@ -10,6 +10,7 @@ public class SubcategoryItem extends MasterModel{
 	public static final int TYPE_SELECTABLE = 102;
 	public String imgUrl;
 	public int type;
+	public int contentType;
 	public int posisi;
 	public String id;
 	public String category;
@@ -27,7 +28,8 @@ public class SubcategoryItem extends MasterModel{
 		this.imgUrl = imgUrl;
 		this.type = type;
 	}
-	public SubcategoryItem(String imgUrl, String primaryInfo, String secondaryInfo, int type,String category, String url, int posisi, String id){
+
+	public SubcategoryItem(String imgUrl, String primaryInfo, String secondaryInfo, int type, String category, String url, int posisi, int contentType, String id) {
 		super(primaryInfo, secondaryInfo);
 		this.imgUrl = imgUrl;
 		this.type = type;
@@ -35,5 +37,10 @@ public class SubcategoryItem extends MasterModel{
 		this.id = id;
 		this.category = category;
 		this.url = url;
+		this.contentType = contentType;
+	}
+
+	public int getMenuResId() {
+		return Content.getMenuResId(contentType);
 	}
 }

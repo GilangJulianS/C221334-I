@@ -15,7 +15,6 @@ import com.cyclone.Utils.ServerUrl;
 import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.loopback.model.PlaylistAccount;
 import com.cyclone.loopback.repository.PlaylistRepository;
-import com.cyclone.model.Content;
 import com.cyclone.model.Playlist;
 import com.cyclone.model.PlaylistData;
 import com.strongloop.android.loopback.RestAdapter;
@@ -35,13 +34,13 @@ import java.util.Map;
 public class PopupPlaylistListener implements PopupMenu.OnMenuItemClickListener {
 
     private Activity activity;
-    private Content content;
     private View anchorView;
+    private String dataId;
 
-    public PopupPlaylistListener(Activity activity, Content content, View anchorView){
+    public PopupPlaylistListener(Activity activity, String dataId, View anchorView) {
         this.activity = activity;
-        this.content = content;
         this.anchorView = anchorView;
+        this.dataId = dataId;
     }
 
     @Override
@@ -91,7 +90,7 @@ public class PopupPlaylistListener implements PopupMenu.OnMenuItemClickListener 
                                         final RestAdapter restAdapter2 = new RestAdapter(activity.getBaseContext(), ServerUrl.API_URL);
                                         final PlaylistRepository playlistRepository2 = restAdapter2.createRepository(PlaylistRepository.class);
                                         List<String> list = new ArrayList<>();
-                                        list.add(content.id);
+                                        list.add(dataId);
                                         playlistRepository2.addToPlaylist(playlistAccount.getId(), list, new Adapter.Callback() {
                                             @Override
                                             public void onSuccess(String response) {
@@ -134,12 +133,12 @@ public class PopupPlaylistListener implements PopupMenu.OnMenuItemClickListener 
                 if (title.equals(p.getName())) {
                     System.out.println("Name : " + p.getName());
                     System.out.println("IdPlaylist : " + p.getId());
-                    System.out.println("IdContent : " + content.id);
+                    System.out.println("IdContent : " + dataId);
 
                     final RestAdapter restAdapter = new RestAdapter(activity, ServerUrl.API_URL);
                     final PlaylistRepository playlistRepository = restAdapter.createRepository(PlaylistRepository.class);
                     List<String> list = new ArrayList<>();
-                    list.add(content.id);
+                    list.add(dataId);
                     playlistRepository.addToPlaylist(p.getId(), list, new Adapter.Callback() {
                         @Override
                         public void onSuccess(String response) {

@@ -1,6 +1,7 @@
 package com.cyclone.custom;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
@@ -9,12 +10,17 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.cyclone.R;
+import com.cyclone.Utils.ServerUrl;
+import com.cyclone.Utils.UtilUser;
 import com.cyclone.interfaces.PlayOnHolder;
+import com.cyclone.loopback.repository.PlaylistAccountRepository;
 import com.cyclone.model.Content;
 import com.cyclone.model.Data;
 import com.cyclone.model.SubcategoryItem;
 import com.cyclone.service.ServicePlayOnHolder;
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
+import com.strongloop.android.loopback.RestAdapter;
+import com.strongloop.android.remoting.adapters.Adapter;
 
 /**
  * Created by gilang on 21/11/2015.
@@ -58,10 +64,32 @@ public class SubcategoryHolder extends UniversalHolder {
 			btnMenu.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					PopupMenu menu = new PopupMenu(activity, btnMenu);
+					/*PopupMenu menu = new PopupMenu(activity, btnMenu);
 					menu.inflate(R.menu.popup_default);
 					menu.setOnMenuItemClickListener(new PopupMenuListener(activity, c, btnMenu));
-					menu.show();
+					menu.show();*/
+					final ProgressDialog Pdialog = ProgressDialog.show(activity, "",
+							"Please wait...", true);
+
+					final RestAdapter restAdapter = new RestAdapter(activity, ServerUrl.API_URL);
+					final PlaylistAccountRepository playlistAccountRepository = restAdapter.createRepository(PlaylistAccountRepository.class);
+					Pdialog.show();
+					playlistAccountRepository.get(UtilUser.currentUser.getId(), new Adapter.Callback() {
+						@Override
+						public void onSuccess(String response) {
+							Pdialog.dismiss();
+							PopupMenu menu = new PopupMenu(activity, btnMenu);
+							menu.inflate(subcategoryItem.getMenuResId());
+							menu.setOnMenuItemClickListener(new PopupMenuListener(activity, subcategoryItem, PopupMenuListener.TYPE_SUB_CATEGORY, btnMenu));
+							menu.show();
+						}
+
+						@Override
+						public void onError(Throwable t) {
+							System.out.println("error : " + t);
+							Pdialog.dismiss();
+						}
+					});
 				}
 			});
 		}else if(subcategoryItem.type == SubcategoryItem.TYPE_DELETABLE){

@@ -118,23 +118,29 @@ public class ContentsHolder extends UniversalHolder {
 			btnMenu.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					final ProgressDialog Pdialog = ProgressDialog.show(activity, "",
+							"Please wait...", true);
+
 					final RestAdapter restAdapter = new RestAdapter(activity, ServerUrl.API_URL);
 					final PlaylistAccountRepository playlistAccountRepository = restAdapter.createRepository(PlaylistAccountRepository.class);
+					Pdialog.show();
 					playlistAccountRepository.get(UtilUser.currentUser.getId(), new Adapter.Callback() {
 						@Override
 						public void onSuccess(String response) {
-
+							Pdialog.dismiss();
+							PopupMenu menu = new PopupMenu(activity, btnMenu);
+							menu.inflate(temp.getMenuResId());
+							menu.setOnMenuItemClickListener(new PopupMenuListener(activity, temp, PopupMenuListener.TYPE_CONTENT, btnMenu));
+							menu.show();
 						}
 
 						@Override
 						public void onError(Throwable t) {
-							System.out.println("error : "+t);
+							System.out.println("error : " + t);
+							Pdialog.dismiss();
 						}
 					});
-					PopupMenu menu = new PopupMenu(activity, btnMenu);
-					menu.inflate(temp.getMenuResId());
-					menu.setOnMenuItemClickListener(new PopupMenuListener(activity, temp, btnMenu));
-					menu.show();
+
 				}
 			});
 
