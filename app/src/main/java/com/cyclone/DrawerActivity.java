@@ -388,7 +388,7 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 						.commit();
 			}else if(fragmentType == FRAGMENT_UPLOAD_FINISHED){
 				callback = null;
-				manager.beginTransaction().replace(R.id.container, UploadFinishedFragment.newInstance())
+				manager.beginTransaction().replace(R.id.container, UploadFinishedFragment.newInstance(caller.getExtras().getString("path")))
 						.commit();
 			}
 			navigationView.getMenu().getItem(menuId).setChecked(true);

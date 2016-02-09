@@ -10,6 +10,8 @@ import com.strongloop.android.loopback.callbacks.ObjectCallback;
 import com.strongloop.android.remoting.adapters.RestContract;
 import com.strongloop.android.remoting.adapters.RestContractItem;
 
+import java.util.Map;
+
 /**
  * Created by solusi247 on 05/02/16.
  */
@@ -43,8 +45,8 @@ public class UploadRepository extends RestRepository<Upload> {
         return contract;
     }
 
-    public void create(String name, ObjectCallback<Upload> callback) {
-        invokeStaticMethod("create", ImmutableMap.of("name", name),
+    public void create(Map<String, Object> parm, ObjectCallback<Upload> callback) {
+        invokeStaticMethod("create", parm,
                 new JsonObjectParser<Upload>(this, callback));
     }
 

@@ -76,6 +76,7 @@ public class UploadFragment extends Fragment{
 						Intent i = new Intent(getContext(), DrawerActivity.class);
 						i.putExtra("fragmentType", MasterActivity.FRAGMENT_UPLOAD_FINISHED);
 						i.putExtra("title", "Content Uploaded");
+						i.putExtra("path", uri.toString());
 						startActivity(i);
 					} catch (URISyntaxException e) {
 						e.printStackTrace();

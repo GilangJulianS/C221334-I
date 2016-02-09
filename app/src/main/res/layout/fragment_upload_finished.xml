@@ -43,7 +43,8 @@
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="20dp"
 		android:layout_marginRight="20dp"
-		android:layout_marginTop="20dp"/>
+		android:layout_marginTop="20dp"
+		android:hint="Title" />
 
 	<EditText
 		android:id="@+id/txt_description"
@@ -51,7 +52,8 @@
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="20dp"
 		android:layout_marginRight="20dp"
-		android:layout_marginTop="20dp"/>
+		android:layout_marginTop="20dp"
+		android:hint="Description" />
 
 	<View
 		android:layout_width="match_parent"
