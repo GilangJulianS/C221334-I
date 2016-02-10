@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,8 +17,6 @@ import android.widget.Toast;
 import com.cyclone.DrawerActivity;
 import com.cyclone.MasterActivity;
 import com.cyclone.R;
-
-import java.net.URISyntaxException;
 
 /**
  * Created by gilang on 10/12/2015.
@@ -70,42 +69,36 @@ public class UploadFragment extends Fragment{
 				if (resultCode == Activity.RESULT_OK) {
 					Uri uri = data.getData();
 
-					try {
-						String path = getPath(getContext(), uri);
-						Toast.makeText(getContext(), "File path : " + uri.toString(), Toast.LENGTH_SHORT).show();
-						Intent i = new Intent(getContext(), DrawerActivity.class);
-						i.putExtra("fragmentType", MasterActivity.FRAGMENT_UPLOAD_FINISHED);
-						i.putExtra("title", "Content Uploaded");
-						i.putExtra("path", uri.toString());
-						startActivity(i);
-					} catch (URISyntaxException e) {
-						e.printStackTrace();
-					}
+					String path = getRealPathFromURI(getContext(), uri);
+					System.out.println("pppaaaattthh <<<<<<<<<<<<<<<<<<<<<<<, : " + path);
+					Toast.makeText(getContext(), "File path : " + uri.toString(), Toast.LENGTH_SHORT).show();
+					Intent i = new Intent(getContext(), DrawerActivity.class);
+					i.putExtra("fragmentType", MasterActivity.FRAGMENT_UPLOAD_FINISHED);
+					i.putExtra("title", "Content Uploaded");
+					i.putExtra("path", path);
+
+					startActivity(i);
 				}
 				break;
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
-	public String getPath(Context context, Uri uri) throws URISyntaxException {
-		if ("content".equalsIgnoreCase(uri.getScheme())) {
-			String[] projection = { "_data" };
-			Cursor cursor = null;
 
-			try {
-				cursor = context.getContentResolver().query(uri, projection, null, null, null);
-				int column_index = cursor.getColumnIndexOrThrow("_data");
-				if (cursor.moveToFirst()) {
-					return cursor.getString(column_index);
-				}
-			} catch (Exception e) {
-				// Eat it
+	public String getRealPathFromURI(Context context, Uri contentUri) {
+		Cursor cursor = null;
+		try {
+			String[] proj = {MediaStore.Audio.Media.DATA};
+			cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+			int column_index = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
+			cursor.moveToFirst();
+			return cursor.getString(column_index);
+		} finally {
+			if (cursor != null) {
+				cursor.close();
 			}
 		}
-		else if ("file".equalsIgnoreCase(uri.getScheme())) {
-			return uri.getPath();
-		}
-
-		return null;
 	}
+
+
 }

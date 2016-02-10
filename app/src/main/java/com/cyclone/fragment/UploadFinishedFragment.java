@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +19,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cyclone.R;
+import com.cyclone.Utils.DoUpload;
 import com.cyclone.Utils.ServerUrl;
 import com.cyclone.Utils.UtilUser;
-import com.cyclone.loopback.model.Upload;
-import com.cyclone.loopback.repository.UploadRepository;
+import com.cyclone.player.gui.PlaybackServiceFragment;
 import com.strongloop.android.loopback.Container;
 import com.strongloop.android.loopback.ContainerRepository;
 import com.strongloop.android.loopback.RestAdapter;
@@ -32,16 +31,15 @@ import com.strongloop.android.remoting.VirtualObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by gilang on 10/12/2015.
  */
-public class UploadFinishedFragment extends Fragment {
+public class UploadFinishedFragment extends PlaybackServiceFragment {
 
 	public UploadFinishedFragment(){}
 
@@ -52,12 +50,16 @@ public class UploadFinishedFragment extends Fragment {
 	private String coverName;
 	RestAdapter restAdapter;
 	TextView formTitle, formDesc;
-	static Uri audioUri;
+	String path;
+
+	//static Uri audioUri;
+	static UploadFinishedFragment fragment;
 
 	public static UploadFinishedFragment newInstance(String path) {
-		UploadFinishedFragment fragment = new UploadFinishedFragment();
-		audioUri = Uri.parse(path);
-
+		fragment = new UploadFinishedFragment();
+		fragment.path = path;
+		System.out.println("... " + path);
+		System.out.println("sudio Uri : " + path);
 		return fragment;
 	}
 
@@ -78,6 +80,10 @@ public class UploadFinishedFragment extends Fragment {
 		img.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if (mService != null) {
+					mService.loadUri(Uri.parse(path));
+					mService.playIndex(0);
+				}
 				Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 				intent.setType("image/*");
 				intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -185,25 +191,17 @@ public class UploadFinishedFragment extends Fragment {
 	}
 
 	void goUploadAudio() {
-		final UploadRepository uploadRepository = restAdapter.createRepository(UploadRepository.class);
-		String coverUrl = ServerUrl.API_URL + "/containers/" + UtilUser.currentUser.getId() + "/download/" + coverName;
-		File audio = new File(audioUri.toString());
-		Map<String, Object> parm = new HashMap<>();
-		parm.put("name", formTitle.getText().toString());
-		parm.put("coverArt", coverUrl);
-		parm.put("caption", formDesc.getText().toString());
-		parm.put("file", audio);
-		uploadRepository.create(parm, new ObjectCallback<Upload>() {
-			@Override
-			public void onSuccess(Upload object) {
-				System.out.println("sound uploaded");
-			}
+		String coverUrl = ServerUrl.API_URL + "/containers/" + UtilUser.currentUser.getId() + "/download/" + coverName + ".jpg";
+		File audio = new File(path);
+		//byte[] audioByte = UriToByte(audioUri);
 
-			@Override
-			public void onError(Throwable t) {
-
-			}
-		});
+		DoUpload doUpload = DoUpload.newInsane(formTitle.getText().toString(), formDesc.getText().toString(), coverUrl, "false", audio);
+		try {
+			doUpload.upload();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("errr");
+		}
 	}
 
 	Uri rename() {
@@ -238,6 +236,22 @@ public class UploadFinishedFragment extends Fragment {
 		if (file.exists()) {
 			file.delete();
 		}
+	}
+
+	byte[] UriToByte(Uri data) {
+		//Uri data = result.getData();
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		FileInputStream fis;
+		try {
+			fis = new FileInputStream(new File(data.getPath()));
+			byte[] buf = new byte[1024];
+			int n;
+			while (-1 != (n = fis.read(buf)))
+				baos.write(buf, 0, n);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return baos.toByteArray();
 	}
 }
 //http://192.168.1.12:3000/api/containers/567246f8e14b45fb245b8e9c/download/1455006227523.jpg

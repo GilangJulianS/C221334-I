@@ -7,6 +7,7 @@ import com.strongloop.android.loopback.callbacks.JsonArrayParser;
 import com.strongloop.android.loopback.callbacks.JsonObjectParser;
 import com.strongloop.android.loopback.callbacks.ListCallback;
 import com.strongloop.android.loopback.callbacks.ObjectCallback;
+import com.strongloop.android.remoting.adapters.Adapter;
 import com.strongloop.android.remoting.adapters.RestContract;
 import com.strongloop.android.remoting.adapters.RestContractItem;
 
@@ -48,6 +49,10 @@ public class UploadRepository extends RestRepository<Upload> {
     public void create(Map<String, Object> parm, ObjectCallback<Upload> callback) {
         invokeStaticMethod("create", parm,
                 new JsonObjectParser<Upload>(this, callback));
+    }
+
+    public void upld(Map<String, Object> parm, final Adapter.Callback callback) {
+        invokeStaticMethod("create", parm, callback);
     }
 
     public void get(String containerName, ObjectCallback<Upload> callback) {
