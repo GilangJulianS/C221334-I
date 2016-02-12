@@ -47,6 +47,7 @@ public class PersonProfileFragment extends RecyclerFragment{
 		PersonProfileFragment fragment = new PersonProfileFragment();
 		fragment.json = json;
 		fragment.mode = mode;
+		fragment.DataId = json;
 		fragment.transitionId = transitionId;
 		fragment.completePost = new ArrayList<>();
 		return fragment;
@@ -134,6 +135,11 @@ public class PersonProfileFragment extends RecyclerFragment{
 		Button btnUpload = (Button) header.findViewById(R.id.btn_upload);
 		Button btnFollow = (Button) header.findViewById(R.id.btn_follow);
 		ImageView imgUser = (ImageView) header.findViewById(R.id.img_user);
+
+		if (UtilArrayData.currentProfile != null) {
+			txtUsername.setText(UtilArrayData.currentProfile.getUsername());
+			txtAbout.setText(UtilArrayData.currentProfile.getAbout());
+		}
 
 		setupBackground(header);
 		getDataProfile(new Adapter.Callback() {

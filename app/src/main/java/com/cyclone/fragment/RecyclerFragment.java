@@ -27,7 +27,6 @@ import com.cyclone.interfaces.PlayOnHolder;
 import com.cyclone.interfaces.getData;
 import com.cyclone.loopback.GetJsonFragment;
 import com.cyclone.loopback.model.FeedTimeline;
-import com.cyclone.loopback.model.Profile;
 import com.cyclone.loopback.model.comment;
 import com.cyclone.loopback.model.radioProfile;
 import com.cyclone.loopback.model.radioProgram;
@@ -233,11 +232,14 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 	}
 
 	private void setupSwipeLayout(){
+		// refreshnya di matiin aja dulu biyar ga ganggu
 		if(isRefreshEnabled()) {
 			swipeLayout.setOnRefreshListener(this);
 		}else{
 			swipeLayout.setEnabled(false);
 		}
+
+		//swipeLayout.setEnabled(false);
 	}
 
 	private void setupLayoutManager(){
@@ -304,7 +306,7 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 				} else {
 //					System.out.println("Count data habis");
 					isAnimate = false;
-					swipeLayout.setEnabled(true);
+					//swipeLayout.setEnabled(true);
 				}
 			}
 		}, delay);
@@ -316,7 +318,7 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 			adapter.add(datas.get(i));
 		}
 		isAnimate = false;
-		swipeLayout.setEnabled(true);
+		//swipeLayout.setEnabled(true);
 	}
 
 	@Override
@@ -390,7 +392,7 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 		scc = 0;
 		System.out.println("on refresh");
 		swipeEnabled = false;
-		swipeLayout.setRefreshing(true);
+		//swipeLayout.setRefreshing(true);
 		if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_HOME ){
 			System.out.println("get home");
 			getDataHome();
@@ -416,7 +418,7 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 	}
 
 	protected void showData(){
-		swipeLayout.setRefreshing(false);
+		//swipeLayout.setRefreshing(false);
 		cnt = 0;
 		if(progressBar != null)
 			progressBar.setVisibility(View.GONE);
@@ -512,14 +514,10 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 		final RestAdapter restAdapter = new RestAdapter(getContext(), ServerUrl.API_URL);
 		final ProfileRepository profileRepository = restAdapter.createRepository(ProfileRepository.class);
 
-		profileRepository.get(DataId, new ListCallback<Profile>() {
-
+		profileRepository.get(DataId, new Adapter.Callback() {
 			@Override
-			public void onSuccess(List<Profile> objects) {
-				//UtilArrayData.CurrentProfile = objects.get(0);
-				//System.out.println(UtilArrayData.CurrentProfile.getUsername()+"}}}}}}}}}}}}}}}}}}}");
-				//showData();
-				callback.onSuccess("");
+			public void onSuccess(String response) {
+				callback.onSuccess(response);
 			}
 
 			@Override

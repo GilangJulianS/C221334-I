@@ -17,7 +17,8 @@ public class Profile extends Model{
     String created;
     String lastUpdated;
     String id;
-    String profile_picture;
+    String profilePicture;
+    String radioOwner;
 
     public String getMale() {
         return male;
@@ -107,11 +108,19 @@ public class Profile extends Model{
         this.id = id;
     }
 
-    public String getProfile_picture() {
-        return profile_picture;
+    public String getProfilePicture() {
+        return profilePicture;
     }
 
-    public void setProfile_picture(String profile_picture) {
-        this.profile_picture = profile_picture;
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
+    public String getRadioOwner() {
+        return radioOwner;
+    }
+
+    public void setRadioOwner(String radioOwner) {
+        this.radioOwner = radioOwner;
     }
 }
