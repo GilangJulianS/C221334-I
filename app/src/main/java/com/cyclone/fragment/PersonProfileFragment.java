@@ -24,8 +24,10 @@ import com.cyclone.R;
 import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.custom.Tools;
 import com.cyclone.custom.UniversalAdapter;
+import com.cyclone.loopback.model.AccountStats;
 import com.cyclone.model.Post;
-import com.strongloop.android.remoting.adapters.Adapter;
+import com.koushikdutta.urlimageviewhelper.UrlImageViewCallback;
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,16 +42,32 @@ public class PersonProfileFragment extends RecyclerFragment{
 	private String transitionId;
 	private int mode;
 	private List<Post> completePost;
+	private static PersonProfileFragment fragment;
+
+	TextView txtShowlist;
+	TextView txtContent;
+	TextView txtFollower;
+	TextView txtFollowing;
+	TextView txtUsername;
+	TextView txtAbout;
+	ImageView imgUser;
+	View header;
+	ImageView imgHeader;
 
 	public PersonProfileFragment(){}
 
 	public static PersonProfileFragment newInstance(int mode, String transitionId, String json){
-		PersonProfileFragment fragment = new PersonProfileFragment();
+		fragment = new PersonProfileFragment();
 		fragment.json = json;
 		fragment.mode = mode;
 		fragment.DataId = json;
 		fragment.transitionId = transitionId;
 		fragment.completePost = new ArrayList<>();
+		return fragment;
+	}
+
+	public static PersonProfileFragment getInstance() {
+		if (fragment == null) fragment = new PersonProfileFragment();
 		return fragment;
 	}
 
@@ -120,41 +138,36 @@ public class PersonProfileFragment extends RecyclerFragment{
 		return datas;
 	}
 
-	public void setupHeader(View header, String json){
+	public void setupHeader(final View header, String json) {
+		fragment.header = header;
 		ViewGroup btnShowlist = (ViewGroup) header.findViewById(R.id.group_showlist);
 		ViewGroup btnContent = (ViewGroup) header.findViewById(R.id.group_content);
 		ViewGroup btnFollower = (ViewGroup) header.findViewById(R.id.group_follower);
 		ViewGroup btnFollowing = (ViewGroup) header.findViewById(R.id.group_following);
-		TextView txtShowlist = (TextView) header.findViewById(R.id.txt_showlist_count);
-		TextView txtContent = (TextView) header.findViewById(R.id.txt_contents_count);
-		TextView txtFollower = (TextView) header.findViewById(R.id.txt_followers_count);
-		TextView txtFollowing = (TextView) header.findViewById(R.id.txt_following_count);
-		final TextView txtUsername = (TextView) header.findViewById(R.id.txt_username);
-		final TextView txtAbout = (TextView) header.findViewById(R.id.txt_about);
+		txtShowlist = (TextView) header.findViewById(R.id.txt_showlist_count);
+		txtContent = (TextView) header.findViewById(R.id.txt_contents_count);
+		txtFollower = (TextView) header.findViewById(R.id.txt_followers_count);
+		txtFollowing = (TextView) header.findViewById(R.id.txt_following_count);
+		txtUsername = (TextView) header.findViewById(R.id.txt_username);
+		txtAbout = (TextView) header.findViewById(R.id.txt_about);
 		Button btnAddShowList = (Button) header.findViewById(R.id.btn_add_showlist);
 		Button btnUpload = (Button) header.findViewById(R.id.btn_upload);
 		Button btnFollow = (Button) header.findViewById(R.id.btn_follow);
-		ImageView imgUser = (ImageView) header.findViewById(R.id.img_user);
+		imgUser = (ImageView) header.findViewById(R.id.img_user);
+		imgHeader = (ImageView) header.findViewById(R.id.img_header_background);
 
 		if (UtilArrayData.currentProfile != null) {
+			UrlImageViewHelper.setUrlDrawable(imgUser, UtilArrayData.currentProfile.getProfilePicture(), R.drawable.background_login, new UrlImageViewCallback() {
+				@Override
+				public void onLoaded(ImageView imageView, Bitmap bitmap, String s, boolean b) {
+					setupBackground(bitmap);
+				}
+			});
+
 			txtUsername.setText(UtilArrayData.currentProfile.getUsername());
 			txtAbout.setText(UtilArrayData.currentProfile.getAbout());
 		}
-
-		setupBackground(header);
-		getDataProfile(new Adapter.Callback() {
-			@Override
-			public void onSuccess(String response) {
-				txtUsername.setText(UtilArrayData.currentProfile.getUsername());
-				txtAbout.setText(UtilArrayData.currentProfile.getAbout());
-			}
-
-			@Override
-			public void onError(Throwable t) {
-
-			}
-		});
-
+		setupBackground(BitmapFactory.decodeResource(getResources(), R.drawable.radio_icon));
 		if(mode == MODE_OWN_PROFILE){
 			header.findViewById(R.id.btn_follow).setVisibility(View.GONE);
 		}else if(mode == MODE_OTHERS_PROFILE){
@@ -259,12 +272,24 @@ public class PersonProfileFragment extends RecyclerFragment{
 	}
 
 
-	public void setupBackground(View header){
-		ImageView imgHeader = (ImageView) header.findViewById(R.id.img_header_background);
-		Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.background_login);
-		bitmap = Tools.blur(bitmap, 0.5f, 10);
-		bitmap = Tools.crop(bitmap);
-		imgHeader.setImageBitmap(bitmap);
+	public void setupBackground(Bitmap bitmap) {
+		Bitmap img = bitmap;
+		try {
+			img = Tools.blur(img, 0.5f, 10);
+		} catch (Exception e) {
+			System.out.println("error image blur : " + e);
+		}
+		try {
+			img = Tools.crop(img);
+		} catch (Exception e) {
+			System.out.println("error image crop : " + e);
+		}
+		try {
+			imgHeader.setImageBitmap(img);
+		} catch (Exception e) {
+			System.out.println("error image set : " + e);
+		}
+
 	}
 
 	@Override
@@ -312,5 +337,31 @@ public class PersonProfileFragment extends RecyclerFragment{
 			}
 		}
 		return result;
+	}
+
+	public void setProfile() {
+		System.out.println("set profile");
+		if (UtilArrayData.currentProfile != null) {
+			UrlImageViewHelper.setUrlDrawable(imgUser, UtilArrayData.currentProfile.getProfilePicture(), R.drawable.background_login, new UrlImageViewCallback() {
+				@Override
+				public void onLoaded(ImageView imageView, Bitmap bitmap, String s, boolean b) {
+					setupBackground(bitmap);
+				}
+			});
+			txtUsername.setText(UtilArrayData.currentProfile.getUsername());
+			txtAbout.setText(UtilArrayData.currentProfile.getAbout());
+		}
+
+	}
+
+	public void setStats(AccountStats accountStats) {
+		if (accountStats != null) {
+			txtShowlist.setText(accountStats.getShowlists());
+			txtContent.setText(accountStats.getUploads());
+			txtFollower.setText(accountStats.getFollowers());
+			;
+			txtFollowing.setText(accountStats.getFollowings());
+		}
+
 	}
 }

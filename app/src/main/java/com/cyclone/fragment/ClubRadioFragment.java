@@ -123,7 +123,7 @@ public class ClubRadioFragment extends RecyclerFragment {
 				System.out.println("name : " + feedTimeline.getTypePost().get("name"));
 				/*datas.add(new Post("", "<b>" + feedTimeline.getOwner().get("username") + "</b> " + feedTimeline.getTypePost().get("caption") + " <b>" + feedTimeline.getType() + "</b>", feedTimeline.getUpdated_at(), feedTimeline.getType(),
 						"", feedTimeline.getTypePost().get("name"), "New playlist by me", "40 tracks", 52, 20, Post.TYPE_POST, false));*/
-				datas.add(new Post("",
+				datas.add(new Post(feedTimeline.getOwner().get("profilePicture"),
 						"<b>" + feedTimeline.getOwner().get("username") + "</b> is <b>" + feedTimeline.getType() + "ed</b>",
 						feedTimeline.getCreated_at(), feedTimeline.getType(),
 						"",

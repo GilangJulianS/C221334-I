@@ -26,10 +26,12 @@ import com.cyclone.custom.UniversalAdapter;
 import com.cyclone.interfaces.PlayOnHolder;
 import com.cyclone.interfaces.getData;
 import com.cyclone.loopback.GetJsonFragment;
+import com.cyclone.loopback.model.AccountStats;
 import com.cyclone.loopback.model.FeedTimeline;
 import com.cyclone.loopback.model.comment;
 import com.cyclone.loopback.model.radioProfile;
 import com.cyclone.loopback.model.radioProgram;
+import com.cyclone.loopback.repository.AccountStatsRepository;
 import com.cyclone.loopback.repository.CommentRepository;
 import com.cyclone.loopback.repository.FeedTimelineRepository;
 import com.cyclone.loopback.repository.MusicRepository;
@@ -166,7 +168,9 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 			cnt = 0;
 			if(progressBar != null)
 				progressBar.setVisibility(View.VISIBLE);
-			//getDataProfile();
+			showData();
+			getDataProfile();
+			getDataStatsProfile();
 		}
 		//Sementara matiin karenga fungsi belum jalan
 		/*else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_PROGRAMS){
@@ -342,12 +346,12 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 			LayoutInflater inflater = activity.getLayoutInflater();
 			View header = inflater.inflate(getHeaderLayoutId(), parallaxHeader, false);
 
+			prepareHeader(header);
 			//dikasih try biyar ga close
 			try{
-				prepareHeader(header);
 				parallaxHeader.removeAllViews();
-				parallaxHeader.addView(header);
 			}catch (Exception e){}
+			parallaxHeader.addView(header);
 		}
 	}
 
@@ -510,14 +514,32 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 		});
 	}
 
-	public void getDataProfile(final Adapter.Callback callback){
+	public void getDataProfile() {
 		final RestAdapter restAdapter = new RestAdapter(getContext(), ServerUrl.API_URL);
 		final ProfileRepository profileRepository = restAdapter.createRepository(ProfileRepository.class);
 
 		profileRepository.get(DataId, new Adapter.Callback() {
 			@Override
 			public void onSuccess(String response) {
-				callback.onSuccess(response);
+				System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+				PersonProfileFragment.getInstance().setProfile();
+			}
+
+			@Override
+			public void onError(Throwable t) {
+				System.out.println("error : " + t);
+			}
+		});
+	}
+
+	public void getDataStatsProfile() {
+		final RestAdapter restAdapter = new RestAdapter(getContext(), ServerUrl.API_URL);
+		final AccountStatsRepository accountStatsRepository = restAdapter.createRepository(AccountStatsRepository.class);
+
+		accountStatsRepository.get(DataId, new ObjectCallback<AccountStats>() {
+			@Override
+			public void onSuccess(AccountStats object) {
+				PersonProfileFragment.getInstance().setStats(object);
 			}
 
 			@Override

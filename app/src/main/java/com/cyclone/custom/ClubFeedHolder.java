@@ -19,10 +19,12 @@ import com.cyclone.DrawerActivity;
 import com.cyclone.MasterActivity;
 import com.cyclone.R;
 import com.cyclone.Utils.ServerUrl;
+import com.cyclone.Utils.UtilUser;
 import com.cyclone.fragment.CommentFragment;
 import com.cyclone.fragment.PersonProfileFragment;
 import com.cyclone.loopback.repository.FeedLikeRepository;
 import com.cyclone.model.Post;
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.strongloop.android.loopback.RestAdapter;
 
 /**
@@ -101,6 +103,8 @@ public class ClubFeedHolder extends UniversalHolder{
 			}
 		});
 
+		UrlImageViewHelper.setUrlDrawable(imgUser, p.imgUrl, R.drawable.radio_logo_2);
+
 		txtCommentInfo.setClickable(true);
 		txtCommentInfo.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -176,18 +180,23 @@ public class ClubFeedHolder extends UniversalHolder{
 			View.OnClickListener listener = new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-				Intent i = new Intent(activity, DrawerActivity.class);
-				i.putExtra("fragmentType", DrawerActivity.FRAGMENT_PERSON_PROFILE);
-				i.putExtra("mode", PersonProfileFragment.MODE_OTHERS_PROFILE);
-				i.putExtra("transition", "profile" + transitionId);
+					int mode;
+					if (p.userId.equals(UtilUser.currentUser.getId()))
+						mode = PersonProfileFragment.MODE_OWN_PROFILE;
+					else mode = PersonProfileFragment.MODE_OTHERS_PROFILE;
+					Intent i = new Intent(activity, DrawerActivity.class);
+					i.putExtra("fragmentType", DrawerActivity.FRAGMENT_PERSON_PROFILE);
+					i.putExtra("mode", mode);
+					i.putExtra("id", p.userId);
+					i.putExtra("transition", "profile" + transitionId);
 
-				if(Build.VERSION.SDK_INT >= 16) {
-					ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation
-							(activity, imageView, "profile" + transitionId);
-					activity.startActivity(i, options.toBundle());
-				}else{
-					activity.startActivity(i);
-				}
+					if (Build.VERSION.SDK_INT >= 16) {
+						ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation
+								(activity, imageView, "profile" + transitionId);
+						activity.startActivity(i, options.toBundle());
+					} else {
+						activity.startActivity(i);
+					}
 				}
 			};
 
