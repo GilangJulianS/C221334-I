@@ -89,6 +89,11 @@ public class FeedTimelineRepository extends ModelRepository<FeedTimeline> {
 
                         ownerMap.put("username", owner.getString("username"));
                         ownerMap.put("id", owner.getString("id"));
+                        try {
+                            ownerMap.put("profilePicture", owner.getString("profilePicture"));
+                        } catch (Exception e) {
+                            ownerMap.put("profilePicture", "");
+                        }
 
                         if(tipe.equalsIgnoreCase("mix")){
                             type = ObjectResult.getJSONObject("mix");
