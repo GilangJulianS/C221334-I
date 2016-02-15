@@ -25,6 +25,7 @@ public class ServicePlayOnHolder extends IntentService {
     private static final String ACTION_BAZ = "com.cyclone.service.action.BAZ";
     private static final String ACTION_PLAY_ON_HOME = "com.cyclone.service.action.ACTION_PLAY_ON_HOME";
     private static final String ACTION_PLAY_ON_QUEUE = "com.cyclone.service.action.ACTION_PLAY_ON_QUEUE";
+    private static final String ACTION_PLAY_ON_FAVORITE = "com.cyclone.service.action.ACTION_PLAY_ON_FAVORITE";
 
     // TODO: Rename parameters
     private static final String EXTRA_PARAM1 = "com.cyclone.service.extra.PARAM1";
@@ -32,6 +33,7 @@ public class ServicePlayOnHolder extends IntentService {
     private static final String MEDIA_WARPER = "com.cyclone.service.extra.MEDIA_WARPER";
     private static final String MEDIA_POSITION = "com.cyclone.service.extra.MEDIA_POSITION";
     private static final String MEDIA_CATEGORY = "com.cyclone.service.extra.MEDIA_CATEGORY";
+    private static final String MEDIA_ID = "com.cyclone.service.extra.MEDIA_ID";
     public static ArrayList<PlayOnHolder> mCallBackPlay = new ArrayList<PlayOnHolder>();
     public static PlayOnHolder playOnHolder;
 
@@ -96,7 +98,7 @@ public class ServicePlayOnHolder extends IntentService {
         System.out.println("si start on play home : " + mCallBackPlay.size());
         Intent intent = new Intent(context, ServicePlayOnHolder.class);
         intent.setAction(ACTION_PLAY_ON_HOME);
-        intent.putExtra(MEDIA_POSITION , position);
+        intent.putExtra(MEDIA_POSITION, position);
         intent.putExtra(MEDIA_CATEGORY, category);
         context.startService(intent);
     }
@@ -149,6 +151,7 @@ public class ServicePlayOnHolder extends IntentService {
         else playOnHolder.onLoadedPlayOnHolder(category, position);
 
     }
+
 
     private void handleActionPlayOnQueue(int position) {
         System.out.println("SEND POSISI : " + position);

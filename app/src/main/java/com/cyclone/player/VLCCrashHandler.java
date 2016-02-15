@@ -24,7 +24,6 @@ import android.os.Environment;
 import android.text.format.DateFormat;
 import android.util.Log;
 
-import com.cyclone.player.util.AndroidDevices;
 import com.cyclone.player.util.Logcat;
 import com.cyclone.player.util.Util;
 
@@ -74,8 +73,8 @@ public class VLCCrashHandler implements UncaughtExceptionHandler {
 
         // Save the log on SD card if available
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            writeLog(stacktrace, AndroidDevices.EXTERNAL_PUBLIC_DIRECTORY + "/vlc_crash");
-            writeLogcat(AndroidDevices.EXTERNAL_PUBLIC_DIRECTORY + "/vlc_logcat");
+            // writeLog(stacktrace, AndroidDevices.EXTERNAL_PUBLIC_DIRECTORY + "/vlc_crash");
+            // writeLogcat(AndroidDevices.EXTERNAL_PUBLIC_DIRECTORY + "/vlc_logcat");
         }
 
         defaultUEH.uncaughtException(thread, ex);

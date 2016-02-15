@@ -18,7 +18,7 @@
 	<group android:id="@+id/group_2" android:checkableBehavior="all">
 		<item
 			android:id="@+id/nav_profile"
-			android:icon="@drawable/profile_photo"
+			android:icon="@drawable/ic_person_black_36dp"
 			android:title="Dimas Danang"/>
 		<item
 			android:id="@+id/nav_favorite"
@@ -38,10 +38,10 @@
 			android:id="@+id/nav_setting"
 			android:icon="@drawable/ic_settings_black_36dp"
 			android:title="Settings"/>
-		<item
+		<!--<item
 			android:id="@+id/nav_player"
 			android:icon="@drawable/ic_play_arrow_black_48dp"
-			android:title="Player"/>
+			android:title="Player"/>-->
 	</group>
 
 </menu>

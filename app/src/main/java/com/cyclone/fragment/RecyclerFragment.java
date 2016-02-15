@@ -18,33 +18,15 @@ import android.widget.ProgressBar;
 import com.cyclone.DrawerActivity;
 import com.cyclone.MasterActivity;
 import com.cyclone.R;
-import com.cyclone.Utils.ServerUrl;
 import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.custom.OnOffsetChangedListener;
 import com.cyclone.custom.SnapGestureListener;
 import com.cyclone.custom.UniversalAdapter;
+import com.cyclone.data.DataAPIUrl;
 import com.cyclone.interfaces.PlayOnHolder;
 import com.cyclone.interfaces.getData;
 import com.cyclone.loopback.GetJsonFragment;
-import com.cyclone.loopback.model.AccountStats;
-import com.cyclone.loopback.model.FeedTimeline;
-import com.cyclone.loopback.model.comment;
-import com.cyclone.loopback.model.radioProfile;
-import com.cyclone.loopback.model.radioProgram;
-import com.cyclone.loopback.repository.AccountStatsRepository;
-import com.cyclone.loopback.repository.CommentRepository;
-import com.cyclone.loopback.repository.FeedTimelineRepository;
-import com.cyclone.loopback.repository.MusicRepository;
-import com.cyclone.loopback.repository.PlaylistDataRepository;
-import com.cyclone.loopback.repository.ProfileRepository;
-import com.cyclone.loopback.repository.RadioContentRepository;
-import com.cyclone.loopback.repository.radioProfileRepository;
-import com.cyclone.loopback.repository.radioProgramRepository;
-import com.cyclone.service.ServiceGetData;
-import com.strongloop.android.loopback.RestAdapter;
-import com.strongloop.android.loopback.callbacks.ListCallback;
-import com.strongloop.android.loopback.callbacks.ObjectCallback;
-import com.strongloop.android.remoting.adapters.Adapter;
+import com.cyclone.model.Section;
 import com.wunderlist.slidinglayer.SlidingLayer;
 
 import java.util.List;
@@ -54,7 +36,7 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 /**
  * Created by gilang on 20/11/2015.
  */
-public abstract class RecyclerFragment extends GetJsonFragment implements OnOffsetChangedListener, SwipeRefreshLayout.OnRefreshListener {
+public abstract class RecyclerFragment extends GetJsonFragment implements OnOffsetChangedListener, SwipeRefreshLayout.OnRefreshListener, DataAPIUrl.ApiCallback {
 
 	protected RecyclerView recyclerView;
 	protected RecyclerView.LayoutManager layoutManager;
@@ -74,8 +56,29 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 	protected getData mGetData;
 	protected String DataId;
 	protected PlayOnHolder playOnHolder = null;
+	protected DataAPIUrl API;
+
+	private static int offset = 0;
+	private static int take = 10;
+
+	public static int getOffset() {
+		return offset;
+	}
+
+	public static void setOffset(int offset) {
+		RecyclerFragment.offset = offset;
+	}
+
+	public static int getTake() {
+		return take;
+	}
+
+	public static void setTake(int take) {
+		RecyclerFragment.take = take;
+	}
 
 	public int scc = 0;
+
 
 	public RecyclerFragment(){}
 
@@ -97,6 +100,7 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
+		API = new DataAPIUrl(activity, getContext(), DataId, this, recuclerContext, mGetData, progressBar);
 		View v = inflater.inflate(R.layout.fragment_recycler, parent, false);
 
 		prepareDatas();
@@ -105,7 +109,7 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 		//Check data radio profil
 		if(UtilArrayData.radioProfile == null){
 			//jika radio profil null ambil data radio rofile
-			getRadioProfile();
+			API.getRadioProfile();
 		}
 
 		if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_HOME || DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_SUBCATEGORY){
@@ -127,14 +131,11 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 					progressBar.setVisibility(View.VISIBLE);
 				onRefresh();
 			}
-		}
-		//Sementara matiin karenga fungsi belum jalan
-		else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_PLAYER){
-			if (datas != null && datas.size() > 0){
+		} else if (DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_PLAYER) {
 				if(progressBar != null)
 					progressBar.setVisibility(View.GONE);
 				NoAnimate();
-			}
+
 		}else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_LIVE){
 			System.out.println("on LIve");
 			cnt = 0;
@@ -148,7 +149,10 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 				progressBar.setVisibility(View.VISIBLE);
 			onRefresh();
 		}else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_SUBCATEGORY){
-
+			cnt = 0;
+			if (progressBar != null)
+				progressBar.setVisibility(View.VISIBLE);
+			onRefresh();
 		}else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_CLUB){
 			if(UtilArrayData.feedTimelines.size() > 0){
 				progressBar.setVisibility(View.GONE);
@@ -169,8 +173,8 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 			if(progressBar != null)
 				progressBar.setVisibility(View.VISIBLE);
 			showData();
-			getDataProfile();
-			getDataStatsProfile();
+			API.getDataProfile();
+			API.getDataStatsProfile();
 		}
 		//Sementara matiin karenga fungsi belum jalan
 		/*else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_PROGRAMS){
@@ -194,6 +198,11 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 				progressBar.setVisibility(View.VISIBLE);
 			onRefresh();
 		} else if (DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_PLAYLIST) {
+			cnt = 0;
+			if (progressBar != null)
+				progressBar.setVisibility(View.VISIBLE);
+			onRefresh();
+		} else if (DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_FAVORITES) {
 			cnt = 0;
 			if (progressBar != null)
 				progressBar.setVisibility(View.VISIBLE);
@@ -328,6 +337,7 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 	@Override
 	public void onAttach(Context context){
 		super.onAttach(context);
+		setOffset(0);
 		if(context instanceof DrawerActivity) {
 			activity = (DrawerActivity)context;
 		}
@@ -399,29 +409,33 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 		//swipeLayout.setRefreshing(true);
 		if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_HOME ){
 			System.out.println("get home");
-			getDataHome();
-		}
-		else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_LIVE){
-			getDataLive();
-		}else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_SUBCATEGORY){
-			getDataHome();
-		}else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_CLUB){
-			getDataClub();
-		}else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_PROGRAMS){
-			getDataRadioProgram();
-		}else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_COMMENT){
-			getDataComment();
-		}else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_REQUEST){
-			getRequest();
+			API.getDataHome();
+		} else if (DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_LIVE) {
+			API.getDataLive();
+		} else if (DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_SUBCATEGORY) {
+			if (SubcategoryFragment.getInstance().getCategory().equalsIgnoreCase(Section.CATEGORY_FAFORITE))
+				API.getDataFavorite(SubcategoryFragment.getInstance().getTypeFavorite());
+			else API.getDataHome();
+		} else if (DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_CLUB) {
+			API.getDataClub();
+		} else if (DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_PROGRAMS) {
+			API.getDataRadioProgram();
+		} else if (DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_COMMENT) {
+			API.getDataComment();
+		} else if (DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_REQUEST) {
+			API.getRequest();
 		} else if (DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_PLAYLIST) {
-			getDataPlaylist();
+			API.getDataPlaylist();
+		} else if (DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_FAVORITES) {
+			API.getDataFavorite();
 		}
 		else{
 			showData();
 		}
 	}
 
-	protected void showData(){
+	@Override
+	public void showData() {
 		//swipeLayout.setRefreshing(false);
 		cnt = 0;
 		if(progressBar != null)
@@ -435,7 +449,12 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 			animate(datas.get(0));
 	}
 
-	public void getDataHome(){
+	@Override
+	public void refresh() {
+		onRefresh();
+	}
+
+	/*public void getDataHome(){
 		System.out.println("on getdata home");
 		final RestAdapter restAdapter = new RestAdapter(activity.getBaseContext(), ServerUrl.API_URL);
 		final RadioContentRepository radioContentRepository = restAdapter.createRepository(RadioContentRepository.class);
@@ -619,7 +638,9 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 				System.out.println("error anehh : " + t);
 			}
 		});
-
-
 	}
+
+	public void getDataFavorite(){
+		final RestAdapter restAdapter = new RestAdapter(activity.getBaseContext(), ServerUrl.API_URL);
+	}*/
 }

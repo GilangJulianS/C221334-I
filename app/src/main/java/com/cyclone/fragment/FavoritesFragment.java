@@ -7,13 +7,18 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.cyclone.DrawerActivity;
 import com.cyclone.MasterActivity;
 import com.cyclone.R;
 import com.cyclone.custom.UniversalAdapter;
+import com.cyclone.data.GetData;
+import com.cyclone.data.GoPlay;
+import com.cyclone.interfaces.PlayOnHolder;
 import com.cyclone.model.Content;
-import com.cyclone.model.Contents;
 import com.cyclone.model.Section;
 import com.cyclone.model.SubcategoryItem;
+import com.cyclone.player.gui.PlaybackServiceRecyclerFragment;
+import com.cyclone.player.media.MediaWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,17 +26,29 @@ import java.util.List;
 /**
  * Created by gilang on 05/12/2015.
  */
-public class FavoritesFragment extends RecyclerFragment {
+public class FavoritesFragment extends PlaybackServiceRecyclerFragment implements PlayOnHolder {
 
 	List<Content> completeList;
+	static FavoritesFragment fragment;
 
 	public FavoritesFragment(){}
 
 	public static FavoritesFragment newInstance(String json){
-		FavoritesFragment fragment = new FavoritesFragment();
+		fragment = new FavoritesFragment();
 		fragment.json = json;
+		fragment.playOnHolder = fragment;
 		fragment.completeList = new ArrayList<>();
 		return fragment;
+	}
+
+	public static FavoritesFragment getInstance() {
+		return fragment;
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		DrawerActivity.setFragmentType(MasterActivity.FRAGMENT_FAVORITES);
 	}
 
 	@Override
@@ -75,7 +92,7 @@ public class FavoritesFragment extends RecyclerFragment {
 	}
 
 	public List<Object> parse(String json){
-		List<Object> datas = new ArrayList<>();
+		/*List<Object> datas = new ArrayList<>();
 		List<Content> contentList;
 		completeList = new ArrayList<>();
 		Contents contents;
@@ -138,9 +155,9 @@ public class FavoritesFragment extends RecyclerFragment {
 		contentList.add(new Content("", "Radio Content",Content.FAVORITABLE, "Melawan Asap", "Dalam perjuangannya melawan asap yang semakin memburuk", null,false, Content.TYPE_RADIO_CONTENT,"", 0, ""));
 		completeList.addAll(contentList);
 		contents = new Contents(contentList);
-		datas.add(contents);
+		datas.add(contents);*/
 
-		return datas;
+		return GetData.getInstance().showData(GetData.DATA_FAVORITE);
 	}
 
 	@Override
@@ -208,5 +225,25 @@ public class FavoritesFragment extends RecyclerFragment {
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public void onLoadedPlayOnHolder(List<MediaWrapper> media) {
+
+	}
+
+	@Override
+	public void onLoadedPlayOnHolder(int position) {
+
+	}
+
+	@Override
+	public void onLoadedPlayOnHolder(String category, int position) {
+		if (mService != null) {
+			mService.load(GoPlay.getInstance().getMedia(GoPlay.FAVORITE_PLAY_ON_HOLDER, category), 0);
+			mService.playIndex(position);
+		} else {
+			System.out.println("service null");
+		}
 	}
 }

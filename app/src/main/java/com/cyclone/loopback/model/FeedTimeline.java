@@ -8,7 +8,7 @@ import java.util.Map;
  * Created by solusi247 on 22/12/15.
  */
 public class FeedTimeline extends Model{
-    String type;
+    int type;
     String created_at;
    // String updated_at;
     String id;
@@ -29,11 +29,11 @@ public class FeedTimeline extends Model{
         this.created_at = created_at;
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 

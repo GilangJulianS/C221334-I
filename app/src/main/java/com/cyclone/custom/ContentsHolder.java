@@ -19,9 +19,11 @@ import com.cyclone.DrawerActivity;
 import com.cyclone.MasterActivity;
 import com.cyclone.R;
 import com.cyclone.Utils.ServerUrl;
+import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.Utils.UtilUser;
 import com.cyclone.fragment.AddPlaylistFragment;
 import com.cyclone.fragment.CategoryFragment;
+import com.cyclone.fragment.FavoritesFragment;
 import com.cyclone.fragment.HomeFragment;
 import com.cyclone.interfaces.PlayOnHolder;
 import com.cyclone.loopback.repository.PlaylistAccountRepository;
@@ -95,14 +97,26 @@ public class ContentsHolder extends UniversalHolder {
 							createSnackBar(activity).show();
 						}
 					}else{
-						PlayOnHolder playOnHolder = null;
-						if(DrawerActivity.getFragmentType() == DrawerActivity.FRAGMENT_HOME){
-							playOnHolder = HomeFragment.getInsane();
-						}else if(DrawerActivity.getFragmentType() == DrawerActivity.FRAGMENT_CATEGORY){
-							playOnHolder = CategoryFragment.getInstance();
+						if (temp.tag == UtilArrayData.CATEGORY_PLAYLIST) {
+							Intent i = new Intent(activity, DrawerActivity.class);
+							i.putExtra("fragmentType", MasterActivity.FRAGMENT_PLAYLIST);
+							i.putExtra("title", temp.txtPrimary);
+							i.putExtra("id", temp.id);
+							System.out.println("id : " + temp.id);
+							activity.startActivity(i);
+						} else {
+							PlayOnHolder playOnHolder = null;
+							if (DrawerActivity.getFragmentType() == DrawerActivity.FRAGMENT_HOME) {
+								playOnHolder = HomeFragment.getInsane();
+							} else if (DrawerActivity.getFragmentType() == DrawerActivity.FRAGMENT_CATEGORY) {
+								playOnHolder = CategoryFragment.getInstance();
+							} else if (DrawerActivity.getFragmentType() == DrawerActivity.FRAGMENT_FAVORITES) {
+								playOnHolder = FavoritesFragment.getInstance();
+							}
+							ServicePlayOnHolder servicePlayOnHolder = new ServicePlayOnHolder();
+							servicePlayOnHolder.startPlayOnFragment(v.getContext(), playOnHolder, temp.tag, temp.position);
 						}
-						ServicePlayOnHolder servicePlayOnHolder = new ServicePlayOnHolder();
-						servicePlayOnHolder.startPlayOnFragment(v.getContext(), playOnHolder, temp.tag, temp.position);
+
 
 						System.out.println("Contens Holder c.tag : " + temp.tag);
 					}

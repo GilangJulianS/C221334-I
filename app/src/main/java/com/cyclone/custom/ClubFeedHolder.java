@@ -19,10 +19,12 @@ import com.cyclone.DrawerActivity;
 import com.cyclone.MasterActivity;
 import com.cyclone.R;
 import com.cyclone.Utils.ServerUrl;
+import com.cyclone.Utils.TimeFormat;
 import com.cyclone.Utils.UtilUser;
 import com.cyclone.fragment.CommentFragment;
 import com.cyclone.fragment.PersonProfileFragment;
 import com.cyclone.loopback.repository.FeedLikeRepository;
+import com.cyclone.model.Content;
 import com.cyclone.model.Post;
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.strongloop.android.loopback.RestAdapter;
@@ -79,11 +81,17 @@ public class ClubFeedHolder extends UniversalHolder{
 
 	public void bind(Post post, final Activity activity){
 		final Post p = post;
+		String contentTag = "";
+		System.out.println(TimeFormat.toMounth(p.timestamp));
+		if(p.playlistType == Content.TYPE_PLAYLIST) contentTag = "Playlist";
+		if(p.playlistType == Content.TYPE_MIX) contentTag = "Mix";
+		if(p.playlistType == Content.TYPE_RADIO_CONTENT) contentTag = "Radio Content";
+		if(p.playlistType == Content.TYPE_UPLOADED) contentTag = "Uploaded";
 		imgUser.setImageResource(R.drawable.background_login);
 		if(Build.VERSION.SDK_INT >= 21)
 			imgUser.setTransitionName("profile" + transitionId);
 		txtHeaderName.setText(Html.fromHtml(p.headerName));
-		txtHeaderInfo.setText(p.timestamp + " • " + p.playlistType);
+		txtHeaderInfo.setText(TimeFormat.toDateHours(p.timestamp) + " • " + contentTag);
 		imgPost.setImageResource(R.drawable.background_login);
 		txtPostTitle.setText(p.postTitle);
 		txtPostContent.setText(p.postContent);
@@ -202,7 +210,7 @@ public class ClubFeedHolder extends UniversalHolder{
 
 			imgUser.setOnClickListener(listener);
 			txtHeaderName.setOnClickListener(listener);
-			if(p.playlistType.equals("Mix")){
+			if(p.playlistType == Content.TYPE_MIX){
 				container.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -212,7 +220,7 @@ public class ClubFeedHolder extends UniversalHolder{
 						activity.startActivity(i);
 					}
 				});
-			}else if(p.playlistType.equals("Playlist")){
+			}else if(p.playlistType == Content.TYPE_PLAYLIST){
 				container.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {

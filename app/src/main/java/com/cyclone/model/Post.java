@@ -10,7 +10,7 @@ public class Post {
 	public String imgUrl;
 	public String headerName;
 	public String timestamp;
-	public String playlistType;
+	public int playlistType;
 	public String postImgUrl;
 	public String postTitle;
 	public String postContent;
@@ -25,7 +25,7 @@ public class Post {
 	public String TypeId;
 	public String userId;
 
-	public Post(String imgUrl, String headerName, String timestamp, String playlistType, String
+	public Post(String imgUrl, String headerName, String timestamp, int playlistType, String
 			postImgUrl, String postTitle, String postContent, String postInfo, int likesCount,
 				int commentCount, int type, boolean isLiked){
 		this.imgUrl = imgUrl;
@@ -41,7 +41,8 @@ public class Post {
 		this.type = type;
 		this.isLiked = isLiked;
 	}
-	public Post(String imgUrl, String headerName, String timestamp, String playlistType, String
+
+	public Post(String imgUrl, String headerName, String timestamp, int playlistType, String
 			postImgUrl, String postTitle, String postContent, String postInfo, int likesCount,
 				int commentCount, int type, boolean isLiked, String userId, String username, String FeedId, String TypeId) {
 		this.imgUrl = imgUrl;

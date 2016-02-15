@@ -13,6 +13,7 @@ import com.cyclone.custom.UniversalAdapter;
 import com.cyclone.data.GetData;
 import com.cyclone.data.GoPlay;
 import com.cyclone.interfaces.PlayOnHolder;
+import com.cyclone.model.Section;
 import com.cyclone.model.SubcategoryItem;
 import com.cyclone.player.gui.PlaybackServiceRecyclerFragment;
 import com.cyclone.player.media.MediaWrapper;
@@ -28,20 +29,30 @@ public class SubcategoryFragment extends PlaybackServiceRecyclerFragment impleme
 	String category;
 	public static SubcategoryFragment fragment;
 	private List<SubcategoryItem> completeItem;
+	private int typeFavorite;
 
 	public SubcategoryFragment(){}
 
-	public static SubcategoryFragment newInstance(String json, String category){
+	public static SubcategoryFragment newInstance(String json, String category, int typeFavorite) {
 		fragment = new SubcategoryFragment();
 		fragment.json = json;
 		fragment.category = category;
 		fragment.completeItem = new ArrayList<>();
 		fragment.playOnHolder = fragment;
+		fragment.typeFavorite = typeFavorite;
 		System.out.println("subfragment category : "+ category);
 		return fragment;
 	}
 	public static SubcategoryFragment getInstance(){
 		return fragment;
+	}
+
+	public int getTypeFavorite() {
+		return typeFavorite;
+	}
+
+	public String getCategory() {
+		return category;
 	}
 
 	@Override
@@ -104,7 +115,11 @@ public class SubcategoryFragment extends PlaybackServiceRecyclerFragment impleme
 		datas.add(new SubcategoryItem("", "Suit & Tie", "Justin Timberlake"));*/
 		System.out.println("on parse");
 		completeItem = new ArrayList<>();
-		List<Object> datas = GetData.getInstance().showData(GetData.DATA_SUB_CATEGORY, category);
+		List<Object> datas = new ArrayList<>();
+		if (category.equalsIgnoreCase(Section.CATEGORY_FAFORITE))
+			datas = GetData.getInstance().showData(GetData.DATA_SUB_CATEGORY);
+		else
+			datas = GetData.getInstance().showData(GetData.DATA_SUB_CATEGORY, category);
 		for(Object o : datas){
 			completeItem.add((SubcategoryItem)o);
 		}

@@ -4,6 +4,7 @@ import android.net.Uri;
 
 import com.cyclone.Utils.ServerUrl;
 import com.cyclone.Utils.UtilArrayData;
+import com.cyclone.loopback.model.Favorite;
 import com.cyclone.loopback.model.Music;
 import com.cyclone.loopback.model.PlaylistData;
 import com.cyclone.loopback.model.RadioContent;
@@ -19,6 +20,7 @@ import java.util.List;
  */
 public class GoPlay {
     public static int HOME_PLAY_ON_HOLDER = 0x607d;
+    public static int FAVORITE_PLAY_ON_HOLDER = 0x607e;
     private static String NO_CATEGORY = "com.cyclone.no_category";
 
     private static GoPlay Instance = null;
@@ -304,6 +306,66 @@ public class GoPlay {
             }
             else{
                 System.out.println("no category");
+            }
+        } else if (typemedia == FAVORITE_PLAY_ON_HOLDER) {
+            List<RadioContent> content;
+            List<Music> listMusic;
+            Uri myUri;
+            MediaCustom MC;
+            MediaWrapper mMedia;
+            List<Favorite> favoriteListMusic = new ArrayList<>();
+            List<Favorite> favoriteListPlaylist = new ArrayList<>();
+            List<Favorite> favoriteListRadiocontent = new ArrayList<>();
+            List<Favorite> list = UtilArrayData.favorites;
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).getType() == Favorite.TYPE_MUSIC)
+                    favoriteListMusic.add(list.get(i));
+                else if (list.get(i).getType() == Favorite.TYPE_PLAYLIST)
+                    favoriteListPlaylist.add(list.get(i));
+                else if (list.get(i).getType() == Favorite.TYPE_RADIOCONTENT)
+                    favoriteListRadiocontent.add(list.get(i));
+            }
+            System.out.println(category + " :: " + UtilArrayData.CATEGORY_MUSIC);
+            if (category.equalsIgnoreCase(UtilArrayData.CATEGORY_MUSIC)) {
+                for (int i = 0; i < favoriteListMusic.size(); i++) {
+                    com.cyclone.loopback.model.Music music = favoriteListMusic.get(i).getMusic();
+                    myUri = Uri.parse(music.getAudio());
+                    System.out.println(myUri);
+                    MC = new MediaCustom();
+                    MC.setUri(myUri);
+                    MC.setTitle(music.getName());
+                    MC.setArtist(music.getArtist());
+                    MC.setAlbum(music.getAlbum());
+                    MC.setAlbumArtist(music.getAlbum());
+                    MC.setArtworkURL(music.getCoverArt());
+                    mMedia = new MediaWrapper(MC.getUri(), MC.getTime(), MC.getLength(), MC.getType(),
+                            MC.getPicture(), MC.getTitle(), MC.getArtist(), MC.getGenre(), MC.getAlbum(), MC.getAlbumArtist(),
+                            MC.getWidth(), MC.getHeight(), MC.getArtworkURL(), MC.getAudio(), MC.getSpu(), MC.getTrackNumber(),
+                            MC.getDiscNumber(), MC.getLastModified());
+                    mDB.addMedia(mMedia);
+                    media.add(mMedia);
+                }
+            } else if (category.equalsIgnoreCase(UtilArrayData.CATEGORY_RADIO_CONTENT)) {
+                for (int i = 0; i < favoriteListRadiocontent.size(); i++) {
+                    RadioContent radioContent = favoriteListRadiocontent.get(i).getRadioContent();
+                    myUri = Uri.parse(radioContent.getAudio());
+                    MC = new MediaCustom();
+                    MC.setUri(myUri);
+                    MC.setTitle(radioContent.getName());
+                    if (UtilArrayData.radioProfile != null)
+                        MC.setArtist(UtilArrayData.radioProfile.getName());
+                    else MC.setArtist("Unnamed");
+
+                    MC.setAlbum(radioContent.getName());
+                    MC.setAlbumArtist(radioContent.getName());
+                    MC.setArtworkURL(radioContent.getCoverArt());
+                    mMedia = new MediaWrapper(MC.getUri(), MC.getTime(), MC.getLength(), MC.getType(),
+                            MC.getPicture(), MC.getTitle(), MC.getArtist(), MC.getGenre(), MC.getAlbum(), MC.getAlbumArtist(),
+                            MC.getWidth(), MC.getHeight(), MC.getArtworkURL(), MC.getAudio(), MC.getSpu(), MC.getTrackNumber(),
+                            MC.getDiscNumber(), MC.getLastModified());
+                    mDB.addMedia(mMedia);
+                    media.add(mMedia);
+                }
             }
         }
 

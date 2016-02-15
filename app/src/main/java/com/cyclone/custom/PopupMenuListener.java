@@ -10,10 +10,14 @@ import android.widget.Toast;
 import com.cyclone.DrawerActivity;
 import com.cyclone.MasterActivity;
 import com.cyclone.R;
+import com.cyclone.Utils.ServerUrl;
 import com.cyclone.Utils.UtilArrayData;
+import com.cyclone.loopback.repository.FavotireRepository;
 import com.cyclone.model.Content;
 import com.cyclone.model.Post;
 import com.cyclone.model.SubcategoryItem;
+import com.strongloop.android.loopback.RestAdapter;
+import com.strongloop.android.remoting.adapters.Adapter;
 
 import java.util.ArrayList;
 
@@ -34,6 +38,8 @@ public class PopupMenuListener implements PopupMenu.OnMenuItemClickListener {
 	private int TypeData;
 	private String title;
 	private String dataId;
+	private String typeId;
+	private int typeContent;
 
 	public PopupMenuListener(Activity activity, Object object, int TypeData, View anchorView) {
 		this.activity = activity;
@@ -45,6 +51,8 @@ public class PopupMenuListener implements PopupMenu.OnMenuItemClickListener {
 			title = content.txtPrimary;
 			System.out.println("title : " + title);
 			dataId = content.id;
+			typeContent = content.contentType;
+			typeId = content.id;
 			System.out.println("data id : " + dataId);
 		} else if (TypeData == TYPE_SUB_CATEGORY) {
 			SubcategoryItem subcategoryItem = (SubcategoryItem) object;
@@ -54,6 +62,8 @@ public class PopupMenuListener implements PopupMenu.OnMenuItemClickListener {
 			Post post = (Post) object;
 			title = post.postTitle;
 			dataId = post.FeedId;
+			typeContent = post.playlistType;
+			typeId = post.TypeId;
 		}
 
 	}
@@ -83,7 +93,53 @@ public class PopupMenuListener implements PopupMenu.OnMenuItemClickListener {
 				System.out.println("list : "+ parm);
 				return true;
 			case R.id.menu_add_favorites:
-				Toast.makeText(activity, "Add to Favorites Clicked", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(activity, "Add to Favorites Clicked", Toast.LENGTH_SHORT).show();
+				RestAdapter restAdapter = new RestAdapter(activity.getBaseContext(), ServerUrl.API_URL);
+				if (typeContent == Content.TYPE_PLAYLIST) {
+					FavotireRepository.newInstance(FavotireRepository.PLAYLIST_CLASS);
+					FavotireRepository favotireRepository = restAdapter.createRepository(FavotireRepository.class);
+					favotireRepository.addToFavorite(typeId, new Adapter.Callback() {
+						@Override
+						public void onSuccess(String response) {
+
+						}
+
+						@Override
+						public void onError(Throwable t) {
+
+						}
+					});
+				}
+				if (typeContent == Content.TYPE_TRACKS) {
+					FavotireRepository.newInstance(FavotireRepository.MUSIC_CLASS);
+					FavotireRepository favotireRepository = restAdapter.createRepository(FavotireRepository.class);
+					favotireRepository.addToFavorite(typeId, new Adapter.Callback() {
+						@Override
+						public void onSuccess(String response) {
+
+						}
+
+						@Override
+						public void onError(Throwable t) {
+
+						}
+					});
+				}
+				if (typeContent == Content.TYPE_RADIO_CONTENT) {
+					FavotireRepository.newInstance(FavotireRepository.RADIOCONTENT_CLASS);
+					FavotireRepository favotireRepository = restAdapter.createRepository(FavotireRepository.class);
+					favotireRepository.addToFavorite(typeId, new Adapter.Callback() {
+						@Override
+						public void onSuccess(String response) {
+
+						}
+
+						@Override
+						public void onError(Throwable t) {
+
+						}
+					});
+				}
 				return true;
 			case R.id.menu_add_playlist:
 				PopupMenu menu = new PopupMenu(activity, anchorView);

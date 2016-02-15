@@ -327,7 +327,7 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 						.commit();
 			}else if(fragmentType == FRAGMENT_SUBCATEGORY){
 				callback = null;
-				manager.beginTransaction().replace(R.id.container, SubcategoryFragment.newInstance("",caller.getExtras().getString("category","")))
+				manager.beginTransaction().replace(R.id.container, SubcategoryFragment.newInstance("", caller.getExtras().getString("category", ""), caller.getExtras().getInt("favorite", 0)))
 						.commit();
 			}else if(fragmentType == FRAGMENT_ADD_MIX){
 				callback = null;
@@ -589,13 +589,13 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 //				startActivity(intent);
 //				finish();
 				break;
-			case R.id.nav_player:
+				/*case R.id.nav_player:
 				intent.putExtra("title", "Player");
 				intent.putExtra("fragmentType", MasterActivity.FRAGMENT_PLAYER);
 				intent.putExtra("menuId", 8);
 //				startActivity(intent);
 //				finish();
-				break;
+				break;*/
 		}
 
 		new Handler().postDelayed(new Runnable() {

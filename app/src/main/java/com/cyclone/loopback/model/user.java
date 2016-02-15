@@ -8,7 +8,7 @@ import com.strongloop.android.loopback.Model;
 public class user extends Model {
     String male;
     String birthday;
-    String profile_picture;
+    String profilePicture;
     String about;
     String realm;
     String username;
@@ -36,12 +36,12 @@ public class user extends Model {
         this.birthday = birthday;
     }
 
-    public String getProfile_picture() {
-        return profile_picture;
+    public String getProfilePicture() {
+        return profilePicture;
     }
 
-    public void setProfile_picture(String profile_picture) {
-        this.profile_picture = profile_picture;
+    public void setProfilePicture(String profile_picture) {
+        this.profilePicture = profile_picture;
     }
 
     public String getAbout() {

@@ -2,6 +2,7 @@ package com.cyclone.loopback.repository;
 
 import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.loopback.model.FeedTimeline;
+import com.cyclone.model.Content;
 import com.strongloop.android.loopback.ModelRepository;
 import com.strongloop.android.loopback.callbacks.ListCallback;
 import com.strongloop.android.remoting.adapters.Adapter;
@@ -96,6 +97,7 @@ public class FeedTimelineRepository extends ModelRepository<FeedTimeline> {
                         }
 
                         if(tipe.equalsIgnoreCase("mix")){
+                            feedTimeline.setType(Content.TYPE_MIX);
                             type = ObjectResult.getJSONObject("mix");
                             typePost.put("name", type.getString("name"));
                             typePost.put("caption",type.getString("caption"));
@@ -103,6 +105,7 @@ public class FeedTimelineRepository extends ModelRepository<FeedTimeline> {
                             typePost.put("contentCount", type.getString("contentCount"));
                         }
                         else if(tipe.equalsIgnoreCase("playlist")){
+                            feedTimeline.setType(Content.TYPE_PLAYLIST);
                             type = ObjectResult.getJSONObject("playlist");
                             typePost.put("name", type.getString("name"));
                             typePost.put("caption",type.getString("caption"));
@@ -110,13 +113,18 @@ public class FeedTimelineRepository extends ModelRepository<FeedTimeline> {
                             typePost.put("contentCount", type.getString("contentCount"));
                         }
                         else if(tipe.equalsIgnoreCase("content")){
+                            feedTimeline.setType(Content.TYPE_RADIO_CONTENT);
                             type = ObjectResult.getJSONObject("content");
                             typePost.put("name", type.getString("name"));
                            // typePost.put("caption",type.getString("caption"));
                             typePost.put("id", type.getString("id"));
-
+                        } else if (tipe.equalsIgnoreCase("Upload")) {
+                            feedTimeline.setType(Content.TYPE_UPLOADED);
+                           /* type = ObjectResult.getJSONObject("content");
+                            typePost.put("name", type.getString("name"));
+                            // typePost.put("caption",type.getString("caption"));
+                            typePost.put("id", type.getString("id"));*/
                         }
-                        feedTimeline.setType(ObjectResult.getString("type"));
                         feedTimeline.setId(ObjectResult.getString("id"));
                         feedTimeline.setCreated_at(ObjectResult.getString("createdAt"));
                         feedTimeline.setAccountId(ObjectResult.getString("accountId"));

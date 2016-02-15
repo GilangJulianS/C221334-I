@@ -23,7 +23,11 @@ import com.cyclone.R;
 import com.cyclone.Utils.ServerUrl;
 import com.cyclone.Utils.UtilUser;
 import com.cyclone.loopback.UserClass;
+import com.cyclone.loopback.model.user;
+import com.cyclone.loopback.repository.userRepository;
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.strongloop.android.loopback.RestAdapter;
+import com.strongloop.android.loopback.callbacks.ObjectCallback;
 import com.strongloop.android.loopback.callbacks.VoidCallback;
 
 /**
@@ -65,6 +69,20 @@ public class AccountSettingFragment extends Fragment {
 
 		txtName.setText(UtilUser.currentUser.getUsername());
 		formUsername.setText("@" + UtilUser.currentUser.getUsername());
+
+		RestAdapter restAdapter = new RestAdapter(getContext(), ServerUrl.API_URL);
+		userRepository userRepo = restAdapter.createRepository(userRepository.class);
+		userRepo.findById(UtilUser.currentUser.getId(), new ObjectCallback<user>() {
+			@Override
+			public void onSuccess(user object) {
+				UrlImageViewHelper.setUrlDrawable(imgUser, object.getProfilePicture());
+			}
+
+			@Override
+			public void onError(Throwable t) {
+
+			}
+		});
 
 		imgUser.setOnClickListener(new View.OnClickListener() {
 			@Override

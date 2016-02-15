@@ -41,6 +41,7 @@ public class SectionHolder extends UniversalHolder {
 					i.putExtra("fragmentType", section.targetFragment);
 					i.putExtra("title", section.name);
 					i.putExtra("category", section.category);
+					i.putExtra("favorite", section.typeFavorite);
 					System.out.println("setcionholder category : "+ section.category);
 					activity.startActivity(i);
 				}

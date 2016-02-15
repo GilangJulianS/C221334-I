@@ -1,8 +1,12 @@
 package com.cyclone.data;
 
 import com.cyclone.MasterActivity;
+import com.cyclone.Utils.TimeFormat;
 import com.cyclone.Utils.UtilArrayData;
+import com.cyclone.fragment.SubcategoryFragment;
+import com.cyclone.loopback.model.Favorite;
 import com.cyclone.loopback.model.Music;
+import com.cyclone.loopback.model.Playlist;
 import com.cyclone.loopback.model.PlaylistData;
 import com.cyclone.loopback.model.RadioContent;
 import com.cyclone.model.Categories;
@@ -29,6 +33,7 @@ public class GetData {
     public static int DATA_SUB_CATEGORY = 0x6084;
     public static int DATA_CATEGORY = 0x6085;
     public static int DATA_PLAYLIST = 0x3c4e2;
+    public static int DATA_FAVORITE = 0x3c4e3;
 
     private static GetData Instance = null;
 
@@ -44,6 +49,10 @@ public class GetData {
     }
     public List<Object> showData(int typedata){
         return showData(typedata,"");
+    }
+
+    public List<Object> showData(int typedata, int category) {
+        return showData(typedata, "" + category);
     }
 
     public List<Object> showData(int typedata, String category){
@@ -69,7 +78,10 @@ public class GetData {
                 contentList = new ArrayList<>();
                 for(int i = 0; i < 3; i++){
                     RadioContent radioContent = UtilArrayData.latestContent.get(i);
-                    contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_LatestContent, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.radioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
+                    contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_LatestContent,
+                            Content.NOT_FAVORITABLE, radioContent.getName(),
+                            UtilArrayData.radioProfile.getName(),
+                            TimeFormat.toDateHours(radioContent.getUpdatedAt()), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(), i, radioContent.getId()));
                 }
                 contents = new Contents(contentList);
                 datas.add(contents);
@@ -80,7 +92,10 @@ public class GetData {
                 contentList = new ArrayList<>();
                 for(int i = 0; i < 3; i++){
                     RadioContent radioContent = UtilArrayData.news.get(i);
-                    contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_NEWS, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.radioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
+                    contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_NEWS,
+                            Content.NOT_FAVORITABLE, radioContent.getName(),
+                            UtilArrayData.radioProfile.getName(),
+                            TimeFormat.toDateHours(radioContent.getUpdatedAt()), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(), i, radioContent.getId()));
                 }
                 contents = new Contents(contentList);
                 datas.add(contents);
@@ -91,7 +106,9 @@ public class GetData {
                 contentList = new ArrayList<>();
                 for(int i = 0; i < 3; i++){
                     RadioContent radioContent = UtilArrayData.info.get(i);
-                    contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_Info, Content.NOT_FAVORITABLE, radioContent.getName(), UtilArrayData.radioProfile.getName(), radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(),i, radioContent.getId()));
+                    contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_Info, Content.NOT_FAVORITABLE,
+                            radioContent.getName(), UtilArrayData.radioProfile.getName(),
+                            TimeFormat.toDateHours(radioContent.getUpdatedAt()), false, Content.TYPE_RADIO_CONTENT, radioContent.getAudio(), i, radioContent.getId()));
                 }
                 contents = new Contents(contentList);
                 datas.add(contents);
@@ -106,7 +123,7 @@ public class GetData {
                         contentList.add(new Content(radioContent.getCoverArt(), UtilArrayData.CATEGORY_Advertorial,
                                 Content.NOT_FAVORITABLE, radioContent.getName(),
                                 UtilArrayData.radioProfile.getName(),
-                                radioContent.getUpdatedAt(), false, Content.TYPE_RADIO_CONTENT,
+                                TimeFormat.toDateHours(radioContent.getUpdatedAt()), false, Content.TYPE_RADIO_CONTENT,
                                 radioContent.getAudio(),i, radioContent.getId()));
                     }catch (Exception e){}
 
@@ -252,6 +269,39 @@ public class GetData {
                                 music.getAudio(), i, Content.TYPE_TRACKS, music.getId()));
                     }
                 }
+            } else if (category.equalsIgnoreCase(Section.CATEGORY_FAFORITE)) {
+                if (SubcategoryFragment.getInstance().getTypeFavorite() == Content.TYPE_TRACKS) {
+                    if (UtilArrayData.favorites.size() > 0) {
+                        List<Favorite> list = UtilArrayData.favorites;
+                        for (int i = 0; i < list.size(); i++) {
+                            Music music = list.get(i).getMusic();
+                            datas.add(new SubcategoryItem(music.getCoverArt(), music.getName(),
+                                    music.getArtist(), SubcategoryItem.TYPE_NORMAL, category,
+                                    music.getAudio(), i, Content.TYPE_TRACKS, music.getId()));
+                        }
+                    }
+                } else if (SubcategoryFragment.getInstance().getTypeFavorite() == Content.TYPE_RADIO_CONTENT) {
+                    if (UtilArrayData.favorites.size() > 0) {
+                        List<Favorite> list = UtilArrayData.favorites;
+                        for (int i = 0; i < list.size(); i++) {
+                            RadioContent radioContent = list.get(i).getRadioContent();
+                            datas.add(new SubcategoryItem(radioContent.getCoverArt(), radioContent.getName(),
+                                    UtilArrayData.radioProfile.getName(), SubcategoryItem.TYPE_NORMAL, category,
+                                    radioContent.getAudio(), i, Content.TYPE_RADIO_CONTENT, radioContent.getId()));
+                        }
+                    }
+                } else if (SubcategoryFragment.getInstance().getTypeFavorite() == Content.TYPE_PLAYLIST) {
+                    if (UtilArrayData.favorites.size() > 0) {
+                        List<Favorite> list = UtilArrayData.favorites;
+                        for (int i = 0; i < list.size(); i++) {
+                            Playlist playlist = list.get(i).getPlaylist();
+                            datas.add(new SubcategoryItem(playlist.getImage(), playlist.getName(),
+                                    playlist.getCaption(), SubcategoryItem.TYPE_NORMAL, category,
+                                    "", i, Content.TYPE_PLAYLIST, playlist.getId()));
+                        }
+                    }
+                }
+
             }else{
                 System.out.println("category not found...");
             }
@@ -405,6 +455,83 @@ public class GetData {
                 }
             }
 
+            return datas;
+        } else if (typedata == DATA_FAVORITE) {
+            List<Object> datas = new ArrayList<>();
+            List<Content> contentList;
+            List<Favorite> favoriteListMusic = new ArrayList<>();
+            List<Favorite> favoriteListPlaylist = new ArrayList<>();
+            List<Favorite> favoriteListRadiocontent = new ArrayList<>();
+            Contents contents;
+
+            if (UtilArrayData.favorites.size() > 0) {
+                List<Favorite> list = UtilArrayData.favorites;
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).getType() == Favorite.TYPE_MUSIC)
+                        favoriteListMusic.add(list.get(i));
+                    else if (list.get(i).getType() == Favorite.TYPE_PLAYLIST)
+                        favoriteListPlaylist.add(list.get(i));
+                    else if (list.get(i).getType() == Favorite.TYPE_RADIOCONTENT)
+                        favoriteListRadiocontent.add(list.get(i));
+                }
+
+                contentList = new ArrayList<>();
+                datas.add(new Section("Music", Content.TYPE_TRACKS, Section.CATEGORY_FAFORITE, MasterActivity.FRAGMENT_SUBCATEGORY));
+                for (int i = 0; i < favoriteListMusic.size(); i++) {
+                    Favorite favorite = favoriteListMusic.get(i);
+                    contentList.add(new Content(favorite.getMusic().getCoverArt(),
+                            UtilArrayData.CATEGORY_MUSIC,
+                            Content.NOT_FAVORITABLE,
+                            favorite.getMusic().getName(),
+                            favorite.getMusic().getArtist(),
+                            favorite.getUpdatedAt(),
+                            false,
+                            Content.TYPE_TRACKS,
+                            favorite.getMusic().getAudio(),
+                            i,
+                            favorite.getId()));
+                }
+                contents = new Contents(contentList);
+                datas.add(contents);
+
+                contentList = new ArrayList<>();
+                datas.add(new Section("Playlist", Content.TYPE_PLAYLIST, Section.CATEGORY_FAFORITE, MasterActivity.FRAGMENT_SUBCATEGORY));
+                for (int i = 0; i < favoriteListPlaylist.size(); i++) {
+                    Favorite favorite = favoriteListPlaylist.get(i);
+                    contentList.add(new Content("" + favorite.getPlaylist().getImage(),
+                            UtilArrayData.CATEGORY_PLAYLIST,
+                            Content.NOT_FAVORITABLE,
+                            favorite.getPlaylist().getName(),
+                            favorite.getPlaylist().getCaption(),
+                            favorite.getUpdatedAt(),
+                            false,
+                            Content.TYPE_PLAYLIST,
+                            "",
+                            i,
+                            favorite.getPlaylist().getId()));
+                }
+                contents = new Contents(contentList);
+                datas.add(contents);
+
+                contentList = new ArrayList<>();
+                datas.add(new Section("Radio Content", Content.TYPE_RADIO_CONTENT, Section.CATEGORY_FAFORITE, MasterActivity.FRAGMENT_SUBCATEGORY));
+                for (int i = 0; i < favoriteListRadiocontent.size(); i++) {
+                    Favorite favorite = favoriteListRadiocontent.get(i);
+                    contentList.add(new Content(favorite.getRadioContent().getCoverArt(),
+                            UtilArrayData.CATEGORY_RADIO_CONTENT,
+                            Content.NOT_FAVORITABLE,
+                            favorite.getRadioContent().getName(),
+                            UtilArrayData.radioProfile.getName(),
+                            favorite.getUpdatedAt(),
+                            false,
+                            Content.TYPE_RADIO_CONTENT,
+                            favorite.getRadioContent().getAudio(),
+                            i,
+                            favorite.getId()));
+                }
+                contents = new Contents(contentList);
+                datas.add(contents);
+            }
             return datas;
         }
         return null;
