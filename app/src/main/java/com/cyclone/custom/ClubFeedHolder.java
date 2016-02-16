@@ -92,7 +92,10 @@ public class ClubFeedHolder extends UniversalHolder{
 			imgUser.setTransitionName("profile" + transitionId);
 		txtHeaderName.setText(Html.fromHtml(p.headerName));
 		txtHeaderInfo.setText(TimeFormat.toDateHours(p.timestamp) + " • " + contentTag);
-		imgPost.setImageResource(R.drawable.background_login);
+		//imgPost.setImageResource(R.drawable.background_login);
+
+		UrlImageViewHelper.setUrlDrawable(imgPost, p.postImgUrl, R.drawable.header);
+
 		txtPostTitle.setText(p.postTitle);
 		txtPostContent.setText(p.postContent);
 		txtPostInfo.setText(p.postInfo);

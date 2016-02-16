@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.cyclone.R;
 import com.cyclone.Utils.ServerUrl;
 import com.cyclone.Utils.UtilArrayData;
+import com.cyclone.data.randomImage;
 import com.cyclone.loopback.model.PlaylistAccount;
 import com.cyclone.loopback.repository.PlaylistRepository;
 import com.cyclone.model.Playlist;
@@ -64,6 +65,7 @@ public class PopupPlaylistListener implements PopupMenu.OnMenuItemClickListener 
                             parm.put("name", "" + name + " ");
                             parm.put("caption", " ");
                             parm.put("private", "false");
+                            parm.put("image", randomImage.getInstance().getImage());
 
                             final RestAdapter restAdapter = new RestAdapter(activity.getBaseContext(), ServerUrl.API_URL);
                             final PlaylistRepository playlistRepository = restAdapter.createRepository(PlaylistRepository.class);

@@ -13,7 +13,6 @@ import com.cyclone.custom.UniversalAdapter;
 import com.cyclone.data.GetData;
 import com.cyclone.data.GoPlay;
 import com.cyclone.interfaces.PlayOnHolder;
-import com.cyclone.model.Section;
 import com.cyclone.model.SubcategoryItem;
 import com.cyclone.player.gui.PlaybackServiceRecyclerFragment;
 import com.cyclone.player.media.MediaWrapper;
@@ -116,9 +115,9 @@ public class SubcategoryFragment extends PlaybackServiceRecyclerFragment impleme
 		System.out.println("on parse");
 		completeItem = new ArrayList<>();
 		List<Object> datas = new ArrayList<>();
-		if (category.equalsIgnoreCase(Section.CATEGORY_FAFORITE))
+		/*if (category.equalsIgnoreCase(Section.CATEGORY_FAFORITE))
 			datas = GetData.getInstance().showData(GetData.DATA_SUB_CATEGORY);
-		else
+		else*/
 			datas = GetData.getInstance().showData(GetData.DATA_SUB_CATEGORY, category);
 		for(Object o : datas){
 			completeItem.add((SubcategoryItem)o);

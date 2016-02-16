@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -21,6 +20,7 @@ import com.cyclone.R;
 import com.cyclone.Utils.ServerUrl;
 import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.Utils.UtilUser;
+import com.cyclone.data.randomImage;
 import com.cyclone.fragment.AddPlaylistFragment;
 import com.cyclone.fragment.CategoryFragment;
 import com.cyclone.fragment.FavoritesFragment;
@@ -177,12 +177,12 @@ public class ContentsHolder extends UniversalHolder {
 			counter++;
 		}
 
-		while(counter < 3){
+		/*while(counter < 3){
 		  LayoutInflater inflater = activity.getLayoutInflater();
 		  View v = inflater.inflate(R.layout.view_filler_horizontal_full, container, false);
 		  container.addView(v);
 		  counter++;
-		}
+		}*/
 	}
 
 	public static Snackbar createSnackBar(final Activity activity){
@@ -200,7 +200,7 @@ public class ContentsHolder extends UniversalHolder {
 										parm.put("name", addPlaylist.getTitle());
 										parm.put("caption", addPlaylist.getCaption());
 										parm.put("private", "false");
-										parm.put("image", "");
+										parm.put("image", randomImage.getInstance().getImage());
 										System.out.println(addPlaylist.getTitle() + " | " + addPlaylist.getCaption());
 										final RestAdapter restAdapter = new RestAdapter(activity.getBaseContext(), ServerUrl.API_URL);
 										PlaylistRepository playlistRepository = restAdapter.createRepository(PlaylistRepository.class);

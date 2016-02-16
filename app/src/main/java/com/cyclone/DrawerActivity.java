@@ -11,8 +11,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.FragmentManager;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -23,8 +23,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.cyclone.Utils.ServerUrl;
+import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.Utils.UtilUser;
 import com.cyclone.fragment.AboutFragment;
 import com.cyclone.fragment.AccountSettingFragment;
@@ -134,6 +136,7 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 						// logged in
 						UtilUser.currentUser = object;
 						System.out.println("LOGINED");
+						System.out.println(object.getUsername());
 					} else {
 						// anonymous user
 						System.out.println("not LOGIN");
@@ -222,6 +225,11 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 		NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 		View headerView = getLayoutInflater().inflate(R.layout.nav_header_main, navigationView, false);
 		ImageView radioLogo = (ImageView) headerView.findViewById(R.id.img_drawer_logo);
+		TextView txtRadioName = (TextView) headerView.findViewById(R.id.radio_name);
+		if (UtilArrayData.radioProfile != null)
+			txtRadioName.setText(UtilArrayData.radioProfile.getName());
+		else txtRadioName.setText(" ");
+		radioLogo.setImageResource(R.drawable.radio_icon);
 		radioLogo.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -230,7 +238,10 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 				Intent i = new Intent(getApplicationContext(), DrawerActivity.class);
 				i.putExtra("fragmentType", MasterActivity.FRAGMENT_RADIO_PROFILE);
 				i.putExtra("parent", true);
-				i.putExtra("title", "Prambors FM Jakarta");
+				if (UtilArrayData.radioProfile != null)
+					i.putExtra("title", UtilArrayData.radioProfile.getName());
+				else i.putExtra("title", " ");
+
 				startActivity(i);
 				finish();
 			}
@@ -247,7 +258,9 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 			toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id
 					.collapsing_toolbar_layout);
 			toolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
-			toolbarLayout.setTitle("Prambors FM Jakarta");
+			if (UtilArrayData.radioProfile != null)
+				toolbarLayout.setTitle(UtilArrayData.radioProfile.getName());
+			else toolbarLayout.setTitle(" ");
 		}
 
 		if(hasExtras) {
@@ -429,6 +442,10 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 
 		/* Reload the latest preferences */
 		reloadPreferences();
+	}
+
+	public static DrawerActivity getDrawerActivity() {
+		return drawerActivity;
 	}
 
 	@Override

@@ -26,6 +26,7 @@ import com.cyclone.data.DataAPIUrl;
 import com.cyclone.interfaces.PlayOnHolder;
 import com.cyclone.interfaces.getData;
 import com.cyclone.loopback.GetJsonFragment;
+import com.cyclone.loopback.repository.FeedTimelineRepository;
 import com.cyclone.model.Section;
 import com.wunderlist.slidinglayer.SlidingLayer;
 
@@ -113,7 +114,7 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 		}
 
 		if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_HOME || DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_SUBCATEGORY){
-			if(UtilArrayData.allRadioContent.size() > 0){
+			/*if(UtilArrayData.allRadioContent.size() > 0){
 				if (datas != null && datas.size() > 0) {
 					try{
 						progressBar.setVisibility(View.GONE);
@@ -130,7 +131,12 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 				if(progressBar != null)
 					progressBar.setVisibility(View.VISIBLE);
 				onRefresh();
-			}
+			}*/
+
+			cnt = 0;
+			if (progressBar != null)
+				progressBar.setVisibility(View.VISIBLE);
+			onRefresh();
 		} else if (DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_PLAYER) {
 				if(progressBar != null)
 					progressBar.setVisibility(View.GONE);
@@ -154,7 +160,7 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 				progressBar.setVisibility(View.VISIBLE);
 			onRefresh();
 		}else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_CLUB){
-			if(UtilArrayData.feedTimelines.size() > 0){
+			/*if(UtilArrayData.feedTimelines.size() > 0){
 				progressBar.setVisibility(View.GONE);
 				cnt = 0;
 				datas.clear();
@@ -166,15 +172,20 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 				if(progressBar != null)
 					progressBar.setVisibility(View.VISIBLE);
 				onRefresh();
-			}
+			}*/
+			cnt = 0;
+			if (progressBar != null)
+				progressBar.setVisibility(View.VISIBLE);
+			onRefresh();
 
 		} else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_PERSON_PROFILE){
 			cnt = 0;
 			if(progressBar != null)
 				progressBar.setVisibility(View.VISIBLE);
-			showData();
+			//showData();
 			API.getDataProfile();
 			API.getDataStatsProfile();
+			onRefresh();
 		}
 		//Sementara matiin karenga fungsi belum jalan
 		/*else if(DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_PROGRAMS){
@@ -417,7 +428,7 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 				API.getDataFavorite(SubcategoryFragment.getInstance().getTypeFavorite());
 			else API.getDataHome();
 		} else if (DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_CLUB) {
-			API.getDataClub();
+			API.getDataClub(FeedTimelineRepository.TIMELINE_ON_CLUB);
 		} else if (DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_PROGRAMS) {
 			API.getDataRadioProgram();
 		} else if (DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_COMMENT) {
@@ -428,6 +439,8 @@ public abstract class RecyclerFragment extends GetJsonFragment implements OnOffs
 			API.getDataPlaylist();
 		} else if (DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_FAVORITES) {
 			API.getDataFavorite();
+		} else if (DrawerActivity.getFragmentType() == MasterActivity.FRAGMENT_PERSON_PROFILE) {
+			API.getDataClub(FeedTimelineRepository.TIMELINE_ON_PROFILE);
 		}
 		else{
 			showData();

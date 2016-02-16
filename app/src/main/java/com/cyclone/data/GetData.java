@@ -275,9 +275,11 @@ public class GetData {
                         List<Favorite> list = UtilArrayData.favorites;
                         for (int i = 0; i < list.size(); i++) {
                             Music music = list.get(i).getMusic();
-                            datas.add(new SubcategoryItem(music.getCoverArt(), music.getName(),
-                                    music.getArtist(), SubcategoryItem.TYPE_NORMAL, category,
-                                    music.getAudio(), i, Content.TYPE_TRACKS, music.getId()));
+                            if (music != null) {
+                                datas.add(new SubcategoryItem(music.getCoverArt(), music.getName(),
+                                        music.getArtist(), SubcategoryItem.TYPE_NORMAL, category,
+                                        music.getAudio(), i, Content.TYPE_TRACKS, music.getId()));
+                            }
                         }
                     }
                 } else if (SubcategoryFragment.getInstance().getTypeFavorite() == Content.TYPE_RADIO_CONTENT) {
@@ -285,9 +287,11 @@ public class GetData {
                         List<Favorite> list = UtilArrayData.favorites;
                         for (int i = 0; i < list.size(); i++) {
                             RadioContent radioContent = list.get(i).getRadioContent();
-                            datas.add(new SubcategoryItem(radioContent.getCoverArt(), radioContent.getName(),
-                                    UtilArrayData.radioProfile.getName(), SubcategoryItem.TYPE_NORMAL, category,
-                                    radioContent.getAudio(), i, Content.TYPE_RADIO_CONTENT, radioContent.getId()));
+                            if (radioContent != null) {
+                                datas.add(new SubcategoryItem(radioContent.getCoverArt(), radioContent.getName(),
+                                        UtilArrayData.radioProfile.getName(), SubcategoryItem.TYPE_NORMAL, category,
+                                        radioContent.getAudio(), i, Content.TYPE_RADIO_CONTENT, radioContent.getId()));
+                            }
                         }
                     }
                 } else if (SubcategoryFragment.getInstance().getTypeFavorite() == Content.TYPE_PLAYLIST) {
@@ -295,9 +299,11 @@ public class GetData {
                         List<Favorite> list = UtilArrayData.favorites;
                         for (int i = 0; i < list.size(); i++) {
                             Playlist playlist = list.get(i).getPlaylist();
-                            datas.add(new SubcategoryItem(playlist.getImage(), playlist.getName(),
-                                    playlist.getCaption(), SubcategoryItem.TYPE_NORMAL, category,
-                                    "", i, Content.TYPE_PLAYLIST, playlist.getId()));
+                            if (playlist != null) {
+                                datas.add(new SubcategoryItem(playlist.getImage(), playlist.getName(),
+                                        playlist.getCaption(), SubcategoryItem.TYPE_NORMAL, category,
+                                        "", i, Content.TYPE_PLAYLIST, playlist.getId()));
+                            }
                         }
                     }
                 }

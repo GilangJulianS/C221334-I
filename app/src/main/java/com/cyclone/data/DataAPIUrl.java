@@ -49,6 +49,7 @@ public class DataAPIUrl {
     protected getData mGetData;
     public int scc = 0;
     RestAdapter restAdapter;
+    static DataAPIUrl dataAPIUrl;
 
     public DataAPIUrl(Activity activity, Context context, String DataId, ApiCallback callback, Context recyclerContext, getData mGetData, ProgressBar progressBar) {
         this.callback = callback;
@@ -59,6 +60,8 @@ public class DataAPIUrl {
         this.getContext = context;
         this.DataId = DataId;
 
+        dataAPIUrl = this;
+
         restAdapter = new RestAdapter(getContext, ServerUrl.API_URL);
     }
 
@@ -66,6 +69,10 @@ public class DataAPIUrl {
         void showData();
 
         void refresh();
+    }
+
+    public static DataAPIUrl getDataAPIUrl() {
+        return dataAPIUrl;
     }
 
     public void getDataHome() {
@@ -126,8 +133,9 @@ public class DataAPIUrl {
         }
     }
 
-    public void getDataClub() {
+    public void getDataClub(String where) {
         //final RestAdapter restAdapter = new RestAdapter(getContext, ServerUrl.API_URL);
+        FeedTimelineRepository.setModelname(where);
         final FeedTimelineRepository feedTimelineRepository = restAdapter.createRepository(FeedTimelineRepository.class);
 
         feedTimelineRepository.createContract();

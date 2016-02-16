@@ -11,9 +11,13 @@ public class UtilUser {
     public static AccessToken currentToken;
 
     //id sementera sebeleum backend di benerin
-    private String id = "567246f8e14b45fb245b8e9c";
+   /* private static String id = "567246f8e14b45fb245b8e9c";
 
     public String getId() {
         return id;
     }
+
+    public static void setId(String ids){
+        id = ids;
+    }*/
 }

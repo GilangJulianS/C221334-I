@@ -22,8 +22,17 @@ import java.util.Map;
  * Created by solusi247 on 22/12/15.
  */
 public class FeedTimelineRepository extends ModelRepository<FeedTimeline> {
+    public static final String TIMELINE_ON_CLUB = "feed";
+    public static final String TIMELINE_ON_PROFILE = "account";
+
+    private static String modelname = TIMELINE_ON_CLUB;
+
     public FeedTimelineRepository() {
-        super("feed", FeedTimeline.class);
+        super(modelname, FeedTimeline.class);
+    }
+
+    public static void setModelname(String modelname) {
+        FeedTimelineRepository.modelname = modelname;
     }
 
     public RestContract createContract() {
@@ -111,6 +120,12 @@ public class FeedTimelineRepository extends ModelRepository<FeedTimeline> {
                             typePost.put("caption",type.getString("caption"));
                             typePost.put("id", type.getString("id"));
                             typePost.put("contentCount", type.getString("contentCount"));
+                            try {
+                                typePost.put("image", type.getString("image"));
+                            } catch (Exception e) {
+                                typePost.put("image", " ");
+                            }
+
                         }
                         else if(tipe.equalsIgnoreCase("content")){
                             feedTimeline.setType(Content.TYPE_RADIO_CONTENT);
@@ -146,7 +161,7 @@ public class FeedTimelineRepository extends ModelRepository<FeedTimeline> {
                            // UtilArrayData.feedTimelines.add(feedTimeline);
 
 
-                        System.out.println("type name for looping result : "+feedTimeline.getTypePost().get("name"));
+                        System.out.println("type name for looping result : " + feedTimeline.getTypePost().get("name"));
 
                     }
                     UtilArrayData.feedTimelines.clear();

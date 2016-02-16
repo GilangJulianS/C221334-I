@@ -102,10 +102,13 @@ public class AccountSettingFragment extends Fragment {
 				userRepo.logout(new VoidCallback() {
 					@Override
 					public void onSuccess() {
+						UtilUser.currentUser = null;
+						UtilUser.currentToken = null;
 						Intent i = new Intent(mContext, EmptyActivity.class);
 						i.putExtra("fragmentType", EmptyActivity.FRAGMENT_GET_STARTED);
+						i.putExtra("login", false);
 						mContext.startActivity(i);
-						DrawerActivity.getmActivity().finish();
+						DrawerActivity.getDrawerActivity().finish();
 					}
 
 					@Override

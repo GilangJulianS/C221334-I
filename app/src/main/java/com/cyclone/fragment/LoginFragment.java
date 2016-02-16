@@ -20,16 +20,9 @@ import com.cyclone.Utils.ServerUrl;
 import com.cyclone.Utils.UtilUser;
 import com.cyclone.loopback.UserClass;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.Profile;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.strongloop.android.loopback.AccessToken;
 import com.strongloop.android.loopback.RestAdapter;
-
-import java.util.Arrays;
 
 /**
  * Created by gilang on 09/10/2015.
@@ -57,7 +50,7 @@ public class LoginFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
 		View v = inflater.inflate(R.layout.fragment_login, parent, false);
 
-		callbackManager = CallbackManager.Factory.create();
+		//callbackManager = CallbackManager.Factory.create();
 
 		btnLogin = (Button) v.findViewById(R.id.btn_login);
 		btnForget = (Button) v.findViewById(R.id.btn_forget_password);
@@ -82,7 +75,7 @@ public class LoginFragment extends Fragment {
 			}
 		});
 
-		loginButton = (LoginButton) v.findViewById(R.id.login_button);
+		/*loginButton = (LoginButton) v.findViewById(R.id.login_button);
 		loginButton.setReadPermissions("user_friends");
 		// If using in a fragment
 		loginButton.setFragment(this);
@@ -102,7 +95,7 @@ public class LoginFragment extends Fragment {
 			public void onError(FacebookException error) {
 
 			}
-		});
+		});*/
 
 		return v;
 	}

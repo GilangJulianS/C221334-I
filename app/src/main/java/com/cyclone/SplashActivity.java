@@ -12,8 +12,11 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.cyclone.Utils.ServerUrl;
+import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.Utils.UtilUser;
 import com.cyclone.loopback.UserClass;
+import com.cyclone.loopback.model.radioProfile;
+import com.cyclone.loopback.repository.radioProfileRepository;
 import com.strongloop.android.loopback.RestAdapter;
 import com.strongloop.android.loopback.callbacks.ObjectCallback;
 
@@ -72,7 +75,8 @@ public class SplashActivity extends Activity {
 		mSettings = PreferenceManager.getDefaultSharedPreferences(this);
 		//isLogin = mSettings.getBoolean(USER_PREF_LOGIN, false);
 
-		connect();
+		radioProfile();
+
 	}
 
 	@Override
@@ -80,6 +84,34 @@ public class SplashActivity extends Activity {
 		view = parent;
 		return super.onCreateView(parent, name, context, attrs);
 	}
+
+	void radioProfile() {
+		final RestAdapter restAdapt = new RestAdapter(this, ServerUrl.API_URL);
+		final radioProfileRepository profileRepository = restAdapt.createRepository(radioProfileRepository.class);
+
+		profileRepository.get(ServerUrl.RADIO_ID, new ObjectCallback<radioProfile>() {
+			@Override
+			public void onSuccess(radioProfile object) {
+				UtilArrayData.radioProfile = object;
+				connect();
+			}
+
+			@Override
+			public void onError(Throwable t) {
+				if (cntLogin == 0) {
+					ServerUrl.API_URL = ServerUrl.API_URL_local;
+					cntLogin++;
+					Snackbar.make(view, "Connecting to local", Snackbar.LENGTH_SHORT).show();
+					radioProfile();
+				} else {
+					// anonymous user
+					System.out.println("not LOGIN");
+					Snackbar.make(view, "Problem Connection", Snackbar.LENGTH_SHORT).show();
+				}
+			}
+		});
+	}
+
 	void connect(){
 		restAdapter = new RestAdapter(this, ServerUrl.API_URL);
 		userRepo = restAdapter.createRepository(UserClass.UserRepository.class);
