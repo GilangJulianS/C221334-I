@@ -102,7 +102,6 @@ public class UploadFinishedFragment extends PlaybackServiceFragment {
 				final ContainerRepository containerRepo = restAdapter.createRepository(ContainerRepository.class);
 				if (UtilUser.currentUser.getUsername() != null) {
 					System.out.println("current user id : " + UtilUser.currentUser.getId());
-					System.out.println("token user id : " + UtilUser.currentToken.getUserId());
 					containerRepo.get(UtilUser.currentUser.getId(), new ObjectCallback<Container>() {
 						@Override
 						public void onSuccess(Container container) {
@@ -188,12 +187,14 @@ public class UploadFinishedFragment extends PlaybackServiceFragment {
 	}
 
 	void goUploadAudio() {
+		System.out.println("go upload audio");
 		String coverUrl = ServerUrl.API_URL + "/containers/" + UtilUser.currentUser.getId() + "/download/" + coverName + ".jpg";
 		File audio = new File(path);
 		//byte[] audioByte = UriToByte(audioUri);
 
 		DoUpload doUpload = DoUpload.newInsane(formTitle.getText().toString(), formDesc.getText().toString(), coverUrl, "false", audio);
 		try {
+			System.out.println("try upload audio");
 			doUpload.upload();
 		} catch (Exception e) {
 			e.printStackTrace();

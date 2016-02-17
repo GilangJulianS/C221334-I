@@ -37,6 +37,7 @@ public class DoUpload {
     }
 
     public void upload() throws Exception {
+        System.out.println("upplloooaaddd");
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                 .permitAll().build();
         StrictMode.setThreadPolicy(policy);
