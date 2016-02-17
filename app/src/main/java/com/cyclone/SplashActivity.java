@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.cyclone.Utils.ServerUrl;
-import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.Utils.UtilUser;
 import com.cyclone.loopback.UserClass;
 import com.cyclone.loopback.model.radioProfile;
@@ -51,7 +50,7 @@ public class SplashActivity extends Activity {
 		int counter = images.length;
 		Random random = new Random();
 		int selectedImage = random.nextInt(counter);
-		imgSplash.setImageResource(images[selectedImage]);
+		//imgSplash.setImageResource(images[selectedImage]);
 
 
 		/*// play sound effect
@@ -74,8 +73,7 @@ public class SplashActivity extends Activity {
 		splashActivity = new SplashActivity();
 		mSettings = PreferenceManager.getDefaultSharedPreferences(this);
 		//isLogin = mSettings.getBoolean(USER_PREF_LOGIN, false);
-
-		radioProfile();
+		connect();
 
 	}
 
@@ -92,13 +90,16 @@ public class SplashActivity extends Activity {
 		profileRepository.get(ServerUrl.RADIO_ID, new ObjectCallback<radioProfile>() {
 			@Override
 			public void onSuccess(radioProfile object) {
-				UtilArrayData.radioProfile = object;
-				connect();
+				//UtilArrayData.radioProfile = object;
+				//connect();
+				Intent i = new Intent(mContext, DrawerActivity.class);
+				mActivity.startActivity(i);
+				mActivity.finish();
 			}
 
 			@Override
 			public void onError(Throwable t) {
-				if (cntLogin == 0) {
+				/*if (cntLogin == 0) {
 					ServerUrl.API_URL = ServerUrl.API_URL_local;
 					cntLogin++;
 					Snackbar.make(view, "Connecting to local", Snackbar.LENGTH_SHORT).show();
@@ -107,7 +108,7 @@ public class SplashActivity extends Activity {
 					// anonymous user
 					System.out.println("not LOGIN");
 					Snackbar.make(view, "Problem Connection", Snackbar.LENGTH_SHORT).show();
-				}
+				}*/
 			}
 		});
 	}
@@ -124,10 +125,8 @@ public class SplashActivity extends Activity {
 					UtilUser.currentUser = object;
 					System.out.println("LOGINED");
 					System.out.println("Username : " + object.getUsername());
+					radioProfile();
 
-					Intent i = new Intent(mContext, DrawerActivity.class);
-					mActivity.startActivity(i);
-					mActivity.finish();
 
 				} else {
 					// anonymous user
@@ -153,6 +152,8 @@ public class SplashActivity extends Activity {
 					mActivity.startActivity(i);
 					mActivity.finish();
 				}
+
+				//connect();
 
 			}
 

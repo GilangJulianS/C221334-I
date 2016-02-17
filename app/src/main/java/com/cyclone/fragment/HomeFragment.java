@@ -15,6 +15,7 @@ import android.widget.Button;
 import com.cyclone.DrawerActivity;
 import com.cyclone.MasterActivity;
 import com.cyclone.R;
+import com.cyclone.Utils.ServerUrl;
 import com.cyclone.custom.UniversalAdapter;
 import com.cyclone.data.GetData;
 import com.cyclone.data.GoPlay;
@@ -115,7 +116,7 @@ public class HomeFragment extends PlaybackServiceRecyclerFragment implements Ige
 			@Override
 			public void onClick(View v) {
 				if (mService != null) {
-					mService.load(GoPlay.getInstance().PlayStream());
+					mService.load(GoPlay.getInstance().PlayStream(ServerUrl.ulr_stream));
 					mService.playIndex(0);
 				}
 			}
@@ -125,6 +126,7 @@ public class HomeFragment extends PlaybackServiceRecyclerFragment implements Ige
 			@Override
 			public void onClick(View v) {
 			//Toast.makeText(activity, "Mix for you pressed", Toast.LENGTH_SHORT).show();
+
 			}
 		});
 	}

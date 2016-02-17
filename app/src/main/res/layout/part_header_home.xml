@@ -9,7 +9,7 @@
 		android:layout_height="220dp"
 		android:scaleType="centerCrop"
 		android:background="@color/colorPrimaryDefault"
-		android:src="@drawable/background_login"/>
+		android:src="@drawable/header" />
 
 	<View
 		android:layout_width="match_parent"

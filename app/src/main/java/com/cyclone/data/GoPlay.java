@@ -32,13 +32,13 @@ public class GoPlay {
         return Instance;
     }
 
-    public MediaWrapper PlayStream(){
+    public MediaWrapper PlayStream(String url) {
         MediaWrapper mMedia;
         MediaCustom MC;
         MediaDatabase mDB = MediaDatabase.getInstance();
         List<MediaWrapper> mw = new ArrayList<MediaWrapper>();
         MC = new MediaCustom();
-        MC.setUri(Uri.parse(ServerUrl.ulr_stream));
+        MC.setUri(Uri.parse(url));
         MC.setTitle("program.name");
         MC.setArtist(UtilArrayData.NAMA_RADIO);
         MC.setAlbum("program.description");

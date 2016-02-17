@@ -1,5 +1,6 @@
 package com.cyclone.loopback.repository;
 
+import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.loopback.model.radioProfile;
 import com.strongloop.android.loopback.ModelRepository;
 import com.strongloop.android.loopback.callbacks.JsonObjectParser;
@@ -32,7 +33,18 @@ public class radioProfileRepository extends ModelRepository<radioProfile> {
         Map<String, String> parm = new HashMap<>();
         parm.put("id", feedId);
         System.out.println("Redio Profile execute");
-        invokeStaticMethod("get",parm,new JsonObjectParser<radioProfile>(this, callback));
+        invokeStaticMethod("get", parm, new JsonObjectParser<radioProfile>(this, new ObjectCallback<radioProfile>() {
+            @Override
+            public void onSuccess(radioProfile object) {
+                UtilArrayData.radioProfile = object;
+                callback.onSuccess(object);
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                callback.onError(t);
+            }
+        }));
 
     }
 }
