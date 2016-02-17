@@ -50,6 +50,7 @@
 			android:background="#888"/>
 
 		<LinearLayout
+			android:id="@+id/btn_info"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:gravity="center_vertical"
@@ -75,6 +76,7 @@
 		</LinearLayout>
 
 		<LinearLayout
+			android:id="@+id/btn_show_lyric"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:gravity="center_vertical"
@@ -149,6 +151,7 @@
 		</LinearLayout>
 
 		<LinearLayout
+			android:id="@+id/btn_add_showlist"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:gravity="center_vertical"
@@ -173,6 +176,7 @@
 		</LinearLayout>
 
 		<LinearLayout
+			android:id="@+id/btn_add_favorites"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:gravity="center_vertical"
@@ -197,6 +201,7 @@
 		</LinearLayout>
 
 		<LinearLayout
+			android:id="@+id/btn_share"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:gravity="center_vertical"

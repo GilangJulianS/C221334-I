@@ -70,7 +70,8 @@
 
 		<RelativeLayout
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content">
+			android:layout_height="wrap_content"
+			android:visibility="gone">
 
 			<ImageView
 				android:id="@+id/img_post"
@@ -124,6 +125,14 @@
 			android:layout_marginRight="15dp"
 			android:textSize="12sp"
 			android:text="40 tracks"/>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+
+			<include layout="@layout/card_feed_in_feed"/>
+
+		</LinearLayout>
 
 		<LinearLayout
 			android:layout_width="match_parent"

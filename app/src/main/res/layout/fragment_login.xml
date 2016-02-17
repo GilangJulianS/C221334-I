@@ -34,20 +34,36 @@
 			android:textStyle="bold"
 			android:textColor="#fff"/>
 
-		<EditText
-			android:id="@+id/form_user"
+		<android.support.design.widget.TextInputLayout
+			android:layout_marginTop="10dp"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="40dp"
-			android:hint="Username/Email"/>
+			android:layout_height="wrap_content">
 
-		<EditText
-			android:id="@+id/form_password"
+			<EditText
+				android:id="@+id/form_user"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="40dp"
+				android:singleLine="true"
+				android:hint="Username/Email"/>
+
+		</android.support.design.widget.TextInputLayout>
+
+		<android.support.design.widget.TextInputLayout
+			android:layout_marginTop="10dp"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="15dp"
-			android:password="true"
-			android:hint="Password"/>
+			android:layout_height="wrap_content">
+
+			<EditText
+				android:id="@+id/form_password"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="15dp"
+				android:singleLine="true"
+				android:password="true"
+				android:hint="Password"/>
+
+		</android.support.design.widget.TextInputLayout>
 
 		<Button
 			android:id="@+id/btn_login"

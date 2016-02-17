@@ -24,8 +24,8 @@
 
 	<de.hdodenhof.circleimageview.CircleImageView
 		android:id="@+id/img_user"
-		android:layout_width="80dp"
-		android:layout_height="80dp"
+		android:layout_width="60dp"
+		android:layout_height="60dp"
 		android:transitionName="profile"
 		android:src="@drawable/background_login"/>
 
@@ -41,7 +41,7 @@
 			android:id="@+id/txt_name"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:textSize="20sp"
+			android:textSize="16sp"
 			android:textStyle="bold"
 			android:text="Imam Darto"/>
 
@@ -50,6 +50,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="5dp"
+			android:textSize="12sp"
 			android:text="\@imamdarto"/>
 
 	</LinearLayout>
@@ -58,6 +59,7 @@
 		android:id="@+id/txt_time"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:textSize="12sp"
 		android:text="18:31"/>
 	<!--<ImageButton-->
 	<!--android:id="@+id/btn_follow"-->

@@ -3,7 +3,9 @@ package com.cyclone.fragment;
 import android.Manifest;
 import android.animation.Animator;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -29,8 +31,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cyclone.DrawerActivity;
+import com.cyclone.MasterActivity;
 import com.cyclone.R;
 import com.cyclone.custom.UniversalAdapter;
 import com.cyclone.interfaces.PlayOnHolder;
@@ -63,7 +67,7 @@ public class PlayerFragment extends PlaybackServiceRecyclerFragment implements P
 	private List<Object> persistentDatas;
 	private ImageButton btnMinimize, btnRepeat, btnPrevious, btnPlay, btnNext, btnShuffle, btnMenu;
 	private ViewGroup groupInfo, groupControl;
-	private ViewGroup btnArtist, btnAlbum;
+	private ViewGroup btnArtist, btnAlbum, btnInfo, btnLyric, btnAddShowlist, btnAddFavorites, btnShare;
 	private ImageView imgCover, imgTemp;
 	private View minimizedPlayer;
 	private TextView txtTitle, txtArtist, txtTotalTime, txtCurTime;
@@ -138,6 +142,11 @@ public class PlayerFragment extends PlaybackServiceRecyclerFragment implements P
 	public void prepareSlidingMenu(View v) {
 		btnArtist = (ViewGroup) v.findViewById(R.id.btn_artist);
 		btnAlbum = (ViewGroup) v.findViewById(R.id.btn_album);
+		btnInfo = (ViewGroup) v.findViewById(R.id.btn_info);
+		btnAddFavorites = (ViewGroup) v.findViewById(R.id.btn_add_favorites);
+		btnAddShowlist = (ViewGroup) v.findViewById(R.id.btn_add_showlist);
+		btnShare = (ViewGroup) v.findViewById(R.id.btn_share);
+
 		btnArtist.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -155,6 +164,62 @@ public class PlayerFragment extends PlaybackServiceRecyclerFragment implements P
 				i.putExtra("fragmentType", DrawerActivity.FRAGMENT_ALBUM);
 				i.putExtra("title", "Album Name");
 				activity.startActivity(i);
+			}
+		});
+
+		btnAddFavorites.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(activity, "Add to favorites clicked", Toast.LENGTH_SHORT).show();
+			}
+		});
+
+		btnAddShowlist.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+				builder.setMessage("")
+						.setTitle("Select showlist type")
+						.setPositiveButton("Add a mix", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								Intent i = new Intent(activity, DrawerActivity.class);
+								i.putExtra("title", "Create New Mix");
+								i.putExtra("fragmentType", MasterActivity.FRAGMENT_ADD_MIX_FORM);
+								activity.startActivity(i);
+							}
+						})
+						.setNegativeButton("Add a playlist", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								Intent i = new Intent(activity, DrawerActivity.class);
+								i.putExtra("title", "Create New Playlist");
+								i.putExtra("fragmentType", MasterActivity.FRAGMENT_ADD_PLAYLIST_FORM);
+								activity.startActivity(i);
+							}
+						});
+				builder.create().show();
+			}
+		});
+
+		btnInfo.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(activity, "Info clicked", Toast.LENGTH_SHORT).show();
+			}
+		});
+
+		btnShare.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(activity, "Share clicked", Toast.LENGTH_SHORT).show();
+			}
+		});
+
+		btnLyric.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(activity, "Lyric clicked", Toast.LENGTH_SHORT).show();
 			}
 		});
 	}
@@ -489,33 +554,33 @@ public class PlayerFragment extends PlaybackServiceRecyclerFragment implements P
 		}
 		if (mService.isShuffling()) {
 			//btnShuffle.setImageResource(UiTools.getResourceFromAttribute(act, R.attr.ic_shuffle_on));
-			btnShuffle.setImageResource(R.drawable.ic_shuffle_white_48dp);
+			btnShuffle.setImageResource(R.drawable.ic_shuffle_white_24dp);
 			btnShuffle.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorAccent));
 
 			//btnShuffle.setContentDescription(getResources().getString(R.string.shuffle_on));
 		} else {
 			//btnShuffle.setImageResource(UiTools.getResourceFromAttribute(act, R.attr.ic_shuffle));
-			btnShuffle.setImageResource(R.drawable.ic_shuffle_white_48dp);
+			btnShuffle.setImageResource(R.drawable.ic_shuffle_white_24dp);
 			btnShuffle.setColorFilter(Color.WHITE);
 			//btnShuffle.setContentDescription(getResources().getString(R.string.shuffle));
 		}
 		switch(mService.getRepeatType()) {
 			case PlaybackService.REPEAT_NONE:
 				//btnRepeat.setImageResource(UiTools.getResourceFromAttribute(act, R.attr.ic_repeat));
-				btnRepeat.setImageResource(R.drawable.ic_repeat_white_48dp);
+				btnRepeat.setImageResource(R.drawable.ic_repeat_white_24dp);
 				btnRepeat.setColorFilter(Color.WHITE);
 				//btnRepeat.setContentDescription(getResources().getString(R.string.repeat));
 				break;
 			case PlaybackService.REPEAT_ONE:
 				//btnRepeat.setImageResource(UiTools.getResourceFromAttribute(act, R.attr.ic_repeat_one));
-				btnRepeat.setImageResource(R.drawable.ic_repeat_one_white_48dp);
+				btnRepeat.setImageResource(R.drawable.ic_repeat_one_white_24dp);
 				btnRepeat.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorAccent));
 				//btnRepeat.setContentDescription(getResources().getString(R.string.repeat_single));
 				break;
 			default:
 			case PlaybackService.REPEAT_ALL:
 				//btnRepeat.setImageResource(UiTools.getResourceFromAttribute(act, R.attr.ic_repeat_on));
-				btnRepeat.setImageResource(R.drawable.ic_repeat_white_48dp);
+				btnRepeat.setImageResource(R.drawable.ic_repeat_white_24dp);
 				btnRepeat.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorAccent));
 				//btnRepeat.setContentDescription(getResources().getString(R.string.repeat_all));
 				break;
