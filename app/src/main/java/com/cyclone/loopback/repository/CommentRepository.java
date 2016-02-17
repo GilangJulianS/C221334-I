@@ -1,6 +1,7 @@
 package com.cyclone.loopback.repository;
 
 import com.cyclone.Utils.UtilArrayData;
+import com.cyclone.loopback.model.Profile;
 import com.cyclone.loopback.model.comment;
 import com.strongloop.android.loopback.ModelRepository;
 import com.strongloop.android.loopback.callbacks.ListCallback;
@@ -78,10 +79,39 @@ public class CommentRepository extends ModelRepository<comment> {
                         cmt.setFeedId(ObjectResult.getString("feedId"));
                         cmt.setUpdatedAt(ObjectResult.getString("updatedAt"));
 
-                        cmt.setUserid(ObjectAccount.getString("id"));
+                        Profile profile = new Profile();
+
+                        profile.setMale(ObjectAccount.getString("male"));
+                        try {
+                            profile.setBirthday(ObjectAccount.getString("birthday"));
+                        } catch (Exception e) {
+                            profile.setBirthday(" ");
+                        }
+                        try {
+                            profile.setAbout(ObjectAccount.getString("about"));
+                        } catch (Exception e) {
+                            profile.setAbout(" ");
+                        }
+                        profile.setUsername(ObjectAccount.getString("username"));
+                        profile.setEmail(ObjectAccount.getString("email"));
+                        try {
+                            profile.setStatus(ObjectAccount.getString("status"));
+                        } catch (Exception e) {
+                            profile.setStatus(" ");
+                        }
+                        profile.setId(ObjectAccount.getString("id"));
+                        try {
+                            profile.setProfilePicture(ObjectAccount.getString("profilePicture"));
+                        } catch (Exception e) {
+                            profile.setProfilePicture(" ");
+                        }
+                        profile.setRadioOwner(ObjectAccount.getString("radioOwner"));
+
+                        cmt.setProfile(profile);
+                        /*cmt.setUserid(ObjectAccount.getString("id"));
                         cmt.setUsername(ObjectAccount.getString("username"));
                         cmt.setMale(ObjectAccount.getString("male"));
-                        cmt.setEmail(ObjectAccount.getString("email"));
+                        cmt.setEmail(ObjectAccount.getString("email"));*/
 
                         System.out.println("Comment Object : " + ObjectResult.getString("content"));
                         System.out.println("Account Object : "+ ObjectAccount.getString("username"));
