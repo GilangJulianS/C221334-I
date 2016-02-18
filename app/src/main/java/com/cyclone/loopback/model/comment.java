@@ -14,11 +14,20 @@ public class comment extends Model {
     String accountId;
    // Map<String, String> account;
 
-    String male;
+    /*String male;
     String username;
     String email;
-    String userid;
+    String userid;*/
 
+    Profile profile;
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
 
     public String getContent() {
         return content;
@@ -69,7 +78,7 @@ public class comment extends Model {
         this.accountId = accountId;
     }
 
-    public String getMale() {
+  /*  public String getMale() {
         return male;
     }
 
@@ -99,5 +108,5 @@ public class comment extends Model {
 
     public void setUserid(String userid) {
         this.userid = userid;
-    }
+    }*/
 }

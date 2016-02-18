@@ -1,19 +1,23 @@
 package com.cyclone.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.cyclone.R;
 import com.cyclone.Utils.ServerUrl;
+import com.cyclone.Utils.TimeFormat;
 import com.cyclone.Utils.UtilArrayData;
 import com.cyclone.Utils.UtilUser;
 import com.cyclone.loopback.model.comment;
 import com.cyclone.loopback.repository.CommentRepository;
 import com.cyclone.model.Comment;
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.strongloop.android.loopback.RestAdapter;
 import com.strongloop.android.remoting.adapters.Adapter;
 
@@ -32,7 +36,9 @@ public class CommentFragment extends RecyclerFragment {
 	public static final int MODE_READ_WRITE = 101;
 	private EditText formComment;
 	private ImageButton btnSubmit;
+	ImageView img;
 	private int mode;
+	Context context;
 
 	public CommentFragment(){}
 
@@ -40,6 +46,7 @@ public class CommentFragment extends RecyclerFragment {
 		CommentFragment fragment = new CommentFragment();
 		fragment.json = json;
 		fragment.mode = MODE_READ_WRITE;
+		fragment.context = fragment.getContext();
 		return fragment;
 	}
 
@@ -48,6 +55,7 @@ public class CommentFragment extends RecyclerFragment {
 		fragment.json = json;
 		fragment.mode = mode;
 		fragment.DataId = id;
+		fragment.context = fragment.getContext();
 		return fragment;
 	}
 
@@ -65,6 +73,9 @@ public class CommentFragment extends RecyclerFragment {
 
 			formComment = (EditText) commentView.findViewById(R.id.form_comment);
 			btnSubmit = (ImageButton) commentView.findViewById(R.id.btn_submit);
+			img = (ImageView) commentView.findViewById(R.id.img_person);
+
+			UrlImageViewHelper.setUrlDrawable(img, UtilUser.getProfilePicture(getContext()), R.drawable.ic_person_black_48dp);
 
 			btnSubmit.setOnClickListener(new View.OnClickListener() {
 				@Override
@@ -91,7 +102,7 @@ public class CommentFragment extends RecyclerFragment {
 						calendar.setTime(date);
 						String time = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
 						List<Object> datas = new ArrayList<>();
-						datas.add(new Comment("", UtilUser.currentUser.getUsername(), formComment.getText().toString(), time));
+						datas.add(new Comment(UtilUser.getProfilePicture(getContext()), UtilUser.currentUser.getUsername(), formComment.getText().toString(), "just now"));
 						adapter.datas.add(0, datas.get(0));
 						formComment.setText(null);
 						adapter.notifyItemInserted(0);
@@ -148,7 +159,7 @@ public class CommentFragment extends RecyclerFragment {
 			List<comment> cmtL = UtilArrayData.commentList;
 			for(int i = 0; i < cmtL.size(); i++){
 				comment cmt = cmtL.get(i);
-				datas.add(new Comment("", cmt.getUsername(), cmt.getContent(), cmt.getUpdatedAt().substring(11,16)));
+				datas.add(new Comment(cmt.getProfile().getProfilePicture(), cmt.getProfile().getUsername(), cmt.getContent(), TimeFormat.toThisTime(cmt.getUpdatedAt())));
 			}
 
 		}

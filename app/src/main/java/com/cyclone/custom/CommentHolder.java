@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.cyclone.R;
 import com.cyclone.model.Comment;
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 
 /**
  * Created by gilang on 23/11/2015.
@@ -32,7 +33,7 @@ public class CommentHolder extends UniversalHolder{
 	}
 
 	public void bind(Comment comment){
-		imgUser.setImageResource(R.drawable.background_login);
+		UrlImageViewHelper.setUrlDrawable(imgUser, comment.imgUrl, R.drawable.ic_person_black_48dp);
 		txtUsername.setText(comment.username);
 		txtComment.setText(comment.comment);
 		txtTime.setText(comment.time);
