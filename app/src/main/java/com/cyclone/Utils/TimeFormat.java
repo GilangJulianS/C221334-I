@@ -1,8 +1,14 @@
 package com.cyclone.Utils;
 
+import android.util.Log;
+
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 /**
  * Created by solusi247 on 15/02/16.
@@ -71,6 +77,11 @@ public class TimeFormat {
         return timestamp.substring(17, 19);
     }
 
+    public static String toMilSec(String timestamp) {
+        if (timestamp.length() < 19) return "00";
+        return timestamp.substring(20, 23);
+    }
+
     public static String toDate(String timestamp, String dividing) {
         if (timestamp.length() < 19) return timestamp;
 
@@ -97,24 +108,43 @@ public class TimeFormat {
 
     public static String toThisTime(String timestamp) {
         Date date = new Date();
-        String currDate = new SimpleDateFormat("yyyy-MM-dd-HH-mm").format(new Date());
+        String currDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z").format(new Date());
         String now = "" + new Timestamp(date.getTime());
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + now);
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> now : " + now);
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> server : " + timestamp);
+
+
+        String timeStampGMT = toGMT(timestamp);
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> timeStampGMT : " + timeStampGMT);
         System.out.println(currDate);
-        if (count(toYear(now), toYear(timestamp)) != 0) {
-            return count(toYear(now), toYear(timestamp)) + " " + YEAR_TAG;
-        } else if (count(toMounth(now), toMounth(timestamp)) != 0) {
-            return toDay(timestamp) + " " + toName(Integer.valueOf(toMounth(timestamp)));
-        } else if (count(toDay(now), toDay(timestamp)) != 0) {
-            return count(toDay(now), toDay(timestamp)) + " " + DAY_TAG;
-        } else if (count(toHours(now), toHours(timestamp)) != 0) {
-            return count(toHours(now), toHours(timestamp)) + " " + HOURS_TAG;
-        } else if (count(toMinutes(now), toMinutes(timestamp)) != 0) {
-            return count(toMinutes(now), toMinutes(timestamp)) + " " + MINUTE_TAG;
+        System.out.println(toMinutes(now) + "-" + toMinutes(timeStampGMT) + " = " + count(toMinutes(now), toMinutes(timeStampGMT)));
+
+        if (count(toYear(now), toYear(timeStampGMT)) != 0) {
+            return count(toYear(now), toYear(timeStampGMT)) + " " + YEAR_TAG;
+        } else if (count(toMounth(now), toMounth(timeStampGMT)) != 0) {
+            return toDay(timeStampGMT) + " " + toName(Integer.valueOf(toMounth(timeStampGMT)));
+        } else if (count(toDay(now), toDay(timeStampGMT)) != 0) {
+            return count(toDay(now), toDay(timeStampGMT)) + " " + DAY_TAG;
+        } else if (count(toHours(now), toHours(timeStampGMT)) != 0) {
+            return count(toHours(now), toHours(timeStampGMT)) + " " + HOURS_TAG;
+        } else if (count(toMinutes(now), toMinutes(timeStampGMT)) != 0) {
+            return count(toMinutes(now), toMinutes(timeStampGMT)) + " " + MINUTE_TAG;
         } else {
-            return count(toSec(now), toSec(timestamp)) + " " + SECOND_TAG;
+            return count(toSec(now), toSec(timeStampGMT)) + " " + SECOND_TAG;
         }
 
+    }
+
+    public static String toTimestamp(String year, String mounth, String day, String hours, String minutes, String secound, String milsec) {
+        return year + "-" + mounth + "-" + day + " " + hours + ":" + minutes + ":" + secound + "." + milsec + " EST";
+    }
+
+    //2016-02-19 15:50:00 GMT+07:00
+    public static String getGMT(String timestamp) {
+        String ts = timestamp.substring(23, 29);
+
+        System.out.println(" GMTTT : " + ts);
+        return ts;
     }
 
     private static int count(String now, String target) {
@@ -139,6 +169,72 @@ public class TimeFormat {
         else if (bulan == 12) return DESEMBER;
 
         return null;
+    }
+
+    private static String toGMT(String timestamp) {
+        /*String simbol = gmt.substring(0,1);
+        int gmtJam = Integer.parseInt(gmt.substring(1, 3));
+        int gmtMenit = Integer.parseInt(gmt.substring(4,6));
+        int menit = Integer.parseInt(toMinutes(timestamp));
+        int jam = Integer.parseInt(toHours(timestamp));
+        int tanggal = Integer.parseInt(toDay(timestamp));
+        int bulan = Integer.parseInt(toMounth(timestamp));
+        int tahun = Integer.parseInt(toYear(timestamp));
+
+        if(gmtMenit != 0){
+            menit += gmtMenit;
+            if(menit > 59){
+                jam += 1;
+                menit = 0;
+                if(jam > 23){
+                    tanggal += 1;
+                    jam = 0;
+                }
+            }
+        }*/
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS z");
+        String servertime = toYear(timestamp) + "-" + toMounth(timestamp) + "-" + toDay(timestamp) + " " + toHours_HH_MM(timestamp, ":") + ":" + toSec(timestamp) + "." + toMilSec(timestamp) + " GMT";
+        System.out.println("SERVERTIME : " + servertime);
+        Date date = null;
+        long epoch = 0;
+        long epochServer = 0;
+
+        try {
+            date = df.parse(df.format(new Date()));
+            epoch = date.getTime();
+            epochServer = df.parse(servertime).getTime();
+
+            Log.d("Time epoch Server", "" + epochServer);
+            Log.d("Time epoch Current", "" + epoch);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return calGMT(epochServer);
+    }
+
+    public static int getCurrentTimezoneOffset() {
+
+        TimeZone tz = TimeZone.getDefault();
+        Calendar cal = GregorianCalendar.getInstance(tz);
+        int offsetInMillis = tz.getOffset(cal.getTimeInMillis());
+        System.out.println("timeMillis : " + offsetInMillis);
+
+        String offset = String.format("%02d:%02d", Math.abs(offsetInMillis / 3600000), Math.abs((offsetInMillis / 60000) % 60));
+        System.out.println("GMT" + (offsetInMillis >= 0 ? "+" : "-") + offset);
+
+        return offsetInMillis;
+    }
+
+    public static String calGMT(long serverTime) {
+        long offsetInMillis = getCurrentTimezoneOffset();
+        long server = serverTime;
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS z");
+        String res = df.format(new Date(server));
+        System.out.println("hasil date : " + res);
+        return res;
     }
 
 }
