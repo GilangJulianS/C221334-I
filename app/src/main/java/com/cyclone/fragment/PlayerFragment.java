@@ -146,6 +146,7 @@ public class PlayerFragment extends PlaybackServiceRecyclerFragment implements P
 		btnAddFavorites = (ViewGroup) v.findViewById(R.id.btn_add_favorites);
 		btnAddShowlist = (ViewGroup) v.findViewById(R.id.btn_add_showlist);
 		btnShare = (ViewGroup) v.findViewById(R.id.btn_share);
+		btnLyric = (ViewGroup) v.findViewById(R.id.btn_show_lyric);
 
 		btnArtist.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -179,23 +180,17 @@ public class PlayerFragment extends PlaybackServiceRecyclerFragment implements P
 			public void onClick(View v) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 				builder.setMessage("")
-						.setTitle("Select showlist type")
-						.setPositiveButton("Add a mix", new DialogInterface.OnClickListener() {
+						.setTitle("Select type")
+						.setPositiveButton("Add to mix", new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
-								Intent i = new Intent(activity, DrawerActivity.class);
-								i.putExtra("title", "Create New Mix");
-								i.putExtra("fragmentType", MasterActivity.FRAGMENT_ADD_MIX_FORM);
-								activity.startActivity(i);
+								Toast.makeText(activity, "Add to mix clicked", Toast.LENGTH_SHORT).show();
 							}
 						})
-						.setNegativeButton("Add a playlist", new DialogInterface.OnClickListener() {
+						.setNegativeButton("Add to playlist", new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
-								Intent i = new Intent(activity, DrawerActivity.class);
-								i.putExtra("title", "Create New Playlist");
-								i.putExtra("fragmentType", MasterActivity.FRAGMENT_ADD_PLAYLIST_FORM);
-								activity.startActivity(i);
+								Toast.makeText(activity, "Add to playlist clicked", Toast.LENGTH_SHORT).show();
 							}
 						});
 				builder.create().show();

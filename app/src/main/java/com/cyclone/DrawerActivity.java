@@ -193,7 +193,7 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 			isParentView = caller.getExtras().getBoolean("parent", false);
 			title = caller.getExtras().getString("title", "");
 			fragmentType = caller.getExtras().getInt("fragmentType", FRAGMENT_RADIO_PROFILE);
-			menuId = caller.getExtras().getInt("menuId", 0);
+			menuId = caller.getExtras().getInt("menuId", -1);
 			transitionId = caller.getExtras().getString("transition", "profile");
 
 			CurrentPersonProfile = caller.getExtras().getString("ownerId");
@@ -404,12 +404,12 @@ public class DrawerActivity extends MasterActivity implements NavigationView.OnN
 				manager.beginTransaction().replace(R.id.container, UploadFinishedFragment.newInstance(caller.getExtras().getString("path")))
 						.commit();
 			}
-			navigationView.getMenu().getItem(menuId).setChecked(true);
+			if(menuId != -1)
+				navigationView.getMenu().getItem(menuId).setChecked(true);
 		}else{
 			isParentView = true;
 			FragmentManager manager = getSupportFragmentManager();
 			manager.beginTransaction().replace(R.id.container, RadioProfileFragment.newInstance()).commit();
-			navigationView.getMenu().getItem(0).setChecked(true);
 		}
 
 		if(isParentView){
